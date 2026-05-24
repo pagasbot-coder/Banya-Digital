@@ -22,7 +22,7 @@ export function CriticalAlertsSection({ alerts }: CriticalAlertsSectionProps) {
           <div>
             <CardTitle
               id="critical-alerts-heading"
-              className="font-heading text-lg"
+              className="font-heading text-xl font-semibold tracking-tight md:text-2xl"
             >
               Критические алерты
             </CardTitle>

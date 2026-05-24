@@ -1,5 +1,8 @@
 import { CriticalAlertsSection } from "@/components/dashboard/critical-alerts-section";
-import { KpiGrid } from "@/components/dashboard/kpi-grid";
+import { HallLoadSection } from "@/components/dashboard/hall-load-section";
+import { InventoryAlertsCard } from "@/components/dashboard/inventory-alerts-card";
+import { MarginSection } from "@/components/dashboard/margin-section";
+import { RevenuePeriodsSection } from "@/components/dashboard/revenue-periods-section";
 import { TodayOperationsSection } from "@/components/dashboard/today-operations-section";
 import { Button } from "@/components/ui/button";
 import { getDashboardData } from "@/modules/dashboard/services/get-dashboard-data";
@@ -18,7 +21,7 @@ export default async function DashboardPage() {
             Операционный зал
           </p>
           <h1 className="font-heading text-2xl font-semibold tracking-tight text-foreground md:text-3xl">
-            Dashboard
+            Сводка
           </h1>
         </header>
         <div
@@ -42,10 +45,11 @@ export default async function DashboardPage() {
             Операционный зал
           </p>
           <h1 className="font-heading text-2xl font-semibold tracking-tight text-foreground md:text-3xl">
-            Dashboard
+            Сводка
           </h1>
           <p className="mt-1 max-w-xl text-sm text-muted-foreground">
-            Сводка KPI, алерты и операции смены — live из PostgreSQL.
+            Показатели, алерты и операции смены — данные из PostgreSQL в реальном
+            времени.
           </p>
         </div>
         <Button variant="outline" size="sm" type="button">
@@ -53,7 +57,18 @@ export default async function DashboardPage() {
         </Button>
       </header>
 
-      <KpiGrid metrics={data.metrics} />
+      <div className="grid gap-6 xl:grid-cols-4">
+        <div className="xl:col-span-3">
+          <HallLoadSection rows={data.hallLoads} />
+        </div>
+        <div className="xl:col-span-1">
+          <InventoryAlertsCard summary={data.inventoryAlerts} />
+        </div>
+      </div>
+
+      <RevenuePeriodsSection periods={data.revenuePeriods} />
+
+      <MarginSection margin={data.margin} />
 
       <div className="grid gap-6 xl:grid-cols-5">
         <div className="xl:col-span-3">

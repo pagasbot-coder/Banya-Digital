@@ -48,7 +48,7 @@ export function KpiGrid({ metrics }: KpiGridProps) {
               <Card className="h-full border-border/80 bg-card/95 py-0 shadow-sm">
                 <CardHeader className="pb-2">
                   <div className="flex items-start justify-between gap-2">
-                    <CardDescription className="text-xs font-medium uppercase tracking-wide">
+                    <CardDescription className="text-base font-semibold uppercase tracking-wide text-muted-foreground">
                       {metric.label}
                     </CardDescription>
                     <span

@@ -17,7 +17,10 @@ export function TodayOperationsSection({ rows }: TodayOperationsSectionProps) {
     <section aria-labelledby="today-ops-heading">
       <Card className="border-border/80 bg-card/95">
         <CardHeader>
-          <CardTitle id="today-ops-heading" className="font-heading text-lg">
+          <CardTitle
+            id="today-ops-heading"
+            className="font-heading text-xl font-semibold tracking-tight md:text-2xl"
+          >
             Операции сегодня
           </CardTitle>
           <CardDescription>
@@ -31,7 +34,7 @@ export function TodayOperationsSection({ rows }: TodayOperationsSectionProps) {
                 key={row.id}
                 className="rounded-lg border border-border/60 bg-muted/30 px-4 py-3"
               >
-                <dt className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                <dt className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
                   {row.label}
                 </dt>
                 <dd className="mt-1 font-heading text-2xl font-semibold tabular-nums text-foreground">

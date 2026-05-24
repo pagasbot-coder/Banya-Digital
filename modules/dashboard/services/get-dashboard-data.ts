@@ -1,21 +1,25 @@
 /**
  * Dashboard KPI и операционные агрегаты из PostgreSQL.
  *
- * hall_load: средний % загрузки активных залов за business day.
- *   load_hall = min(100, sum(partySize × minutes брони) / (capacity × 480 мин))
- *   hall_load = average(load_hall) по залам с capacity > 0.
+ * hall_load: % по каждому залу + строка «Итого» (среднее).
+ * revenue: день / неделя (7 дн.) / месяц (календарный).
+ * margin: общая + разбивка по услугам; алерт при марже услуги < 40%.
  */
 import { prisma } from "@/lib/db";
 import type {
   CriticalAlert,
-  DashboardKpiMetric,
   DashboardResult,
-  KpiTrend,
+  HallLoadRow,
+  InventoryAlertsSummary,
+  MarginSummary,
+  RevenuePeriodMetric,
+  ServiceMarginRow,
   TodayOperationRow,
 } from "@/modules/dashboard/types";
 
 const SHIFT_MINUTES = 480;
 const INVENTORY_EXPIRY_DAYS = 7;
+const MARGIN_ALERT_THRESHOLD = 40;
 
 function startOfDay(date = new Date()): Date {
   const d = new Date(date);
@@ -26,6 +30,12 @@ function startOfDay(date = new Date()): Date {
 function addDays(date: Date, days: number): Date {
   const d = new Date(date);
   d.setDate(d.getDate() + days);
+  return d;
+}
+
+function startOfMonth(date: Date): Date {
+  const d = startOfDay(date);
+  d.setDate(1);
   return d;
 }
 
@@ -55,31 +65,30 @@ function formatRevenue(amount: number): { value: string; suffix: string } {
   return { value: Math.round(amount).toLocaleString("ru-RU"), suffix: "₽" };
 }
 
-function computeTrend(current: number, previous: number): {
+type TrendResult = {
   label: string;
-  trend: KpiTrend;
-} {
+  trend: import("@/modules/dashboard/types").KpiTrend;
+};
+
+function computeTrend(current: number, previous: number): TrendResult {
   if (previous === 0) {
-    return { label: "нет данных за вчера", trend: "neutral" };
+    return { label: "нет данных за прошлый период", trend: "neutral" };
   }
   const delta = current - previous;
   const pct = (delta / previous) * 100;
   const sign = delta >= 0 ? "+" : "";
-  const trend: KpiTrend =
+  const trend: TrendResult["trend"] =
     Math.abs(pct) < 0.5 ? "neutral" : delta > 0 ? "up" : "down";
   return {
-    label: `${sign}${pct.toFixed(0)}% к вчера`,
+    label: `${sign}${pct.toFixed(0)}% к прошлому`,
     trend,
   };
 }
 
-function computeMarginTrend(current: number, previous: number): {
-  label: string;
-  trend: KpiTrend;
-} {
+function computeMarginTrend(current: number, previous: number): TrendResult {
   const delta = current - previous;
   const sign = delta >= 0 ? "+" : "−";
-  const trend: KpiTrend =
+  const trend: TrendResult["trend"] =
     Math.abs(delta) < 0.3 ? "neutral" : delta > 0 ? "up" : "down";
   return {
     label: `${sign}${Math.abs(delta).toFixed(1).replace(".", ",")} п.п.`,
@@ -87,9 +96,34 @@ function computeMarginTrend(current: number, previous: number): {
   };
 }
 
-async function calcHallLoadPercent(businessDate: Date): Promise<number> {
+function marginPercent(revenue: number, cost: number): number {
+  if (revenue <= 0) return 0;
+  return ((revenue - cost) / revenue) * 100;
+}
+
+function hallLoadForBookings(
+  hall: {
+    capacity: number | null;
+    bookings: { startsAt: Date; endsAt: Date; partySize: number }[];
+  },
+  businessDate: Date
+): number {
+  const capacity = hall.capacity ?? 1;
+  const guestMinutes = hall.bookings.reduce((sum, b) => {
+    const start = Math.max(b.startsAt.getTime(), businessDate.getTime());
+    const end = Math.min(b.endsAt.getTime(), addDays(businessDate, 1).getTime());
+    const minutes = Math.max(0, (end - start) / 60_000);
+    return sum + minutes * b.partySize;
+  }, 0);
+  const maxMinutes = capacity * SHIFT_MINUTES;
+  return Math.min(100, (guestMinutes / maxMinutes) * 100);
+}
+
+/** Загрузка по каждому активному залу + строка «Итого». */
+async function buildHallLoads(businessDate: Date): Promise<HallLoadRow[]> {
   const halls = await prisma.hall.findMany({
     where: { isActive: true, capacity: { gt: 0 } },
+    orderBy: { name: "asc" },
     include: {
       bookings: {
         where: {
@@ -100,54 +134,176 @@ async function calcHallLoadPercent(businessDate: Date): Promise<number> {
     },
   });
 
-  if (halls.length === 0) return 0;
+  if (halls.length === 0) return [];
 
-  const loads = halls.map((hall) => {
-    const capacity = hall.capacity ?? 1;
-    const guestMinutes = hall.bookings.reduce((sum, b) => {
-      const start = Math.max(b.startsAt.getTime(), businessDate.getTime());
-      const end = Math.min(
-        b.endsAt.getTime(),
-        addDays(businessDate, 1).getTime()
-      );
-      const minutes = Math.max(0, (end - start) / 60_000);
-      return sum + minutes * b.partySize;
-    }, 0);
-    const maxMinutes = capacity * SHIFT_MINUTES;
-    return Math.min(100, (guestMinutes / maxMinutes) * 100);
+  const rows: HallLoadRow[] = halls.map((hall) => ({
+    id: hall.id,
+    label: hall.name,
+    percent: Math.round(hallLoadForBookings(hall, businessDate)),
+  }));
+
+  const avg =
+    rows.reduce((sum, r) => sum + r.percent, 0) / Math.max(rows.length, 1);
+
+  rows.push({
+    id: "total",
+    label: "Итого (средняя)",
+    percent: Math.round(avg),
+    isTotal: true,
   });
 
-  return loads.reduce((a, b) => a + b, 0) / loads.length;
+  return rows;
 }
 
-async function sumRevenue(businessDate: Date): Promise<number> {
+async function sumRevenueBetween(
+  startInclusive: Date,
+  endExclusive: Date
+): Promise<number> {
   const result = await prisma.revenueLine.aggregate({
-    where: { businessDate },
+    where: {
+      businessDate: { gte: startInclusive, lt: endExclusive },
+    },
     _sum: { amount: true },
   });
   return Number(result._sum.amount ?? 0);
 }
 
-async function sumCosts(businessDate: Date): Promise<number> {
+async function sumCostsBetween(
+  startInclusive: Date,
+  endExclusive: Date
+): Promise<number> {
   const result = await prisma.costLine.aggregate({
-    where: { businessDate },
+    where: {
+      businessDate: { gte: startInclusive, lt: endExclusive },
+    },
     _sum: { amount: true },
   });
   return Number(result._sum.amount ?? 0);
 }
 
-function marginPercent(revenue: number, cost: number): number {
-  if (revenue <= 0) return 0;
-  return ((revenue - cost) / revenue) * 100;
+async function buildRevenuePeriods(today: Date): Promise<RevenuePeriodMetric[]> {
+  const tomorrow = addDays(today, 1);
+  const weekStart = addDays(today, -6);
+  const prevWeekStart = addDays(today, -13);
+  const monthStart = startOfMonth(today);
+  const prevMonthStart = startOfMonth(addDays(monthStart, -1));
+  const prevMonthEnd = monthStart;
+
+  const [
+    dayAmount,
+    dayPrev,
+    weekAmount,
+    weekPrev,
+    monthAmount,
+    monthPrev,
+  ] = await Promise.all([
+    sumRevenueBetween(today, tomorrow),
+    sumRevenueBetween(addDays(today, -1), today),
+    sumRevenueBetween(weekStart, tomorrow),
+    sumRevenueBetween(prevWeekStart, weekStart),
+    sumRevenueBetween(monthStart, tomorrow),
+    sumRevenueBetween(prevMonthStart, prevMonthEnd),
+  ]);
+
+  const dayFmt = formatRevenue(dayAmount);
+  const weekFmt = formatRevenue(weekAmount);
+  const monthFmt = formatRevenue(monthAmount);
+
+  return [
+    {
+      id: "day",
+      label: "Выручка за день",
+      value: dayFmt.value,
+      suffix: dayFmt.suffix,
+      delta: computeTrend(dayAmount, dayPrev),
+      hint: "Касса и предоплаты за сегодня",
+    },
+    {
+      id: "week",
+      label: "Выручка за неделю",
+      value: weekFmt.value,
+      suffix: weekFmt.suffix,
+      delta: computeTrend(weekAmount, weekPrev),
+      hint: "Сумма за последние 7 календарных дней",
+    },
+    {
+      id: "month",
+      label: "Выручка за месяц",
+      value: monthFmt.value,
+      suffix: monthFmt.suffix,
+      delta: computeTrend(monthAmount, monthPrev),
+      hint: "С начала текущего месяца",
+    },
+  ];
 }
 
-async function countInventoryAlerts(): Promise<number> {
+async function buildMarginSummary(today: Date): Promise<MarginSummary> {
+  const tomorrow = addDays(today, 1);
+  const yesterday = addDays(today, -1);
+
+  const [revToday, revYesterday, costToday, costYesterday, services] =
+    await Promise.all([
+      sumRevenueBetween(today, tomorrow),
+      sumRevenueBetween(yesterday, today),
+      sumCostsBetween(today, tomorrow),
+      sumCostsBetween(yesterday, today),
+      prisma.service.findMany({
+        where: { isActive: true },
+        orderBy: { name: "asc" },
+      }),
+    ]);
+
+  const overallToday = marginPercent(revToday, costToday);
+  const overallYesterday = marginPercent(revYesterday, costYesterday);
+
+  const byService: ServiceMarginRow[] = [];
+
+  for (const service of services) {
+    const [revAgg, costAgg] = await Promise.all([
+      prisma.revenueLine.aggregate({
+        where: { serviceId: service.id, businessDate: today },
+        _sum: { amount: true },
+      }),
+      prisma.costLine.aggregate({
+        where: { serviceId: service.id, businessDate: today },
+        _sum: { amount: true },
+      }),
+    ]);
+
+    const revenue = Number(revAgg._sum.amount ?? 0);
+    const cost = Number(costAgg._sum.amount ?? 0);
+    if (revenue <= 0 && cost <= 0) continue;
+
+    const pct = marginPercent(revenue, cost);
+    byService.push({
+      serviceId: service.id,
+      serviceName: service.name,
+      marginPercent: Math.round(pct * 10) / 10,
+      revenue,
+      belowThreshold: revenue > 0 && pct < MARGIN_ALERT_THRESHOLD,
+    });
+  }
+
+  byService.sort((a, b) => a.marginPercent - b.marginPercent);
+
+  return {
+    overallPercent: Math.round(overallToday * 10) / 10,
+    delta: computeMarginTrend(overallToday, overallYesterday),
+    hint: "Валовая маржа по выручке и COGS за день",
+    byService,
+  };
+}
+
+async function countInventoryAlerts(): Promise<InventoryAlertsSummary> {
   const lots = await prisma.inventoryLot.findMany({
     include: { item: true },
   });
   const expiryThreshold = addDays(startOfDay(), INVENTORY_EXPIRY_DAYS);
 
-  return lots.filter((lot) => {
+  let count = 0;
+  let criticalCount = 0;
+
+  for (const lot of lots) {
     const reorder = lot.item.reorderLevel
       ? Number(lot.item.reorderLevel)
       : null;
@@ -155,12 +311,32 @@ async function countInventoryAlerts(): Promise<number> {
     const belowReorder = reorder !== null && qty < reorder;
     const expiringSoon =
       lot.expiresAt !== null && lot.expiresAt <= expiryThreshold;
-    return belowReorder || expiringSoon;
-  }).length;
+    if (belowReorder || expiringSoon) count++;
+    if (reorder !== null && qty < reorder * 0.5) criticalCount++;
+  }
+
+  return {
+    count,
+    criticalCount,
+    hint: "Пороги FIFO и срок годности",
+  };
 }
 
-async function buildCriticalAlerts(today: Date): Promise<CriticalAlert[]> {
+async function buildCriticalAlerts(
+  today: Date,
+  marginByService: ServiceMarginRow[]
+): Promise<CriticalAlert[]> {
   const alerts: CriticalAlert[] = [];
+
+  for (const row of marginByService.filter((s) => s.belowThreshold)) {
+    alerts.push({
+      id: `margin-${row.serviceId}`,
+      severity: "high",
+      title: `Низкая маржа: ${row.serviceName}`,
+      description: `Маржа ${row.marginPercent.toFixed(1).replace(".", ",")}% — ниже порога ${MARGIN_ALERT_THRESHOLD}%. Выручка за день ${formatRevenue(row.revenue).value} ${formatRevenue(row.revenue).suffix}.`,
+      timeLabel: "сегодня",
+    });
+  }
 
   const timings = await prisma.programTiming.findMany({
     where: {
@@ -250,11 +426,13 @@ async function buildCriticalAlerts(today: Date): Promise<CriticalAlert[]> {
     return a.severity === "high" ? -1 : 1;
   });
 
-  return alerts.slice(0, 10);
+  return alerts.slice(0, 12);
 }
 
 async function buildTodayOperations(today: Date): Promise<TodayOperationRow[]> {
-  const hallLoad = await calcHallLoadPercent(today);
+  const hallLoads = await buildHallLoads(today);
+  const totalRow = hallLoads.find((r) => r.isTotal);
+  const hallLoad = totalRow?.percent ?? 0;
 
   const activeBookings = await prisma.booking.count({
     where: {
@@ -310,7 +488,7 @@ async function buildTodayOperations(today: Date): Promise<TodayOperationRow[]> {
     {
       id: "yield",
       label: "Yield по залам",
-      value: `${Math.round(hallLoad)}%`,
+      value: `${hallLoad}%`,
       note: hallLoad >= 90 ? "Цель 90% — в норме" : "Ниже целевого yield 90%",
     },
     {
@@ -340,78 +518,6 @@ async function buildTodayOperations(today: Date): Promise<TodayOperationRow[]> {
   ];
 }
 
-async function buildKpiMetrics(
-  today: Date,
-  yesterday: Date
-): Promise<DashboardKpiMetric[]> {
-  const [hallLoadToday, hallLoadYesterday] = await Promise.all([
-    calcHallLoadPercent(today),
-    calcHallLoadPercent(yesterday),
-  ]);
-
-  const [revToday, revYesterday, costToday, costYesterday, invAlerts] =
-    await Promise.all([
-      sumRevenue(today),
-      sumRevenue(yesterday),
-      sumCosts(today),
-      sumCosts(yesterday),
-      countInventoryAlerts(),
-    ]);
-
-  const marginToday = marginPercent(revToday, costToday);
-  const marginYesterday = marginPercent(revYesterday, costYesterday);
-
-  const hallTrend = computeTrend(hallLoadToday, hallLoadYesterday);
-  const revFormatted = formatRevenue(revToday);
-  const revTrend = computeTrend(revToday, revYesterday);
-  const marginTrend = computeMarginTrend(marginToday, marginYesterday);
-
-  const lots = await prisma.inventoryLot.findMany({ include: { item: true } });
-  const criticalInv = lots.filter((lot) => {
-    const reorder = lot.item.reorderLevel
-      ? Number(lot.item.reorderLevel)
-      : null;
-    return reorder !== null && Number(lot.quantityLeft) < reorder * 0.5;
-  }).length;
-
-  return [
-    {
-      id: "hall_load",
-      label: "Загрузка залов",
-      value: Math.round(hallLoadToday).toString(),
-      suffix: "%",
-      delta: hallTrend,
-      hint: "Средняя по 4 залам за смену",
-    },
-    {
-      id: "daily_revenue",
-      label: "Выручка за день",
-      value: revFormatted.value,
-      suffix: revFormatted.suffix,
-      delta: revTrend,
-      hint: "Касса + предоплаты программ",
-    },
-    {
-      id: "margin",
-      label: "Маржа",
-      value: marginToday.toFixed(0),
-      suffix: "%",
-      delta: marginTrend,
-      hint: "Валовая по услугам и бару",
-    },
-    {
-      id: "inventory_alerts",
-      label: "Алерты склада",
-      value: invAlerts.toString(),
-      delta: {
-        label: criticalInv > 0 ? `${criticalInv} критичных` : "в норме",
-        trend: criticalInv > 0 ? "neutral" : "up",
-      },
-      hint: "Пороги FIFO и срок годности",
-    },
-  ];
-}
-
 const EMPTY_DB_MESSAGE =
   "База пуста — выполните: npm run db:push && npm run db:seed";
 
@@ -432,15 +538,26 @@ export async function getDashboardData(): Promise<DashboardResult> {
     }
 
     const today = startOfDay();
-    const yesterday = addDays(today, -1);
 
-    const [metrics, alerts, operations] = await Promise.all([
-      buildKpiMetrics(today, yesterday),
-      buildCriticalAlerts(today),
-      buildTodayOperations(today),
-    ]);
+    const margin = await buildMarginSummary(today);
 
-    return { metrics, alerts, operations };
+    const [hallLoads, revenuePeriods, inventoryAlerts, alerts, operations] =
+      await Promise.all([
+        buildHallLoads(today),
+        buildRevenuePeriods(today),
+        countInventoryAlerts(),
+        buildCriticalAlerts(today, margin.byService),
+        buildTodayOperations(today),
+      ]);
+
+    return {
+      hallLoads,
+      revenuePeriods,
+      margin,
+      inventoryAlerts,
+      alerts,
+      operations,
+    };
   } catch (error) {
     console.error("[dashboard] DB query failed:", error);
     return {
