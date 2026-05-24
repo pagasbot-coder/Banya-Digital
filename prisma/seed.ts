@@ -127,7 +127,7 @@ async function main() {
     }),
   ]);
 
-  await prisma.service.create({
+  const barHerb = await prisma.service.create({
     data: {
       code: "BAR-HERB",
       name: "Травяной чай премиум",
@@ -644,7 +644,101 @@ async function main() {
         description: "Вчера: COGS сеновал",
       },
     }),
+    // COGS по услугам за сегодня (для маржи по услугам)
+    prisma.costLine.create({
+      data: {
+        hallId: parHall.id,
+        serviceId: parSession.id,
+        amount: 14200,
+        costType: CostType.COGS,
+        businessDate: today,
+        description: "COGS — классический пар",
+      },
+    }),
+    prisma.costLine.create({
+      data: {
+        hallId: vipHall.id,
+        serviceId: vipRitual.id,
+        amount: 11200,
+        costType: CostType.LABOR,
+        businessDate: today,
+        description: "Мастера VIP-ритуала",
+      },
+    }),
+    prisma.costLine.create({
+      data: {
+        hallId: senHall.id,
+        serviceId: senHay.id,
+        amount: 9800,
+        costType: CostType.COGS,
+        businessDate: today,
+        description: "COGS — сеновал",
+      },
+    }),
+    prisma.costLine.create({
+      data: {
+        hallId: hamHall.id,
+        serviceId: hamSteam.id,
+        amount: 15200,
+        costType: CostType.COGS,
+        businessDate: today,
+        description: "COGS — хамам (низкая маржа)",
+      },
+    }),
+    prisma.costLine.create({
+      data: {
+        serviceId: barHerb.id,
+        amount: 4200,
+        costType: CostType.COGS,
+        businessDate: today,
+        description: "Закупка трав и расходники бара",
+      },
+    }),
   ]);
+
+  // Выручка бара (низкая маржа < 40%) + неделя/месяц
+  const monthStart = startOfDay(new Date(today.getFullYear(), today.getMonth(), 1));
+  const extraRevenue = [
+    prisma.revenueLine.create({
+      data: {
+        serviceId: barHerb.id,
+        amount: 5200,
+        businessDate: today,
+        description: "Бар — травяные чаи",
+      },
+    }),
+    ...Array.from({ length: 6 }, (_, i) => {
+      const d = addDays(today, -(i + 1));
+      return prisma.revenueLine.create({
+        data: {
+          hallId: i % 2 === 0 ? parHall.id : senHall.id,
+          serviceId: i % 2 === 0 ? parSession.id : senHay.id,
+          amount: 22000 + i * 1500,
+          businessDate: d,
+          description: `Выручка за ${d.toLocaleDateString("ru-RU")}`,
+        },
+      });
+    }),
+  ];
+
+  for (let i = 0; i < 3; i++) {
+    const d = addDays(monthStart, i * 5);
+    if (d < today) {
+      extraRevenue.push(
+        prisma.revenueLine.create({
+          data: {
+            hallId: vipHall.id,
+            serviceId: vipRitual.id,
+            amount: 48000,
+            businessDate: d,
+            description: "VIP — ранний месяц",
+          },
+        })
+      );
+    }
+  }
+
+  await Promise.all(extraRevenue);
 
   // ─── Shift checklists ─────────────────────────────────────────────────────
   const [parChecklist, vipChecklist, senChecklist] = await Promise.all([

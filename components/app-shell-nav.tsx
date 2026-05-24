@@ -23,7 +23,7 @@ export function AppShellNav() {
             className={cn(
               "rounded-lg px-3 py-2.5 text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-sidebar",
               isActive
-                ? "bg-sidebar-accent font-medium text-sidebar-accent-foreground shadow-sm"
+                ? "border border-sidebar-border/80 bg-sidebar-accent font-medium text-sidebar-accent-foreground shadow-sm ring-1 ring-accent/25"
                 : "text-sidebar-foreground/80 hover:bg-sidebar-accent/60 hover:text-sidebar-accent-foreground"
             )}
           >

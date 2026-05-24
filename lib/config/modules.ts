@@ -12,13 +12,13 @@ export const APP_MODULES: AppModule[] = [
   {
     id: "dashboard",
     path: "/dashboard",
-    label: "Dashboard",
+    label: "Сводка",
     description: "KPI: загрузка залов, маржа, алерты",
   },
   {
     id: "finance",
     path: "/finance",
-    label: "Finance",
+    label: "Финансы",
     description: "Unit economics, выручка, COGS, маржа",
   },
   {
@@ -30,7 +30,7 @@ export const APP_MODULES: AppModule[] = [
   {
     id: "operations",
     path: "/operations",
-    label: "Operations",
+    label: "Операции",
     description: "Yield, чеклисты, тайминги, FIFO-склад",
   },
 ];

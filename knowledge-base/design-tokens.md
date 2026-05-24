@@ -1,82 +1,42 @@
-# Design Tokens — Banya-Digital ERP
+# Design Tokens — Дегтярные Бани / d1a.ru
 
-_Premium bath/spa ERP — спокойный, тёплый, не «кричащий» UI. Обновлено в T-003._
+_Референс: [d1a.ru](https://d1a.ru/) — премиум банный комплекс, тёплая классика._
 
-## Направление
+## Бренд
 
-- **Тёплые нейтрали** (hue ~50–85 в OKLCH) — фон, карточки, sidebar
-- **Акцент spa gold** — `accent` / `ring` / активная навигация (`sidebar-primary`)
-- **Много воздуха** — KPI `text-3xl`, секции с `gap-6`–`gap-8`
-- **Тёмная тема** — класс `.dark` на `<html>`; палитра согласована, контраст WCAG для текста
+- **Название в UI:** Дегтярные Бани · ERP
+- **Тон:** тёплые нейтрали, золотой акцент, без холодного «tech SaaS»
 
-## Цвета (CSS variables → Tailwind)
+## Цвета (Tailwind / CSS variables)
 
-| Token | Light (назначение) | Dark |
-|-------|-------------------|------|
-| `--background` | Тёплый off-white зала | Глубокий warm charcoal |
-| `--foreground` | Основной текст | Светлый warm white |
-| `--card` | Карточки KPI / секций | Приподнятый слой |
-| `--muted-foreground` | Подписи KPI, hints | Приглушённый текст |
-| `--accent` | Gold/amber CTA, бейджи роста | Тот же hue, чуть ярче |
-| `--primary` | Кнопки, emphasis | Инверсия для кнопок |
-| `--sidebar-*` | Боковая панель ERP | Тёмный sidebar |
-| `--destructive` | Высокий приоритет алертов | Смягчённый red |
+| Роль | Значение | Примечание |
+|------|----------|------------|
+| `--background` | `oklch(0.985 0.008 85)` | кремовый фон |
+| `--foreground` | `oklch(0.28 0.02 55)` | тёмно-коричневый текст |
+| `--accent` | `oklch(0.72 0.11 75)` | золото / латунь (кнопки, метки) |
+| `--primary` | `oklch(0.32 0.03 55)` | глубокий коричневый |
+| `--sidebar` | `oklch(0.97 0.01 82)` | светлая панель навигации |
+| `--destructive` | `oklch(0.55 0.2 25)` | алерты, низкая маржа |
 
-Реализация: `app/globals.css` (`:root` + `.dark`).
+Порог маржи в dashboard: **40%** — ниже → алерт «Высокий».
 
 ## Типографика
 
-| Роль | Стек | Классы |
-|------|------|--------|
-| UI / body | Geist Sans (`--font-geist-sans`) | `font-sans`, `text-sm` |
-| KPI / заголовки | Geist Sans | `font-heading`, `text-2xl`–`text-3xl`, `font-semibold`, `tracking-tight` |
-| Mono (будущее) | Geist Mono | `font-mono` — коды заказов, SKU |
+| Роль | Шрифт | Источник |
+|------|-------|----------|
+| Заголовки (`font-heading`) | **Cardo** | Google Fonts — на d1a.ru в WP preset `--font-family--cardo` |
+| UI / body (`font-sans`) | **Inter** | Google Fonts — основной текст на d1a.ru |
+| Fallback serif | Cormorant Garamond | если Cardo недоступен |
 
-`lang="ru"` на `<html>` для скринридеров.
+MuseoSans на сайте d1a — проприетарный; в ERP не подключаем, используем Inter.
 
 ## Spacing / радиусы
 
-- `--radius`: `0.625rem` (shadcn)
-- KPI cards: `rounded-xl`, padding через `Card` (`py-4`, content `pb-5`)
-- Dashboard page: `p-6 md:p-8`, grid `gap-4` / `gap-6`
-
-## Dashboard typography
-
-| Элемент | Классы |
-|---------|--------|
-| Заголовок секции | `font-heading text-xl font-semibold tracking-tight md:text-2xl` |
-| Подпись KPI-карточки | `text-base font-semibold uppercase tracking-wide text-muted-foreground` |
-| Значение KPI | `font-heading text-3xl font-semibold tabular-nums` |
-
-Подписи выручки: «Выручка за день», «Выручка за неделю», «Выручка за месяц».
+- `--radius`: `0.625rem` (10px) — мягкие карточки KPI
+- Сетка dashboard: `gap-4` / `gap-6`, контейнер `p-6 md:p-8`
 
 ## Компоненты (shadcn)
 
-| Компонент | Путь | Использование |
-|-----------|------|----------------|
-| Button | `components/ui/button.tsx` | Действия в header / алертах |
-| Card | `components/ui/card.tsx` | KPI, алерты, операции |
-| Badge | `components/ui/badge.tsx` | Severity, delta KPI |
-| AppShellNav | `components/app-shell-nav.tsx` | Sidebar + `aria-current` |
-
-## Dashboard layout (`/dashboard`)
-
-1. **Header** — заголовок, подзаголовок, CTA «Экспорт»
-2. **KPI row** — 4 метрики: загрузка залов, выручка, маржа, алерты склада
-3. **2-col (xl)** — критические алерты (3/5) + операции сегодня (2/5)
-
-Mock data: `modules/dashboard/mock-kpis.ts` (не в UI-компонентах).
-
-## Доступность
-
-- Семантика: `h1` на странице, `section` + `aria-labelledby`, `sr-only` для KPI grid title
-- Focus: `focus-visible:ring` на nav links и кнопках
-- Контраст: foreground/muted-foreground на warm background проверять при смене accent
-
-## Переключение темы
-
-```html
-<html class="dark"> … </html>
-```
-
-По умолчанию светлая тёплая тема; для ночной смены — `dark` на root.
+- Card: `border-border/80 bg-card/95 shadow-sm`
+- Sidebar link active: `bg-sidebar-accent` + золотой `text-accent` в шапке
+- Badge trend up: `bg-accent/10`; down: `destructive`
