@@ -23,6 +23,10 @@ function addDays(date: Date, days: number): Date {
   return d;
 }
 
+function startOfMonth(date: Date): Date {
+  return startOfDay(new Date(date.getFullYear(), date.getMonth(), 1));
+}
+
 function atTime(base: Date, hours: number, minutes = 0): Date {
   const d = new Date(base);
   d.setHours(hours, minutes, 0, 0);
@@ -278,7 +282,7 @@ async function main() {
     }),
   ]);
 
-  // Вчера — меньше загрузка для delta hall_load
+  // Вчера — меньше загрузка для delta hall_load (все залы)
   await Promise.all([
     prisma.booking.create({
       data: {
@@ -293,6 +297,17 @@ async function main() {
     }),
     prisma.booking.create({
       data: {
+        guestId: guests[1].id,
+        hallId: vipHall.id,
+        serviceId: vipRitual.id,
+        status: BookingStatus.COMPLETED,
+        startsAt: atTime(yesterday, 14, 0),
+        endsAt: atTime(yesterday, 17, 0),
+        partySize: 2,
+      },
+    }),
+    prisma.booking.create({
+      data: {
         guestId: guests[2].id,
         hallId: senHall.id,
         serviceId: senHay.id,
@@ -300,6 +315,17 @@ async function main() {
         startsAt: atTime(yesterday, 16, 0),
         endsAt: atTime(yesterday, 18, 0),
         partySize: 2,
+      },
+    }),
+    prisma.booking.create({
+      data: {
+        guestId: guests[3].id,
+        hallId: hamHall.id,
+        serviceId: hamSteam.id,
+        status: BookingStatus.COMPLETED,
+        startsAt: atTime(yesterday, 10, 0),
+        endsAt: atTime(yesterday, 12, 0),
+        partySize: 3,
       },
     }),
   ]);
@@ -586,6 +612,32 @@ async function main() {
         description: "Вчера: сеновал",
       },
     }),
+    prisma.revenueLine.create({
+      data: {
+        hallId: vipHall.id,
+        serviceId: vipRitual.id,
+        amount: 42000,
+        businessDate: yesterday,
+        description: "Вчера: VIP-ритуал",
+      },
+    }),
+    prisma.revenueLine.create({
+      data: {
+        hallId: hamHall.id,
+        serviceId: hamSteam.id,
+        amount: 16500,
+        businessDate: yesterday,
+        description: "Вчера: хамам",
+      },
+    }),
+    prisma.revenueLine.create({
+      data: {
+        serviceId: barHerb.id,
+        amount: 3800,
+        businessDate: yesterday,
+        description: "Вчера: бар",
+      },
+    }),
   ]);
 
   await Promise.all([
@@ -644,6 +696,64 @@ async function main() {
         description: "Вчера: COGS сеновал",
       },
     }),
+    // COGS по услугам за вчера (для delta маржи)
+    prisma.costLine.create({
+      data: {
+        hallId: parHall.id,
+        serviceId: parSession.id,
+        amount: 9800,
+        costType: CostType.COGS,
+        businessDate: yesterday,
+        description: "Вчера: COGS — классический пар",
+      },
+    }),
+    prisma.costLine.create({
+      data: {
+        hallId: vipHall.id,
+        serviceId: vipRitual.id,
+        amount: 10200,
+        costType: CostType.LABOR,
+        businessDate: yesterday,
+        description: "Вчера: мастера VIP-ритуала",
+      },
+    }),
+    prisma.costLine.create({
+      data: {
+        hallId: senHall.id,
+        serviceId: senHay.id,
+        amount: 7200,
+        costType: CostType.COGS,
+        businessDate: yesterday,
+        description: "Вчера: COGS — сеновал",
+      },
+    }),
+    prisma.costLine.create({
+      data: {
+        hallId: hamHall.id,
+        serviceId: hamSteam.id,
+        amount: 11800,
+        costType: CostType.COGS,
+        businessDate: yesterday,
+        description: "Вчера: COGS — хамам",
+      },
+    }),
+    prisma.costLine.create({
+      data: {
+        serviceId: barHerb.id,
+        amount: 3100,
+        costType: CostType.COGS,
+        businessDate: yesterday,
+        description: "Вчера: закупка бара",
+      },
+    }),
+    prisma.costLine.create({
+      data: {
+        amount: 4800,
+        costType: CostType.OVERHEAD,
+        businessDate: yesterday,
+        description: "Вчера: коммунальные",
+      },
+    }),
     // COGS по услугам за сегодня (для маржи по услугам)
     prisma.costLine.create({
       data: {
@@ -696,9 +806,15 @@ async function main() {
     }),
   ]);
 
-  // Выручка бара (низкая маржа < 40%) + неделя/месяц
-  const monthStart = startOfDay(new Date(today.getFullYear(), today.getMonth(), 1));
-  const extraRevenue = [
+  // ─── Историческая выручка: текущая неделя, прошлая неделя, прошлый месяц ─
+  const halls = [parHall, vipHall, senHall, hamHall] as const;
+  const hallServices = [parSession, vipRitual, senHay, hamSteam] as const;
+  const monthStart = startOfMonth(today);
+  const prevMonthStart = startOfMonth(addDays(monthStart, -1));
+  const prevMonthEnd = monthStart;
+
+  const historicalRevenue: ReturnType<typeof prisma.revenueLine.create>[] = [
+  // Бар сегодня (низкая маржа < 40%)
     prisma.revenueLine.create({
       data: {
         serviceId: barHerb.id,
@@ -707,38 +823,132 @@ async function main() {
         description: "Бар — травяные чаи",
       },
     }),
-    ...Array.from({ length: 6 }, (_, i) => {
-      const d = addDays(today, -(i + 1));
-      return prisma.revenueLine.create({
-        data: {
-          hallId: i % 2 === 0 ? parHall.id : senHall.id,
-          serviceId: i % 2 === 0 ? parSession.id : senHay.id,
-          amount: 22000 + i * 1500,
-          businessDate: d,
-          description: `Выручка за ${d.toLocaleDateString("ru-RU")}`,
-        },
-      });
-    }),
   ];
 
-  for (let i = 0; i < 3; i++) {
-    const d = addDays(monthStart, i * 5);
-    if (d < today) {
-      extraRevenue.push(
+  // Дни 2–6 назад — хвост текущей 7-дневной недели (выше прошлой недели)
+  for (let dayOffset = 2; dayOffset <= 6; dayOffset++) {
+    const d = addDays(today, -dayOffset);
+    for (let h = 0; h < halls.length; h++) {
+      historicalRevenue.push(
         prisma.revenueLine.create({
           data: {
-            hallId: vipHall.id,
-            serviceId: vipRitual.id,
-            amount: 48000,
+            hallId: halls[h].id,
+            serviceId: hallServices[h].id,
+            amount: 24000 + dayOffset * 1200 + h * 2500,
             businessDate: d,
-            description: "VIP — ранний месяц",
+            description: `Текущая неделя: ${halls[h].name}`,
+          },
+        })
+      );
+    }
+    if (dayOffset % 2 === 0) {
+      historicalRevenue.push(
+        prisma.revenueLine.create({
+          data: {
+            serviceId: barHerb.id,
+            amount: 4500 + dayOffset * 200,
+            businessDate: d,
+            description: "Бар — чаи и напитки",
           },
         })
       );
     }
   }
 
-  await Promise.all(extraRevenue);
+  // Дни 7–13 назад — прошлая 7-дневная неделя (ниже для положительного delta)
+  for (let dayOffset = 7; dayOffset <= 13; dayOffset++) {
+    const d = addDays(today, -dayOffset);
+    for (let h = 0; h < halls.length; h++) {
+      historicalRevenue.push(
+        prisma.revenueLine.create({
+          data: {
+            hallId: halls[h].id,
+            serviceId: hallServices[h].id,
+            amount: 16000 + (14 - dayOffset) * 600 + h * 1500,
+            businessDate: d,
+            description: `Прошлая неделя: ${halls[h].name}`,
+          },
+        })
+      );
+    }
+    // Брони прошлой недели — загрузка залов ниже, чем сегодня
+    if (dayOffset <= 10) {
+      historicalRevenue.push(
+        prisma.revenueLine.create({
+          data: {
+            serviceId: barHerb.id,
+            amount: 3200,
+            businessDate: d,
+            description: "Бар — прошлая неделя",
+          },
+        })
+      );
+    }
+  }
+
+  // Текущий месяц — доп. VIP до сегодня (если месяц уже идёт)
+  for (let i = 1; i <= 4; i++) {
+    const d = addDays(monthStart, i * 4);
+    if (d < today && d >= addDays(today, -6)) continue; // не дублируем текущую неделю
+    if (d < today) {
+      historicalRevenue.push(
+        prisma.revenueLine.create({
+          data: {
+            hallId: vipHall.id,
+            serviceId: vipRitual.id,
+            amount: 52000 + i * 3000,
+            businessDate: d,
+            description: "VIP — текущий месяц",
+          },
+        })
+      );
+    }
+  }
+
+  // Прошлый календарный месяц — равномерная выручка по залам
+  for (let d = prevMonthStart; d < prevMonthEnd; d = addDays(d, 3)) {
+    for (let h = 0; h < halls.length; h++) {
+      historicalRevenue.push(
+        prisma.revenueLine.create({
+          data: {
+            hallId: halls[h].id,
+            serviceId: hallServices[h].id,
+            amount: 38000 + h * 4000 + d.getDate() * 120,
+            businessDate: d,
+            description: `Прошлый месяц: ${halls[h].name}`,
+          },
+        })
+      );
+    }
+    historicalRevenue.push(
+      prisma.revenueLine.create({
+        data: {
+          serviceId: barHerb.id,
+          amount: 4100,
+          businessDate: d,
+          description: "Бар — прошлый месяц",
+        },
+      })
+    );
+  }
+
+  await Promise.all(historicalRevenue);
+
+  // COGS прошлого месяца (не влияет на delta выручки, но для полноты демо)
+  const historicalCosts: ReturnType<typeof prisma.costLine.create>[] = [];
+  for (let d = prevMonthStart; d < prevMonthEnd; d = addDays(d, 5)) {
+    historicalCosts.push(
+      prisma.costLine.create({
+        data: {
+          amount: 8500,
+          costType: CostType.OVERHEAD,
+          businessDate: d,
+          description: "Прошлый месяц: накладные",
+        },
+      })
+    );
+  }
+  await Promise.all(historicalCosts);
 
   // ─── Shift checklists ─────────────────────────────────────────────────────
   const [parChecklist, vipChecklist, senChecklist] = await Promise.all([
@@ -793,7 +1003,7 @@ async function main() {
   ]);
 
     console.info(
-      "Seed OK: 4 зала, 6 гостей, 8 броней, spa/kitchen, FIFO inventory, finance, checklists."
+      "Seed OK: 4 зала, 6 гостей, брони (сегодня/вчера), spa/kitchen, FIFO, finance (день/неделя/месяц + прошлые периоды), checklists."
     );
   } finally {
     await prisma.$disconnect();

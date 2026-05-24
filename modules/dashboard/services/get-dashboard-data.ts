@@ -261,11 +261,17 @@ async function buildMarginSummary(today: Date): Promise<MarginSummary> {
   for (const service of services) {
     const [revAgg, costAgg] = await Promise.all([
       prisma.revenueLine.aggregate({
-        where: { serviceId: service.id, businessDate: today },
+        where: {
+          serviceId: service.id,
+          businessDate: { gte: today, lt: tomorrow },
+        },
         _sum: { amount: true },
       }),
       prisma.costLine.aggregate({
-        where: { serviceId: service.id, businessDate: today },
+        where: {
+          serviceId: service.id,
+          businessDate: { gte: today, lt: tomorrow },
+        },
         _sum: { amount: true },
       }),
     ]);
