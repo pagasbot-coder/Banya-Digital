@@ -4,8 +4,8 @@
 |-------|--------|
 | Frontend | Next.js 16 (App Router), TypeScript, Tailwind CSS v4, shadcn/ui |
 | Backend | Next.js API routes / Server Actions (Node.js TypeScript) |
-| Database | PostgreSQL (Supabase or Neon) — T-002 |
-| ORM | TBD (Prisma / Drizzle) — T-002 |
+| Database | PostgreSQL (Supabase or Neon) |
+| ORM | Prisma 7 (`prisma/schema.prisma`, `lib/db/`) |
 | Deploy | Vercel |
 | DevOps | Docker (later), Git |
 

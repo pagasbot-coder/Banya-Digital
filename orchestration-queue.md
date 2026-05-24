@@ -5,7 +5,7 @@
 
 **Проект:** Banya-Digital ERP  
 **Архитектор (Human):** _ваше имя_  
-**Последнее обновление:** 2026-05-23 (T-001 DONE)
+**Последнее обновление:** 2026-05-24 (T-002 DONE)
 
 ---
 
@@ -40,7 +40,7 @@
 | ID | Задача | Роль | Статус | Приоритет | Зависимости | Контекст (@files) | Итог / PR |
 |----|--------|------|--------|-----------|-------------|-------------------|-----------|
 | T-001 | Bootstrap Next.js + Muster + модульная структура | Developer | DONE | P0 | — | `@docs/tech-stack.md` | Next.js 16 + Tailwind v4 + shadcn; модули finance/crm/operations/dashboard; build/lint OK |
-| T-002 | Проектирование схемы PostgreSQL (ядро ERP) | Developer | READY | P0 | T-001 | `@knowledge-base/architecture.md` | |
+| T-002 | Проектирование схемы PostgreSQL (ядро ERP) | Developer | DONE | P0 | T-001 | `@knowledge-base/architecture.md` | Prisma 7 (14 models), `lib/db/` + adapter-pg, `prisma.config.ts`, db:* scripts |
 | T-003 | Дизайн dashboard shell (premium spa UI) | UI/UX | READY | P1 | T-001 | `@knowledge-base/design-tokens.md` | |
 | T-004 | Расширить product-brief (метрики, MVP v1) | PM | BACKLOG | P1 | — | `@knowledge-base/product-brief.md` | |
 | T-005 | Чеклист QA для foundation | QA | READY | P2 | T-001 | `@knowledge-base/qa-checklist.md` | |
@@ -64,9 +64,9 @@
 ### T-002 — PostgreSQL schema (ядро)
 
 **Acceptance criteria:**
-- [ ] ER-диаграмма или описание сущностей в `knowledge-base/`
-- [ ] Миграции / Drizzle или Prisma scaffold (решение архитектора)
-- [ ] `.env.example` согласован с выбранным ORM
+- [x] ER-диаграмма или описание сущностей в `knowledge-base/`
+- [x] Миграции / Drizzle или Prisma scaffold (Prisma 7)
+- [x] `.env.example` согласован с выбранным ORM
 
 **Out of scope:** Полная реализация FIFO склада и unit economics — отдельные задачи после ядра.
 
@@ -87,6 +87,7 @@
 |------|-----|---------|
 | 2026-05-23 | Developer | Создан Banya-Digital ERP foundation (Muster + Next.js 16) |
 | 2026-05-23 | Developer | T-001 DONE: модульная структура, placeholder pages |
+| 2026-05-24 | Developer | T-002 DONE: Prisma schema, lib/db, architecture data model |
 
 ---
 
