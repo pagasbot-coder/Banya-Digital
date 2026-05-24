@@ -35,4 +35,9 @@
 
 - Guests, bookings, programs
 
+## Документация
+
+- [x] `docs/technical-overview.md` — стек, модули, БД, команды (RU)
+- [x] `docs/management-overview.md` — обзор для руководства без жаргона (RU)
+
 _See live status in `orchestration-queue.md`._

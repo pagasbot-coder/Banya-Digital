@@ -5,7 +5,7 @@
 
 **Проект:** Banya-Digital ERP  
 **Архитектор (Human):** _ваше имя_  
-**Последнее обновление:** 2026-05-24 (T-004 DONE, T-006 READY)
+**Последнее обновление:** 2026-05-25 (docs: technical + management overview)
 
 ---
 
@@ -45,6 +45,7 @@
 | T-004 | Расширить product-brief (метрики, MVP v1) | PM | DONE | P1 | — | `@knowledge-base/product-brief.md` | MVP P0/P1 по модулям, user stories, метрики, AC для Dashboard live data (T-006) |
 | T-005 | Чеклист QA для foundation | QA | DONE | P2 | T-001 | `@knowledge-base/qa-checklist.md` | PASS: build/lint/db:generate OK; routes 200; dashboard KPI+alerts+ops; hydration note (Cursor refs) non-blocking |
 | T-006 | Wire dashboard KPIs to PostgreSQL + seed data | Developer | DONE | P0 | T-004, T-002, T-003 | `@knowledge-base/product-brief.md` (AC T-006), `@prisma/schema.prisma` | docker-compose, rich seed, dashboard live KPIs/alerts/ops, `db:seed`, build OK |
+| T-008 | Обзоры docs: technical + management (RU) | PM | DONE | P2 | T-006 | `@docs/technical-overview.md`, `@docs/management-overview.md` | Черновики для dev и руководства; roadmap обновлён |
 
 ---
 
