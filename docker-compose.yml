@@ -1,0 +1,22 @@
+# Local PostgreSQL 16 for Banya-Digital ERP development.
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: banya-digital-db
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: banya
+      POSTGRES_PASSWORD: banya
+      POSTGRES_DB: banya_digital
+    volumes:
+      - banya_pg_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U banya -d banya_digital"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  banya_pg_data:

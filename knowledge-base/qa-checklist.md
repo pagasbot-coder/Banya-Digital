@@ -13,15 +13,15 @@ _Ведёт QA (@role-qa). Обновлено: T-005 foundation pass (2026-05-24
 
 - [x] `npm run db:generate` — Prisma Client генерируется без ошибок
 - [x] Маршруты отвечают: `/` → redirect `/dashboard`; `/dashboard`, `/finance`, `/crm`, `/operations` → HTTP 200
-- [x] Dashboard: KPI grid (mock «Загрузка залов», «Выручка за день» и др.)
-- [x] Dashboard: блок «Критические алерты»
-- [x] Dashboard: блок «Операции сегодня»
+- [x] Dashboard: KPI grid (live PostgreSQL при seed; empty state без БД)
+- [x] Dashboard: блок «Критические алерты» (из БД: timing conflict, inventory, kitchen)
+- [x] Dashboard: блок «Операции сегодня» (yield, kitchen-sync, checklists из БД)
 - [x] App shell: sidebar + навигация по модулям
 
 ## Регрессия (MVP) — pending
 
 - [ ] Auth / защищённые маршруты
-- [ ] KPI из БД (не mock)
+- [x] KPI из БД (не mock) — T-006: `db:seed` + `DATABASE_URL`, см. README
 - [ ] Нет `console.error` на happy path в production build _(dev: hydration warning от Cursor browser refs — не блокер приложения)_
 
 ## Команды проверки
@@ -30,6 +30,9 @@ _Ведёт QA (@role-qa). Обновлено: T-005 foundation pass (2026-05-24
 npm run build
 npm run lint
 npm run db:generate
+# локальная БД:
+docker compose up -d
+npm run db:push && npm run db:seed
 # smoke (dev или start на :3000):
 # /, /dashboard, /finance, /crm, /operations
 ```

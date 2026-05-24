@@ -5,7 +5,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import type { TodayOperationRow } from "@/modules/dashboard/mock-kpis";
+import type { TodayOperationRow } from "@/modules/dashboard/types";
 
 type TodayOperationsSectionProps = {
   rows: TodayOperationRow[];
@@ -21,7 +21,7 @@ export function TodayOperationsSection({ rows }: TodayOperationsSectionProps) {
             Операции сегодня
           </CardTitle>
           <CardDescription>
-            Yield, тайминги и чеклисты — сводка смены (mock)
+            Yield, тайминги и чеклисты — сводка смены
           </CardDescription>
         </CardHeader>
         <CardContent>

@@ -15,10 +15,10 @@
 - [x] PostgreSQL + ORM scaffold (T-002)
 - [x] Dashboard KPI layout — mock (T-003)
 - [x] Product brief: MVP P0/P1, metrics, T-006 acceptance criteria (T-004)
-- [ ] **T-006** — Wire dashboard KPIs to PostgreSQL + seed (**READY**, Developer; needs `DATABASE_URL`)
+- [x] **T-006** — Wire dashboard KPIs to PostgreSQL + seed (Developer)
 - [ ] Auth (decision deferred)
 
-**Следующий шаг для архитектора:** задать `DATABASE_URL` в `.env` или сказать «шаг A» — Developer берёт T-006.
+**Локальная БД:** `docker compose up -d` → `npm run db:push` → `npm run db:seed` (см. README).
 
 ## Phase 2 — Operations core
 

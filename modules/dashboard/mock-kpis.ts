@@ -1,32 +1,17 @@
-/** Mock KPI и операционные данные для dashboard shell (T-003). */
+/** Mock KPI и операционные данные для Storybook/tests (T-003). */
 
-export type KpiTrend = "up" | "down" | "neutral";
+export type {
+  CriticalAlert,
+  DashboardData,
+  DashboardEmptyState,
+  DashboardKpiMetric,
+  DashboardResult,
+  KpiTrend,
+  TodayOperationRow,
+} from "./types";
+export { isDashboardEmpty } from "./types";
 
-export type DashboardKpiMetric = {
-  id: "hall_load" | "daily_revenue" | "margin" | "inventory_alerts";
-  label: string;
-  value: string;
-  suffix?: string;
-  delta?: { label: string; trend: KpiTrend };
-  hint: string;
-};
-
-export type CriticalAlert = {
-  id: string;
-  severity: "high" | "medium";
-  title: string;
-  description: string;
-  timeLabel: string;
-};
-
-export type TodayOperationRow = {
-  id: string;
-  label: string;
-  value: string;
-  note?: string;
-};
-
-export const mockDashboardKpis: DashboardKpiMetric[] = [
+export const mockDashboardKpis: import("./types").DashboardKpiMetric[] = [
   {
     id: "hall_load",
     label: "Загрузка залов",
@@ -60,12 +45,13 @@ export const mockDashboardKpis: DashboardKpiMetric[] = [
   },
 ];
 
-export const mockCriticalAlerts: CriticalAlert[] = [
+export const mockCriticalAlerts: import("./types").CriticalAlert[] = [
   {
     id: "alert-1",
     severity: "high",
     title: "Простой зала «Парная»",
-    description: "Конфликт тайминга: пересечение программы 14:00–16:00 с техобслуживанием.",
+    description:
+      "Конфликт тайминга: пересечение программы 14:00–16:00 с техобслуживанием.",
     timeLabel: "12 мин назад",
   },
   {
@@ -84,7 +70,7 @@ export const mockCriticalAlerts: CriticalAlert[] = [
   },
 ];
 
-export const mockTodayOperations: TodayOperationRow[] = [
+export const mockTodayOperations: import("./types").TodayOperationRow[] = [
   {
     id: "yield",
     label: "Yield по залам",

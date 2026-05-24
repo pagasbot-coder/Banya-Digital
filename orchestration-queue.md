@@ -44,7 +44,7 @@
 | T-003 | Дизайн dashboard shell (premium spa UI) | UI/UX | DONE | P1 | T-001 | `@knowledge-base/design-tokens.md` | Premium shell: KPI grid, alerts, ops stub; mock-kpis; tokens + sidebar |
 | T-004 | Расширить product-brief (метрики, MVP v1) | PM | DONE | P1 | — | `@knowledge-base/product-brief.md` | MVP P0/P1 по модулям, user stories, метрики, AC для Dashboard live data (T-006) |
 | T-005 | Чеклист QA для foundation | QA | DONE | P2 | T-001 | `@knowledge-base/qa-checklist.md` | PASS: build/lint/db:generate OK; routes 200; dashboard KPI+alerts+ops; hydration note (Cursor refs) non-blocking |
-| T-006 | Wire dashboard KPIs to PostgreSQL + seed data | Developer | READY | P0 | T-004, T-002, T-003 | `@knowledge-base/product-brief.md` (AC T-006), `@prisma/schema.prisma` | |
+| T-006 | Wire dashboard KPIs to PostgreSQL + seed data | Developer | DONE | P0 | T-004, T-002, T-003 | `@knowledge-base/product-brief.md` (AC T-006), `@prisma/schema.prisma` | docker-compose, rich seed, dashboard live KPIs/alerts/ops, `db:seed`, build OK |
 
 ---
 
@@ -115,13 +115,13 @@
 **Acceptance criteria:** см. `@knowledge-base/product-brief.md` → «Acceptance criteria — Dashboard live data».
 
 **Краткий чеклист:**
-- [ ] `db:seed` + `DATABASE_URL` → KPI grid из `RevenueLine`/`CostLine`/inventory/yield
-- [ ] Critical alerts из операций/склада (не mock)
-- [ ] Убрать prod-import `mock-kpis` с dashboard page
-- [ ] Graceful empty state без БД
-- [ ] QA checklist: KPI из БД
+- [x] `db:seed` + `DATABASE_URL` → KPI grid из `RevenueLine`/`CostLine`/inventory/yield
+- [x] Critical alerts из операций/склада (не mock)
+- [x] Убрать prod-import `mock-kpis` с dashboard page
+- [x] Graceful empty state без БД
+- [x] QA checklist: KPI из БД
 
-**Blocker:** нужен `DATABASE_URL` от архитектора (Neon/Supabase/local Docker).
+**Blocker:** снят — local Docker в `docker-compose.yml` + `.env.example`.
 
 ---
 
@@ -134,7 +134,7 @@
 | 2026-05-24 | Developer | T-002 DONE: Prisma schema, lib/db, architecture data model |
 | 2026-05-24 | UI/UX | T-003 DONE: dashboard shell, design tokens, mock KPIs, AppShellNav |
 | 2026-05-24 | QA | T-005 DONE: foundation checklist pass; build/lint/routes/dashboard verified |
-| 2026-05-24 | PM | T-004 DONE: product-brief MVP P0/P1, metrics, stories, T-006 AC; T-006 READY for Developer |
+| 2026-05-24 | Developer | T-006 DONE: PostgreSQL seed, dashboard live KPIs/alerts/ops, docker-compose |
 
 ---
 

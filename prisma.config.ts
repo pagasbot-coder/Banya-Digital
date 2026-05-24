@@ -12,6 +12,6 @@ export default defineConfig({
     // Fallback lets `prisma generate` run before .env exists; set real URL for db push/migrate.
     url:
       process.env.DATABASE_URL ??
-      "postgresql://postgres:postgres@localhost:5432/banya_digital?schema=public",
+      "postgresql://banya:banya@localhost:5432/banya_digital?schema=public",
   },
 });

@@ -7,7 +7,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import type { CriticalAlert } from "@/modules/dashboard/mock-kpis";
+import type { CriticalAlert } from "@/modules/dashboard/types";
 
 type CriticalAlertsSectionProps = {
   alerts: CriticalAlert[];

@@ -6,7 +6,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import type { DashboardKpiMetric, KpiTrend } from "@/modules/dashboard/mock-kpis";
+import type { DashboardKpiMetric, KpiTrend } from "@/modules/dashboard/types";
 import { cn } from "@/lib/utils";
 import {
   AlertTriangle,
