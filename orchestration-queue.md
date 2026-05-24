@@ -5,7 +5,7 @@
 
 **Проект:** Banya-Digital ERP  
 **Архитектор (Human):** _ваше имя_  
-**Последнее обновление:** 2026-05-24 (T-003 DONE)
+**Последнее обновление:** 2026-05-24 (T-005 DONE)
 
 ---
 
@@ -43,7 +43,7 @@
 | T-002 | Проектирование схемы PostgreSQL (ядро ERP) | Developer | DONE | P0 | T-001 | `@knowledge-base/architecture.md` | Prisma 7 (14 models), `lib/db/` + adapter-pg, `prisma.config.ts`, db:* scripts |
 | T-003 | Дизайн dashboard shell (premium spa UI) | UI/UX | DONE | P1 | T-001 | `@knowledge-base/design-tokens.md` | Premium shell: KPI grid, alerts, ops stub; mock-kpis; tokens + sidebar |
 | T-004 | Расширить product-brief (метрики, MVP v1) | PM | BACKLOG | P1 | — | `@knowledge-base/product-brief.md` | |
-| T-005 | Чеклист QA для foundation | QA | READY | P2 | T-001 | `@knowledge-base/qa-checklist.md` | |
+| T-005 | Чеклист QA для foundation | QA | DONE | P2 | T-001 | `@knowledge-base/qa-checklist.md` | PASS: build/lint/db:generate OK; routes 200; dashboard KPI+alerts+ops; hydration note (Cursor refs) non-blocking |
 
 ---
 
@@ -81,6 +81,20 @@
 
 ---
 
+### T-005 — QA foundation pass
+
+**Acceptance criteria:**
+- [x] `npm run build` exit 0
+- [x] `npm run lint` exit 0
+- [x] `npm run db:generate` exit 0
+- [x] Routes `/`, `/dashboard`, `/finance`, `/crm`, `/operations` load
+- [x] Dashboard: KPI cards, critical alerts, today operations sections
+- [x] `knowledge-base/qa-checklist.md` updated
+
+**Notes:** Dev console hydration mismatch on `data-cursor-ref` (Cursor IDE browser) — not an app defect. DB wire (`db:push`, live KPI) out of scope for T-005.
+
+---
+
 ## Журнал (лог решений)
 
 | Дата | Кто | Событие |
@@ -89,6 +103,7 @@
 | 2026-05-23 | Developer | T-001 DONE: модульная структура, placeholder pages |
 | 2026-05-24 | Developer | T-002 DONE: Prisma schema, lib/db, architecture data model |
 | 2026-05-24 | UI/UX | T-003 DONE: dashboard shell, design tokens, mock KPIs, AppShellNav |
+| 2026-05-24 | QA | T-005 DONE: foundation checklist pass; build/lint/routes/dashboard verified |
 
 ---
 

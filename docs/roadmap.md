@@ -8,7 +8,7 @@
 - [x] **T-002** — PostgreSQL schema design (Developer)
 - [x] **T-003** — Dashboard shell design (UI/UX)
 - [ ] T-004 — Product brief refinement (PM)
-- [ ] T-005 — QA foundation pass (QA)
+- [x] T-005 — QA foundation pass (QA)
 
 ## Phase 1 — Data & dashboard shell
 

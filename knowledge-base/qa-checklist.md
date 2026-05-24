@@ -1,24 +1,35 @@
 # QA Checklist — Banya-Digital ERP
 
-_Ведёт QA (@role-qa). Задача T-005._
-
-## Foundation (T-001) — baseline
-
-- [x] `npm run build` без ошибок
-- [x] `npm run lint` без ошибок
-- [x] `.env` в `.gitignore`, есть `.env.example`
-- [ ] Все placeholder-страницы открываются: `/dashboard`, `/finance`, `/crm`, `/operations`
-- [ ] Навигация подсвечивает активный раздел
-- [ ] Нет секретов в репозитории
+_Ведёт QA (@role-qa). Обновлено: T-005 foundation pass (2026-05-24)._
 
 ## Перед каждым PR
 
-- [ ] `npm run build` / `npm run lint`
-- [ ] Критерии из `orchestration-queue.md` для задачи выполнены
-- [ ] Обновлён `qa-checklist` при новых рисках
+- [x] `npm run build` без ошибок (включает `prisma generate`)
+- [x] `npm run lint` без ошибок
+- [x] Нет секретов в коде (`.env*` в `.gitignore`, есть `.env.example`)
+- [ ] Критерии из `orchestration-queue.md` для задачи выполнены _(проверять per-task)_
 
-## Регрессия (после модулей)
+## Foundation (T-001 / T-002 / T-003) — T-005
 
-- [ ] Finance: формы не ломают layout
-- [ ] Operations: тайминги не пересекают kitchen sync (когда реализовано)
-- [ ] Inventory: FIFO списание в правильном порядке партий
+- [x] `npm run db:generate` — Prisma Client генерируется без ошибок
+- [x] Маршруты отвечают: `/` → redirect `/dashboard`; `/dashboard`, `/finance`, `/crm`, `/operations` → HTTP 200
+- [x] Dashboard: KPI grid (mock «Загрузка залов», «Выручка за день» и др.)
+- [x] Dashboard: блок «Критические алерты»
+- [x] Dashboard: блок «Операции сегодня»
+- [x] App shell: sidebar + навигация по модулям
+
+## Регрессия (MVP) — pending
+
+- [ ] Auth / защищённые маршруты
+- [ ] KPI из БД (не mock)
+- [ ] Нет `console.error` на happy path в production build _(dev: hydration warning от Cursor browser refs — не блокер приложения)_
+
+## Команды проверки
+
+```bash
+npm run build
+npm run lint
+npm run db:generate
+# smoke (dev или start на :3000):
+# /, /dashboard, /finance, /crm, /operations
+```
