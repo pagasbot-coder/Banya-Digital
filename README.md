@@ -72,6 +72,30 @@ npm run db:seed     # demo seed
 npm run db:studio   # Prisma Studio
 ```
 
+## Deploy to Vercel
+
+1. Репозиторий на GitHub (см. [`docs/GITHUB-DEPLOY.md`](docs/GITHUB-DEPLOY.md)).
+2. Импорт проекта в [Vercel](https://vercel.com/new) или `vercel --prod`.
+3. В **Environment Variables** задать:
+
+| Переменная | Описание |
+|------------|----------|
+| `DATABASE_URL` | PostgreSQL (Neon, Supabase, Vercel Postgres) — та же строка, что в `.env` локально |
+
+4. Build: `npm run build` (в `vercel.json` уже указано).
+5. После первого деплоя один раз: `npm run db:push` и `npm run db:seed` с prod `DATABASE_URL`.
+
+Подробные шаги GitHub + Vercel CLI: [`docs/GITHUB-DEPLOY.md`](docs/GITHUB-DEPLOY.md).
+
+## Маршруты (локально)
+
+| URL | Модуль |
+|-----|--------|
+| http://localhost:3000/dashboard | Сводка KPI |
+| http://localhost:3000/finance | Unit economics по залам |
+| http://localhost:3000/crm | Гости и брони |
+| http://localhost:3000/operations | Spa/кухня и чеклисты |
+
 ## Открыть в Cursor
 
 **File → Open Folder →** `d:\curorproject\banya-digital`

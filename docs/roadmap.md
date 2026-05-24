@@ -22,18 +22,19 @@
 
 ## Phase 2 — Operations core
 
-- Hall load / yield
-- Spa timings + kitchen sync
-- Checklists
+- [x] Spa timings + kitchen sync UI (`/operations`)
+- [x] Checklists link + dashboard shift checklists
+- [ ] Hall load dedicated screen (KPI on dashboard)
 
 ## Phase 3 — Finance & inventory
 
-- Unit economics views
-- FIFO organic warehouse (hay, fir)
+- [x] Unit economics by hall (`/finance`)
+- [ ] FIFO warehouse dedicated UI (alerts on dashboard)
 
 ## Phase 4 — CRM
 
-- Guests, bookings, programs
+- [x] Guests list + today's bookings (`/crm`)
+- [ ] Guest detail / edit flows
 
 ## Документация
 

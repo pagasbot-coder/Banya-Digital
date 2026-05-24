@@ -25,7 +25,7 @@
 ```
 app/(app)/          → маршруты: /dashboard, /finance, /crm, /operations
 components/         → UI (shell, dashboard-секции, shadcn/ui)
-modules/            → доменная логика (сейчас активен dashboard)
+modules/            → доменная логика: dashboard, finance, crm, operations
 lib/                → db-клиент, config/modules.ts, utils
 prisma/             → schema.prisma, seed.ts
 knowledge-base/     → спеки Muster (не в runtime)
@@ -34,9 +34,9 @@ knowledge-base/     → спеки Muster (не в runtime)
 | Модуль | URL | Папка | Назначение |
 |--------|-----|-------|------------|
 | **dashboard** | `/dashboard` | `modules/dashboard/` | KPI из БД: загрузка залов, выручка, маржа, алерты, чеклисты смены |
-| **finance** | `/finance` | `modules/finance/` (заглушка UI) | Unit economics: RevenueLine, CostLine, отчёты по залам |
-| **crm** | `/crm` | `modules/crm/` (заглушка UI) | Гости, брони, spa-программы |
-| **operations** | `/operations` | `modules/operations/` (заглушка UI) | Yield, тайминги spa↔кухня, чеклисты, FIFO-склад |
+| **finance** | `/finance` | `modules/finance/` | `getFinanceData()` — RevenueLine + CostLine (COGS) по залам за сегодня |
+| **crm** | `/crm` | `modules/crm/` | `getCrmData()` — Guest + Booking на сегодня |
+| **operations** | `/operations` | `modules/operations/` | `getOperationsData()` — ProgramTiming, KitchenSlot, сводка чеклистов |
 
 Реестр навигации: `lib/config/modules.ts` → `APP_MODULES`.
 
@@ -109,12 +109,23 @@ npm run db:seed               # демо-данные
 
 ---
 
-## Dashboard (текущая реализация)
+## Модули (реализация)
 
-- Данные: `modules/dashboard/services/get-dashboard-data.ts` — агрегаты из PostgreSQL
-- UI: `components/dashboard/*` + `app/(app)/dashboard/page.tsx`
-- Без `DATABASE_URL`: graceful empty state (подсказка по seed)
-- Mock KPI (`modules/dashboard/mock-kpis.ts`) — контракт UI; production path использует БД
+| Модуль | Сервис | UI |
+|--------|--------|-----|
+| dashboard | `get-dashboard-data.ts` | `components/dashboard/*` |
+| finance | `get-finance-data.ts` | `components/finance/hall-economics-section.tsx` |
+| crm | `get-crm-data.ts` | `components/crm/*` |
+| operations | `get-operations-data.ts` | `components/operations/*` |
+
+Общие утилиты: `lib/date-utils.ts`, `lib/format-money.ts`.  
+Без `DATABASE_URL`: graceful empty state на каждой странице.
+
+## Деплой
+
+- `vercel.json` — Next.js 16, `npm run build`
+- Переменная окружения: `DATABASE_URL` (Neon / Supabase / Vercel Postgres)
+- Ручные шаги GitHub + Vercel: [`docs/GITHUB-DEPLOY.md`](GITHUB-DEPLOY.md)
 
 ---
 
