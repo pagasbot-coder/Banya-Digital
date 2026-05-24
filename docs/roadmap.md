@@ -5,16 +5,17 @@
 - [x] Muster: `orchestration-queue.md`, `knowledge-base/`, `.cursor/agents/`
 - [x] T-001: Next.js 16 + Tailwind v4 + shadcn + module folders
 - [x] Placeholder pages: Dashboard, Finance, CRM, Operations
-- [ ] **T-002 READY** — PostgreSQL schema design (Developer)
-- [ ] **T-003 READY** — Dashboard shell design (UI/UX)
+- [x] **T-002** — PostgreSQL schema design (Developer)
+- [x] **T-003** — Dashboard shell design (UI/UX)
 - [ ] T-004 — Product brief refinement (PM)
 - [ ] T-005 — QA foundation pass (QA)
 
 ## Phase 1 — Data & dashboard shell
 
-- PostgreSQL + ORM scaffold
-- Dashboard KPI layout (mock data)
-- Auth (decision)
+- [x] PostgreSQL + ORM scaffold
+- [x] Dashboard KPI layout (mock data)
+- [ ] Auth (decision)
+- [ ] Подключение KPI к БД (после T-005 QA)
 
 ## Phase 2 — Operations core
 

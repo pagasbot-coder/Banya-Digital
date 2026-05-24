@@ -5,7 +5,7 @@
 
 **Проект:** Banya-Digital ERP  
 **Архитектор (Human):** _ваше имя_  
-**Последнее обновление:** 2026-05-24 (T-002 DONE)
+**Последнее обновление:** 2026-05-24 (T-003 DONE)
 
 ---
 
@@ -41,7 +41,7 @@
 |----|--------|------|--------|-----------|-------------|-------------------|-----------|
 | T-001 | Bootstrap Next.js + Muster + модульная структура | Developer | DONE | P0 | — | `@docs/tech-stack.md` | Next.js 16 + Tailwind v4 + shadcn; модули finance/crm/operations/dashboard; build/lint OK |
 | T-002 | Проектирование схемы PostgreSQL (ядро ERP) | Developer | DONE | P0 | T-001 | `@knowledge-base/architecture.md` | Prisma 7 (14 models), `lib/db/` + adapter-pg, `prisma.config.ts`, db:* scripts |
-| T-003 | Дизайн dashboard shell (premium spa UI) | UI/UX | READY | P1 | T-001 | `@knowledge-base/design-tokens.md` | |
+| T-003 | Дизайн dashboard shell (premium spa UI) | UI/UX | DONE | P1 | T-001 | `@knowledge-base/design-tokens.md` | Premium shell: KPI grid, alerts, ops stub; mock-kpis; tokens + sidebar |
 | T-004 | Расширить product-brief (метрики, MVP v1) | PM | BACKLOG | P1 | — | `@knowledge-base/product-brief.md` | |
 | T-005 | Чеклист QA для foundation | QA | READY | P2 | T-001 | `@knowledge-base/qa-checklist.md` | |
 
@@ -75,9 +75,9 @@
 ### T-003 — Dashboard design
 
 **Acceptance criteria:**
-- [ ] Заполнены design tokens (premium bath/spa)
-- [ ] Wireframe или layout spec для `app/(app)/dashboard`
-- [ ] Навигация и KPI-зоны согласованы с PM
+- [x] Заполнены design tokens (premium bath/spa)
+- [x] Wireframe или layout spec для `app/(app)/dashboard`
+- [x] Навигация и KPI-зоны согласованы с PM
 
 ---
 
@@ -88,6 +88,7 @@
 | 2026-05-23 | Developer | Создан Banya-Digital ERP foundation (Muster + Next.js 16) |
 | 2026-05-23 | Developer | T-001 DONE: модульная структура, placeholder pages |
 | 2026-05-24 | Developer | T-002 DONE: Prisma schema, lib/db, architecture data model |
+| 2026-05-24 | UI/UX | T-003 DONE: dashboard shell, design tokens, mock KPIs, AppShellNav |
 
 ---
 
