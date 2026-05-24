@@ -7,15 +7,18 @@
 - [x] Placeholder pages: Dashboard, Finance, CRM, Operations
 - [x] **T-002** — PostgreSQL schema design (Developer)
 - [x] **T-003** — Dashboard shell design (UI/UX)
-- [ ] T-004 — Product brief refinement (PM)
+- [x] T-004 — Product brief refinement (PM)
 - [x] T-005 — QA foundation pass (QA)
 
-## Phase 1 — Data & dashboard shell
+## Phase 1 — Data & live dashboard
 
-- [x] PostgreSQL + ORM scaffold
-- [x] Dashboard KPI layout (mock data)
-- [ ] Auth (decision)
-- [ ] Подключение KPI к БД (после T-005 QA)
+- [x] PostgreSQL + ORM scaffold (T-002)
+- [x] Dashboard KPI layout — mock (T-003)
+- [x] Product brief: MVP P0/P1, metrics, T-006 acceptance criteria (T-004)
+- [ ] **T-006** — Wire dashboard KPIs to PostgreSQL + seed (**READY**, Developer; needs `DATABASE_URL`)
+- [ ] Auth (decision deferred)
+
+**Следующий шаг для архитектора:** задать `DATABASE_URL` в `.env` или сказать «шаг A» — Developer берёт T-006.
 
 ## Phase 2 — Operations core
 
