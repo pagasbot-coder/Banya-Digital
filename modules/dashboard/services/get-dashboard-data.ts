@@ -14,12 +14,15 @@ import type {
   MarginSummary,
   RevenuePeriodMetric,
   ServiceMarginRow,
+  ShiftChecklistsSummary,
   TodayOperationRow,
 } from "@/modules/dashboard/types";
 
 const SHIFT_MINUTES = 480;
 const INVENTORY_EXPIRY_DAYS = 7;
 const MARGIN_ALERT_THRESHOLD = 40;
+/** Целевая загрузка залов (итого), % — для KPI «Операции сегодня». */
+const HALL_LOAD_TARGET_PERCENT = 60;
 
 function startOfDay(date = new Date()): Date {
   const d = new Date(date);
@@ -470,32 +473,15 @@ async function buildTodayOperations(today: Date): Promise<TodayOperationRow[]> {
   const delayed = kitchenSlots.filter((s) => s.syncStatus === "CONFLICT").length;
   const onTime = kitchenSlots.length - delayed;
 
-  const checklistItems = await prisma.checklistItem.findMany({
-    where: {
-      checklist: { shiftDate: today },
-    },
-  });
-  const completed = checklistItems.filter((i) => i.completedAt).length;
-  const total = checklistItems.length;
-
-  const openHalls = await prisma.shiftChecklist.findMany({
-    where: {
-      shiftDate: today,
-      items: { some: { completedAt: null } },
-    },
-    include: { hall: true },
-  });
-  const openLabels = openHalls
-    .map((c) => c.hall?.name ?? c.title ?? "смена")
-    .slice(0, 2)
-    .join(", ");
-
   return [
     {
       id: "yield",
-      label: "Yield по залам",
+      label: "Загрузка залов (итого)",
       value: `${hallLoad}%`,
-      note: hallLoad >= 90 ? "Цель 90% — в норме" : "Ниже целевого yield 90%",
+      note:
+        hallLoad >= HALL_LOAD_TARGET_PERCENT
+          ? `Цель ${HALL_LOAD_TARGET_PERCENT}% — в норме`
+          : `Ниже целевой загрузки ${HALL_LOAD_TARGET_PERCENT}%`,
     },
     {
       id: "avg-session",
@@ -512,16 +498,43 @@ async function buildTodayOperations(today: Date): Promise<TodayOperationRow[]> {
           ? `${onTime} в пределах SLA, ${delayed} с задержкой`
           : `${onTime} в пределах SLA`,
     },
-    {
-      id: "checklists",
-      label: "Чеклисты смены",
-      value: `${completed} / ${total}`,
-      note:
-        openLabels.length > 0
-          ? `Открытые: ${openLabels}`
-          : "Все пункты закрыты",
-    },
   ];
+}
+
+/** Чеклисты смены: группы по залам с пунктами и статусом выполнения. */
+async function buildShiftChecklists(today: Date): Promise<ShiftChecklistsSummary> {
+  const checklists = await prisma.shiftChecklist.findMany({
+    where: { shiftDate: today },
+    include: {
+      hall: true,
+      items: { orderBy: { sortOrder: "asc" } },
+    },
+  });
+
+  checklists.sort((a, b) => {
+    const nameA = a.hall?.name ?? a.title ?? "";
+    const nameB = b.hall?.name ?? b.title ?? "";
+    return nameA.localeCompare(nameB, "ru");
+  });
+
+  const groups = checklists.map((checklist) => ({
+    id: checklist.id,
+    hallName: checklist.hall?.name ?? checklist.title ?? "Смена",
+    title: checklist.title ?? undefined,
+    items: checklist.items.map((item) => ({
+      id: item.id,
+      label: item.label,
+      completed: item.completedAt !== null,
+    })),
+  }));
+
+  const allItems = groups.flatMap((g) => g.items);
+
+  return {
+    completed: allItems.filter((i) => i.completed).length,
+    total: allItems.length,
+    groups,
+  };
 }
 
 const EMPTY_DB_MESSAGE =
@@ -547,13 +560,14 @@ export async function getDashboardData(): Promise<DashboardResult> {
 
     const margin = await buildMarginSummary(today);
 
-    const [hallLoads, revenuePeriods, inventoryAlerts, alerts, operations] =
+    const [hallLoads, revenuePeriods, inventoryAlerts, alerts, operations, shiftChecklists] =
       await Promise.all([
         buildHallLoads(today),
         buildRevenuePeriods(today),
         countInventoryAlerts(),
         buildCriticalAlerts(today, margin.byService),
         buildTodayOperations(today),
+        buildShiftChecklists(today),
       ]);
 
     return {
@@ -563,6 +577,7 @@ export async function getDashboardData(): Promise<DashboardResult> {
       inventoryAlerts,
       alerts,
       operations,
+      shiftChecklists,
     };
   } catch (error) {
     console.error("[dashboard] DB query failed:", error);

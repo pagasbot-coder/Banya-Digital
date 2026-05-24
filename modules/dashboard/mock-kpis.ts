@@ -102,18 +102,61 @@ export const mockCriticalAlerts: import("./types").CriticalAlert[] = [
   },
 ];
 
+export const mockShiftChecklists: import("./types").ShiftChecklistsSummary = {
+  completed: 5,
+  total: 9,
+  groups: [
+    {
+      id: "par",
+      hallName: "Парная",
+      title: "Открытие смены — Парная",
+      items: [
+        { id: "p1", label: "Проверка температуры печи", completed: true },
+        { id: "p2", label: "Запас пихты в зале", completed: true },
+        { id: "p3", label: "Вентиляция и гидромет", completed: true },
+      ],
+    },
+    {
+      id: "vip",
+      hallName: "VIP",
+      title: "Открытие смены — VIP",
+      items: [
+        { id: "v1", label: "Подготовка VIP-ложа", completed: true },
+        { id: "v2", label: "Проверка массажного кабинета", completed: false },
+        { id: "v3", label: "Мини-бар и расходники", completed: false },
+      ],
+    },
+    {
+      id: "sen",
+      hallName: "Сеновал",
+      title: "Склад и сеновал",
+      items: [
+        { id: "s1", label: "Остаток сена на полу", completed: true },
+        { id: "s2", label: "Влажность сеновала", completed: false },
+        { id: "s3", label: "Инвентаризация веток", completed: false },
+      ],
+    },
+  ],
+};
+
 export const mockTodayOperations: import("./types").TodayOperationRow[] = [
   {
     id: "yield",
-    label: "Yield по залам",
+    label: "Загрузка залов (итого)",
     value: "77%",
-    note: "Ниже целевого yield 90%",
+    note: "Цель 60% — в норме",
   },
   {
-    id: "checklists",
-    label: "Чеклисты смены",
-    value: "8 / 10",
-    note: "Открытые: VIP, Сеновал",
+    id: "avg-session",
+    label: "Средняя длительность сеанса",
+    value: "2 ч 15 мин",
+    note: "По 12 активным броням",
+  },
+  {
+    id: "kitchen-sync",
+    label: "Синхронизация кухня / SPA",
+    value: "8 слотов",
+    note: "7 в пределах SLA",
   },
 ];
 
@@ -124,4 +167,5 @@ export const mockDashboardData: import("./types").DashboardData = {
   inventoryAlerts: mockInventoryAlerts,
   alerts: mockCriticalAlerts,
   operations: mockTodayOperations,
+  shiftChecklists: mockShiftChecklists,
 };

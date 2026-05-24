@@ -9,6 +9,7 @@ export {
   mockMargin,
   mockRevenuePeriods,
   mockTodayOperations,
+  mockShiftChecklists,
 } from "./mock-kpis";
 export type {
   CriticalAlert,
@@ -21,6 +22,9 @@ export type {
   MarginSummary,
   RevenuePeriodMetric,
   KpiTrend,
+  ShiftChecklistGroup,
+  ShiftChecklistItemRow,
+  ShiftChecklistsSummary,
   TodayOperationRow,
 } from "./types";
 export { isDashboardEmpty } from "./types";

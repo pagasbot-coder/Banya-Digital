@@ -68,6 +68,27 @@ export type TodayOperationRow = {
   note?: string;
 };
 
+/** Пункт чеклиста смены для dashboard. */
+export type ShiftChecklistItemRow = {
+  id: string;
+  label: string;
+  completed: boolean;
+};
+
+/** Группа пунктов по залу или чеклисту смены. */
+export type ShiftChecklistGroup = {
+  id: string;
+  hallName: string;
+  title?: string;
+  items: ShiftChecklistItemRow[];
+};
+
+export type ShiftChecklistsSummary = {
+  completed: number;
+  total: number;
+  groups: ShiftChecklistGroup[];
+};
+
 export type DashboardData = {
   hallLoads: HallLoadRow[];
   revenuePeriods: RevenuePeriodMetric[];
@@ -75,6 +96,7 @@ export type DashboardData = {
   inventoryAlerts: InventoryAlertsSummary;
   alerts: CriticalAlert[];
   operations: TodayOperationRow[];
+  shiftChecklists: ShiftChecklistsSummary;
 };
 
 export type DashboardEmptyState = {

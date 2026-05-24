@@ -11,7 +11,7 @@ type TodayOperationsSectionProps = {
   rows: TodayOperationRow[];
 };
 
-/** Заглушка сводки операций за день (yield, тайминги). */
+/** Сводка операций за день: загрузка залов, тайминги, чеклисты. */
 export function TodayOperationsSection({ rows }: TodayOperationsSectionProps) {
   return (
     <section aria-labelledby="today-ops-heading">
@@ -24,7 +24,7 @@ export function TodayOperationsSection({ rows }: TodayOperationsSectionProps) {
             Операции сегодня
           </CardTitle>
           <CardDescription>
-            Yield, тайминги и чеклисты — сводка смены
+            Загрузка залов, тайминги и чеклисты — сводка смены
           </CardDescription>
         </CardHeader>
         <CardContent>
