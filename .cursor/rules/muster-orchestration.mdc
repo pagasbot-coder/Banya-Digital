@@ -1,0 +1,37 @@
+---
+description: Muster framework — orchestration queue is source of truth
+alwaysApply: true
+---
+
+# Muster Orchestration (Cursor 3)
+
+This project uses the **Muster** multi-agent pattern. **Markdown is the source of truth.**
+
+## Mandatory workflow
+
+1. **Before any task:** read `orchestration-queue.md` at the project root.
+2. **Pick work:** take one task with status `READY` that matches your role (or that the Human Architect assigned).
+3. **Claim:** set status to `IN_PROGRESS` and note role/agent in the queue table.
+4. **Context:** use `@knowledge-base/...` and `@docs/...` instead of duplicating specs in chat.
+5. **After completion:** set status to `DONE`, fill the result column, update relevant `knowledge-base/` files and `docs/roadmap.md` if scope changed.
+6. **Blockers:** set `BLOCKED` and document what the Human Architect must decide.
+
+## Role activation
+
+When the Human says **Role: PM | Developer | UI/UX | QA** (or opens a dedicated Agents Window chat):
+
+- Follow the matching rule: `@role-pm`, `@role-developer`, `@role-ui-ux`, or `@role-qa`.
+- Do **not** perform another role's duties unless explicitly asked.
+
+## Parallel agents (Work 3)
+
+- Multiple roles may work in parallel on **different tasks** or **isolated git branches**.
+- Before merge: reconcile `orchestration-queue.md` and avoid duplicate `IN_PROGRESS` on the same task ID.
+
+## Cloud Agent
+
+For long planning or queue grooming, suggest **Cloud Agent** so work can continue autonomously; output should still update `orchestration-queue.md` and `knowledge-base/`.
+
+## Legacy note
+
+Do not rely on root `.cursorrules` for Muster — use this file and `.cursor/rules/role-*.mdc`.

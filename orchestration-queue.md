@@ -1,0 +1,97 @@
+# Orchestration Queue (Muster)
+
+> **Источник истины для задач.** PM добавляет задачи; роли берут `READY` → `IN_PROGRESS` → `DONE`.  
+> Перед любой работой агент **читает этот файл**; после завершения — **обновляет статус и краткий итог**.
+
+**Проект:** Banya-Digital ERP  
+**Архитектор (Human):** _ваше имя_  
+**Последнее обновление:** 2026-05-23 (T-001 DONE)
+
+---
+
+## Как пользоваться (Cursor 3)
+
+| Роль | Subagent | Чат в Agents Window | Правило |
+|------|----------|---------------------|---------|
+| PM | `muster-pm` | «Role: PM» | `@role-pm` |
+| Developer | `muster-developer` | «Role: Developer» | `@role-developer` |
+| UI/UX | `muster-ui-ux` | «Role: UI/UX» | `@role-ui-ux` |
+| QA | `muster-qa` | «Role: QA» | `@role-qa` |
+
+Контекст из `knowledge-base/` подключайте через **@** (например `@knowledge-base/product-brief.md`).
+
+---
+
+## Статусы
+
+| Статус | Значение |
+|--------|----------|
+| `BACKLOG` | Идея, ещё не готова к работе |
+| `READY` | Можно взять в работу |
+| `IN_PROGRESS` | В работе (указать роль и агента) |
+| `BLOCKED` | Ждёт решения архитектора |
+| `DONE` | Выполнено |
+| `CANCELLED` | Отменено |
+
+---
+
+## Активная очередь
+
+| ID | Задача | Роль | Статус | Приоритет | Зависимости | Контекст (@files) | Итог / PR |
+|----|--------|------|--------|-----------|-------------|-------------------|-----------|
+| T-001 | Bootstrap Next.js + Muster + модульная структура | Developer | DONE | P0 | — | `@docs/tech-stack.md` | Next.js 16 + Tailwind v4 + shadcn; модули finance/crm/operations/dashboard; build/lint OK |
+| T-002 | Проектирование схемы PostgreSQL (ядро ERP) | Developer | READY | P0 | T-001 | `@knowledge-base/architecture.md` | |
+| T-003 | Дизайн dashboard shell (premium spa UI) | UI/UX | READY | P1 | T-001 | `@knowledge-base/design-tokens.md` | |
+| T-004 | Расширить product-brief (метрики, MVP v1) | PM | BACKLOG | P1 | — | `@knowledge-base/product-brief.md` | |
+| T-005 | Чеклист QA для foundation | QA | READY | P2 | T-001 | `@knowledge-base/qa-checklist.md` | |
+
+---
+
+## Детали задач
+
+### T-001 — Foundation scaffold
+
+**Acceptance criteria:**
+- [x] `npm run dev` поднимает приложение
+- [x] Tailwind + shadcn/ui подключены
+- [x] Структура `app/(app)/`, `modules/`, `components/`, `lib/`
+- [x] Placeholder-страницы: Dashboard, Finance, CRM, Operations
+
+**Notes:** Не включать полную схему БД и реализацию dashboard — только foundation.
+
+---
+
+### T-002 — PostgreSQL schema (ядро)
+
+**Acceptance criteria:**
+- [ ] ER-диаграмма или описание сущностей в `knowledge-base/`
+- [ ] Миграции / Drizzle или Prisma scaffold (решение архитектора)
+- [ ] `.env.example` согласован с выбранным ORM
+
+**Out of scope:** Полная реализация FIFO склада и unit economics — отдельные задачи после ядра.
+
+---
+
+### T-003 — Dashboard design
+
+**Acceptance criteria:**
+- [ ] Заполнены design tokens (premium bath/spa)
+- [ ] Wireframe или layout spec для `app/(app)/dashboard`
+- [ ] Навигация и KPI-зоны согласованы с PM
+
+---
+
+## Журнал (лог решений)
+
+| Дата | Кто | Событие |
+|------|-----|---------|
+| 2026-05-23 | Developer | Создан Banya-Digital ERP foundation (Muster + Next.js 16) |
+| 2026-05-23 | Developer | T-001 DONE: модульная структура, placeholder pages |
+
+---
+
+## Правила для всех агентов
+
+1. **Старт:** прочитать `orchestration-queue.md` → взять одну задачу `READY` своей роли → поставить `IN_PROGRESS`.
+2. **Работа:** использовать `@knowledge-base/*` и правила роли.
+3. **Финиш:** статус → `DONE`, заполнить «Итог / PR», при необходимости обновить `knowledge-base/` и `docs/roadmap.md`.
