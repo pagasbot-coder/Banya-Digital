@@ -81,9 +81,11 @@ npm run db:studio   # Prisma Studio
 | Переменная | Описание |
 |------------|----------|
 | `DATABASE_URL` | PostgreSQL (Neon, Supabase, Vercel Postgres) — та же строка, что в `.env` локально |
+| `NEXT_PUBLIC_APP_URL` | Production URL Vercel (после первого деплоя) |
 
 4. Build: `npm run build` (в `vercel.json` уже указано).
 5. После первого деплоя один раз: `npm run db:push` и `npm run db:seed` с prod `DATABASE_URL`.
+6. Добавить `NEXT_PUBLIC_APP_URL` в Vercel и сделать redeploy.
 
 Подробные шаги GitHub + Vercel CLI: [`docs/GITHUB-DEPLOY.md`](docs/GITHUB-DEPLOY.md).
 
