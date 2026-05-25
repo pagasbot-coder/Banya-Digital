@@ -9,29 +9,15 @@ import {
   StockMovementType,
 } from "@prisma/client";
 import { Pool } from "pg";
+import {
+  addDays,
+  atBusinessTime,
+  startOfDay,
+  startOfMonth,
+} from "../lib/date-utils";
 
-/** Начало календарного дня (локальное время сервера seed). */
-function startOfDay(date = new Date()): Date {
-  const d = new Date(date);
-  d.setHours(0, 0, 0, 0);
-  return d;
-}
-
-function addDays(date: Date, days: number): Date {
-  const d = new Date(date);
-  d.setDate(d.getDate() + days);
-  return d;
-}
-
-function startOfMonth(date: Date): Date {
-  return startOfDay(new Date(date.getFullYear(), date.getMonth(), 1));
-}
-
-function atTime(base: Date, hours: number, minutes = 0): Date {
-  const d = new Date(base);
-  d.setHours(hours, minutes, 0, 0);
-  return d;
-}
+/** Время внутри бизнес-дня (Москва) — alias для читаемости seed. */
+const atTime = atBusinessTime;
 
 function minutesAgo(minutes: number): Date {
   return new Date(Date.now() - minutes * 60_000);
@@ -773,6 +759,16 @@ async function main() {
         costType: CostType.LABOR,
         businessDate: today,
         description: "Мастера VIP-ритуала",
+      },
+    }),
+    prisma.costLine.create({
+      data: {
+        hallId: vipHall.id,
+        serviceId: vipRitual.id,
+        amount: 9800,
+        costType: CostType.COGS,
+        businessDate: today,
+        description: "COGS — VIP-ритуал (расходники)",
       },
     }),
     prisma.costLine.create({

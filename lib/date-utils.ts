@@ -1,19 +1,52 @@
-/** Утилиты календарных границ для серверных модулей (смена = локальный день). */
+/**
+ * Календарные границы ERP: бизнес-день = Europe/Moscow.
+ * Vercel и Neon работают в UTC; без явной TZ «сегодня» на проде расходится с seed.
+ */
+export const BUSINESS_TIMEZONE = "Europe/Moscow";
 
+/** Москва UTC+3 (DST отменён с 2014). */
+const MOSCOW_OFFSET_MS = 3 * 60 * 60 * 1000;
+
+function businessYmd(date: Date): { y: number; m: number; d: number } {
+  const parts = new Intl.DateTimeFormat("en-CA", {
+    timeZone: BUSINESS_TIMEZONE,
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).formatToParts(date);
+  const y = Number(parts.find((p) => p.type === "year")!.value);
+  const m = Number(parts.find((p) => p.type === "month")!.value);
+  const d = Number(parts.find((p) => p.type === "day")!.value);
+  return { y, m, d };
+}
+
+/** Полночь начала бизнес-дня (instant для Prisma timestamptz). */
 export function startOfDay(date = new Date()): Date {
-  const d = new Date(date);
-  d.setHours(0, 0, 0, 0);
-  return d;
+  const { y, m, d } = businessYmd(date);
+  return new Date(Date.UTC(y, m - 1, d) - MOSCOW_OFFSET_MS);
 }
 
 export function addDays(date: Date, days: number): Date {
-  const d = new Date(date);
-  d.setDate(d.getDate() + days);
-  return d;
+  return startOfDay(new Date(date.getTime() + days * 86_400_000));
+}
+
+export function startOfMonth(date: Date): Date {
+  const { y, m } = businessYmd(date);
+  return new Date(Date.UTC(y, m - 1, 1) - MOSCOW_OFFSET_MS);
+}
+
+/** Локальное время внутри бизнес-дня (часы/минуты по Москве). */
+export function atBusinessTime(base: Date, hours: number, minutes = 0): Date {
+  return new Date(base.getTime() + (hours * 60 + minutes) * 60_000);
 }
 
 export function formatTimeRange(startsAt: Date, endsAt: Date): string {
   const fmt = (d: Date) =>
-    `${d.getHours().toString().padStart(2, "0")}:${d.getMinutes().toString().padStart(2, "0")}`;
+    d.toLocaleTimeString("ru-RU", {
+      timeZone: BUSINESS_TIMEZONE,
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false,
+    });
   return `${fmt(startsAt)}–${fmt(endsAt)}`;
 }

@@ -5,6 +5,7 @@
  * revenue: день / неделя (7 дн.) / месяц (календарный).
  * margin: общая + разбивка по услугам; алерт при марже услуги < 40%.
  */
+import { addDays, startOfDay, startOfMonth } from "@/lib/date-utils";
 import { prisma } from "@/lib/db";
 import type {
   CriticalAlert,
@@ -23,24 +24,6 @@ const INVENTORY_EXPIRY_DAYS = 7;
 const MARGIN_ALERT_THRESHOLD = 40;
 /** Целевая загрузка залов (итого), % — для KPI «Операции сегодня». */
 const HALL_LOAD_TARGET_PERCENT = 60;
-
-function startOfDay(date = new Date()): Date {
-  const d = new Date(date);
-  d.setHours(0, 0, 0, 0);
-  return d;
-}
-
-function addDays(date: Date, days: number): Date {
-  const d = new Date(date);
-  d.setDate(d.getDate() + days);
-  return d;
-}
-
-function startOfMonth(date: Date): Date {
-  const d = startOfDay(date);
-  d.setDate(1);
-  return d;
-}
 
 function formatRelativeTime(from: Date): string {
   const diffMs = Date.now() - from.getTime();

@@ -1,7 +1,7 @@
 /**
  * Unit economics за сегодня: выручка, COGS и маржа по залам.
  */
-import { addDays, startOfDay } from "@/lib/date-utils";
+import { addDays, BUSINESS_TIMEZONE, startOfDay } from "@/lib/date-utils";
 import { marginPercent } from "@/lib/format-money";
 import { prisma } from "@/lib/db";
 import type { FinanceResult, HallEconomicsRow } from "@/modules/finance/types";
@@ -77,6 +77,7 @@ export async function getFinanceData(): Promise<FinanceResult> {
     const totalCogs = rows.reduce((s, r) => s + r.cogs, 0);
 
     const dateLabel = today.toLocaleDateString("ru-RU", {
+      timeZone: BUSINESS_TIMEZONE,
       weekday: "long",
       day: "numeric",
       month: "long",
