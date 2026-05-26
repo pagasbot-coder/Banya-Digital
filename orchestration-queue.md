@@ -5,7 +5,7 @@
 
 **Проект:** Banya-Digital ERP  
 **Архитектор (Human):** _ваше имя_  
-**Последнее обновление:** 2026-05-26 (пилот P0 D.1: T-011…014, T-017 DONE; T-018+ READY wave 2)
+**Последнее обновление:** 2026-05-27 (T-018 DONE; T-025 marketing-brief; pilot-start checklist)
 
 ---
 
@@ -57,14 +57,14 @@
 | T-015 | Product Map: Phase 2 discovery → brief + roadmap | PM | BACKLOG | P2 | T-014 | `@knowledge-base/product-map-workflow.md`, `@knowledge-base/product-map-3.10-cheatsheet.md`, `@knowledge-base/product-map-notes-from-pdf.md` | KB 2026-05-26: cheatsheet+role-pm mandatory; PDF visual (notes+web) |
 | T-016 | iGaming BiJi: Product Map onboarding (новый продукт) | PM | BACKLOG | P2 | — | `@knowledge-base/product-map-workflow.md` (шаблон), `@role-pm` | |
 | T-017 | SME: операционный brief бани (day-in-life, KPI, anti-features) | SME | DONE | P1 | — | `@knowledge-base/industry-brief.md`, `@knowledge-base/operational-processes.md` | Brief + processes из SPA team review § SME |
-| T-018 | Resolve kitchen↔SPA conflict + audit log | Developer | READY | P1 | T-006, T-011…013 | `@knowledge-base/SPA-SEGMENT-TEAM-REVIEW.md` D.2 | Wave 2 — после Human sign-off ч. C |
+| T-018 | Resolve kitchen↔SPA conflict + audit log | Developer | DONE | P1 | T-006, T-011…013 | `@knowledge-base/SPA-SEGMENT-TEAM-REVIEW.md` D.2 | `/operations`: конфликты + «Разобрано», audit log; `resolvedAt`/`resolvedBy`; dashboard revalidate |
 | T-019 | Plan/fact неделя на dashboard | Developer | READY | P1 | T-011 | `@knowledge-base/product-brief.md` | |
 | T-020 | Hall zone types + seed urban SPA | Developer | READY | P2 | T-006 | `@knowledge-base/segment-spa-banya-analysis.md` | |
 | T-021 | Retail COGS PRODUCT line | Developer | BACKLOG | P2 | T-012 | `@knowledge-base/product-brief.md` | |
 | T-022 | Seasonality calendar | PM | BACKLOG | P2 | T-019 | — | |
 | T-023 | Export CSV / 1С | Developer | BLOCKED | P2 | Architect ADR | — | |
 | T-024 | YCLIENTS import | Developer | BLOCKED | P2 | T-010, T-009 | — | |
-| T-025 | Обновить ICP в brief post-SME | PM | READY | P1 | T-017 | `@knowledge-base/industry-brief.md`, `product-brief.md` | **PARTIAL:** ICP premium-banya + WAMZ NSM (Human 2026-05-25); сверка industry-brief |
+| T-025 | Обновить ICP в brief post-SME | PM / CMO | DONE | P1 | T-017 | `@knowledge-base/marketing-brief.md` | ICP премиум-баня, 3 B2B канала 90д, AARRR, LTV:CAC, PostHog events; product-brief WAMZ сверен |
 
 ---
 
@@ -297,6 +297,9 @@
 | 2026-05-25 | Human Architect | T-009 Auth.js APPROVED; T-018+ wave 2; T-017 ACCEPTED → T-025 |
 | 2026-05-25 | Human Architect | Часть C: ICP **A** премиум-баня; North Star **WAMZ** (Weekly Active Managed Zones) |
 | 2026-05-26 | PM | T-025 PARTIAL: `product-brief` ICP+WAMZ; `SPA-SEGMENT-TEAM-REVIEW` ч.C; `pilot-reglement`; workflow ICP/NSM closed |
+| 2026-05-27 | Developer | T-018 DONE: kitchen conflict resolve + audit на `/operations`; schema `resolvedAt`/`resolvedBy`; QA smoke § T-018 |
+| 2026-05-27 | CMO | T-025 DONE: `knowledge-base/marketing-brief.md` (ICP, каналы, AARRR, LTV:CAC, PostHog) |
+| 2026-05-27 | PM | Pilot prep: `pilot-reglement` §5 WAMZ + TBD object/date; `docs/pilot-start.md` |
 
 ### D.3 — владение задачами (после SPA team review)
 

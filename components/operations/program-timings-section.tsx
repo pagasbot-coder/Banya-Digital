@@ -75,7 +75,11 @@ export function ProgramTimingsSection({ rows }: ProgramTimingsSectionProps) {
                           ) : null}
                           <Badge
                             variant={
-                              slot.isConflict ? "destructive" : "outline"
+                              slot.isConflict
+                                ? "destructive"
+                                : slot.isResolved
+                                  ? "secondary"
+                                  : "outline"
                             }
                           >
                             {slot.syncStatus}

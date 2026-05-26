@@ -225,11 +225,15 @@ model KitchenSlot {
   station         String?
   syncStatus      KitchenSyncStatus @default(PLANNED)
   notes           String?
+  /// T-018: кто и когда закрыл конфликт (demo: demo-user).
+  resolvedAt      DateTime?
+  resolvedBy      String?
   createdAt       DateTime          @default(now())
   updatedAt       DateTime          @updatedAt
 
   @@index([programTimingId])
   @@index([startsAt])
+  @@index([syncStatus, resolvedAt])
   @@map("kitchen_slots")
 }
 

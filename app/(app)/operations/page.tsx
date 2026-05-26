@@ -1,4 +1,6 @@
 import { ChecklistsLinkCard } from "@/components/operations/checklists-link-card";
+import { KitchenConflictAuditSection } from "@/components/operations/kitchen-conflict-audit-section";
+import { KitchenConflictsSection } from "@/components/operations/kitchen-conflicts-section";
 import { ProgramTimingsSection } from "@/components/operations/program-timings-section";
 import { getOperationsData, isOperationsEmpty } from "@/modules/operations";
 
@@ -45,9 +47,12 @@ export default async function OperationsPage() {
         </p>
       </header>
 
+      <KitchenConflictsSection conflicts={data.openConflicts} />
+
       <div className="grid gap-6 xl:grid-cols-3">
-        <div className="xl:col-span-2">
+        <div className="xl:col-span-2 space-y-6">
           <ProgramTimingsSection rows={data.programTimings} />
+          <KitchenConflictAuditSection rows={data.conflictAudit} />
         </div>
         <div>
           <ChecklistsLinkCard summary={data.checklists} />

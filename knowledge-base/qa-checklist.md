@@ -18,6 +18,14 @@ _Ведёт QA (@role-qa). Обновлено: T-005 foundation pass (2026-05-24
 - [x] Dashboard: блок «Операции сегодня» (yield, kitchen-sync, checklists из БД)
 - [x] App shell: sidebar + навигация по модулям
 
+## T-018 — Kitchen↔SPA conflict resolve (2026-05-27)
+
+- [ ] `/operations`: блок «Конфликты кухня ↔ SPA» показывает seed-конфликт (после `db:seed`)
+- [ ] Кнопка **Разобрано** снимает конфликт; слот в «Журнал разборов» (resolvedBy, resolvedAt RU)
+- [ ] `/dashboard`: критический алерт kitchen исчезает после разбора; KPI kitchen-sync обновляется
+- [ ] Повторный клик «Разобрано» — сообщение об ошибке (уже разобран)
+- [ ] `npm run build` exit 0 после schema `resolvedAt` / `resolvedBy`
+
 ## Регрессия (MVP) — pending
 
 - [ ] Auth / защищённые маршруты

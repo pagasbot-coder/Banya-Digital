@@ -398,6 +398,7 @@ async function buildCriticalAlerts(
   const conflictSlots = await prisma.kitchenSlot.findMany({
     where: {
       syncStatus: "CONFLICT",
+      resolvedAt: null,
       startsAt: { gte: today, lt: addDays(today, 1) },
     },
     include: {
@@ -457,7 +458,9 @@ async function buildTodayOperations(today: Date): Promise<TodayOperationRow[]> {
       startsAt: { gte: today, lt: addDays(today, 1) },
     },
   });
-  const delayed = kitchenSlots.filter((s) => s.syncStatus === "CONFLICT").length;
+  const delayed = kitchenSlots.filter(
+    (s) => s.syncStatus === "CONFLICT" && s.resolvedAt == null
+  ).length;
   const onTime = kitchenSlots.length - delayed;
 
   return [

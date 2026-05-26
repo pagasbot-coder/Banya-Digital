@@ -5,6 +5,8 @@ import { addDays, formatTimeRange, startOfDay } from "@/lib/date-utils";
 import { prisma } from "@/lib/db";
 import type {
   ChecklistLinkSummary,
+  KitchenConflictAuditRow,
+  KitchenConflictRow,
   KitchenSlotRow,
   OperationsResult,
   ProgramTimingRow,
@@ -62,13 +64,64 @@ export async function getOperationsData(): Promise<OperationsResult> {
           id: slot.id,
           timeLabel: formatTimeRange(slot.startsAt, slot.endsAt),
           station: slot.station,
-          syncStatus: KITCHEN_STATUS_RU[slot.syncStatus] ?? slot.syncStatus,
+          syncStatus:
+            slot.resolvedAt != null
+              ? "Разобрано"
+              : (KITCHEN_STATUS_RU[slot.syncStatus] ?? slot.syncStatus),
           syncStatusCode: slot.syncStatus,
-          isConflict: slot.syncStatus === "CONFLICT",
+          isConflict:
+            slot.syncStatus === "CONFLICT" && slot.resolvedAt == null,
+          isResolved: slot.resolvedAt != null,
           notes: slot.notes,
         })
       ),
     }));
+
+    const conflictSlots = await prisma.kitchenSlot.findMany({
+      where: {
+        startsAt: { gte: today, lt: tomorrow },
+        OR: [
+          { syncStatus: "CONFLICT", resolvedAt: null },
+          { resolvedAt: { not: null } },
+        ],
+      },
+      include: {
+        programTiming: { include: { hall: true, spaProgram: true } },
+      },
+      orderBy: [{ resolvedAt: "desc" }, { startsAt: "asc" }],
+    });
+
+    const openConflicts: KitchenConflictRow[] = [];
+    const conflictAudit: KitchenConflictAuditRow[] = [];
+
+    for (const slot of conflictSlots) {
+      const hallName = slot.programTiming.hall.name;
+      const programName = slot.programTiming.spaProgram.name;
+      const timeLabel = formatTimeRange(slot.startsAt, slot.endsAt);
+
+      if (slot.syncStatus === "CONFLICT" && slot.resolvedAt == null) {
+        openConflicts.push({
+          slotId: slot.id,
+          programName,
+          hallName,
+          timeLabel,
+          station: slot.station,
+          notes: slot.notes,
+          updatedAt: slot.updatedAt,
+        });
+      } else if (slot.resolvedAt && slot.resolvedBy) {
+        conflictAudit.push({
+          slotId: slot.id,
+          programName,
+          hallName,
+          timeLabel,
+          station: slot.station,
+          notes: slot.notes,
+          resolvedAt: slot.resolvedAt,
+          resolvedBy: slot.resolvedBy,
+        });
+      }
+    }
 
     const checklists = await prisma.shiftChecklist.findMany({
       where: { shiftDate: today },
@@ -92,6 +145,8 @@ export async function getOperationsData(): Promise<OperationsResult> {
     return {
       kind: "data",
       programTimings,
+      openConflicts,
+      conflictAudit,
       checklists: checklistSummary,
     };
   } catch (error) {

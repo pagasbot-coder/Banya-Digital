@@ -73,12 +73,28 @@
 
 ## 5. Чеклист «до старта пилота»
 
+**Объект пилота:** **TBD by Human** _(название комплекса — заполняет Architect/владелец)_  
+**Дата старта:** **TBD by Human** _(календарный день, TZ Europe/Moscow)_  
+**Краткая версия:** `@docs/pilot-start.md`
+
 - [x] Human: ICP (премиум-баня) и North Star (**WAMZ**) в `SPA-SEGMENT-TEAM-REVIEW.md` часть C — **2026-05-25**
-- [ ] База: Neon или Docker PostgreSQL, `DATABASE_URL`, `npm run db:push && npm run db:seed`
-- [ ] Деплой demo/staging URL согласован (Vercel+Neon или VPS — см. Architect)
-- [ ] Обучение команды объекта **30 мин**: сводка, финансы, чеклисты, склад
+- [x] P0 модули: finance (T-011), inventory FIFO (T-012), чеклисты (T-013), разбор kitchen↔SPA (T-018)
+- [ ] **Human:** зафиксировать **название объекта** и **дату старта** в `pilot-start.md` и здесь (§5)
+- [ ] База: Neon или Docker PostgreSQL, `DATABASE_URL`, `npm run db:push && npm run db:seed` _(только staging/demo)_
+- [ ] Деплой production URL согласован (Vercel+Neon или VPS — см. Architect)
+- [ ] Обучение команды объекта **30 мин**: сводка, финансы, **конфликты на `/operations`**, чеклисты, склад
 - [ ] Подписан этот регламент (email/мессенджер достаточно для пилота)
 - [ ] Запрет `db:seed` на production; баннер «не финансовая отчётность» в UI (если включён)
+
+### Цели WAMZ (напоминание для PM)
+
+| Неделя пилота | Ориентир WAMZ (залов из 4) |
+|---------------|----------------------------|
+| 1–2 | ≥2/4 (знакомство с вводом) |
+| 3–5 | ≥3/4 (стабильный ритм) |
+| 6–8 | **≥3/4** среднее; stretch — **4/4** две недели подряд |
+
+Счёт WAMZ: см. `@knowledge-base/product-brief.md` § North Star.
 
 ---
 
