@@ -195,8 +195,9 @@ async function main() {
     }),
   ]);
 
-  // ─── Брони (сегодня + вчера для delta KPI) ───────────────────────────────
+  // ─── Брони (сегодня ~50% загрузки залов: guest-min / capacity / 480 мин) ─
   const todayBookings = await Promise.all([
+    // Парная ~50%: 2×(180 мин × 8 гостей) = 2880 / (12×480)
     prisma.booking.create({
       data: {
         guestId: guests[0].id,
@@ -206,9 +207,10 @@ async function main() {
         status: BookingStatus.CHECKED_IN,
         startsAt: atTime(today, 10, 0),
         endsAt: atTime(today, 13, 0),
-        partySize: 4,
+        partySize: 8,
       },
     }),
+    // VIP ~50%: 240 мин × 6 = 1440 / (6×480)
     prisma.booking.create({
       data: {
         guestId: guests[1].id,
@@ -218,20 +220,22 @@ async function main() {
         status: BookingStatus.CONFIRMED,
         startsAt: atTime(today, 14, 0),
         endsAt: atTime(today, 18, 0),
-        partySize: 2,
+        partySize: 6,
       },
     }),
+    // Сеновал ~53%: 240×7 + 90×4 = 2040 / (8×480)
     prisma.booking.create({
       data: {
         guestId: guests[2].id,
         hallId: senHall.id,
         serviceId: senHay.id,
         status: BookingStatus.CONFIRMED,
-        startsAt: atTime(today, 11, 30),
-        endsAt: atTime(today, 14, 30),
-        partySize: 3,
+        startsAt: atTime(today, 11, 0),
+        endsAt: atTime(today, 15, 0),
+        partySize: 7,
       },
     }),
+    // Хамам ~49%: 240×6 + 180×5 = 2340 / (10×480)
     prisma.booking.create({
       data: {
         guestId: guests[3].id,
@@ -240,8 +244,8 @@ async function main() {
         spaProgramId: relaxProgram.id,
         status: BookingStatus.COMPLETED,
         startsAt: atTime(today, 9, 0),
-        endsAt: atTime(today, 11, 30),
-        partySize: 2,
+        endsAt: atTime(today, 13, 0),
+        partySize: 6,
       },
     }),
     prisma.booking.create({
@@ -251,19 +255,30 @@ async function main() {
         serviceId: parSession.id,
         status: BookingStatus.CONFIRMED,
         startsAt: atTime(today, 15, 0),
-        endsAt: atTime(today, 17, 0),
-        partySize: 6,
+        endsAt: atTime(today, 18, 0),
+        partySize: 8,
       },
     }),
     prisma.booking.create({
       data: {
         guestId: guests[5].id,
-        hallId: vipHall.id,
-        serviceId: vipRitual.id,
-        status: BookingStatus.PENDING,
-        startsAt: atTime(today, 19, 0),
-        endsAt: atTime(today, 22, 0),
-        partySize: 2,
+        hallId: senHall.id,
+        serviceId: senHay.id,
+        status: BookingStatus.CONFIRMED,
+        startsAt: atTime(today, 16, 0),
+        endsAt: atTime(today, 17, 30),
+        partySize: 4,
+      },
+    }),
+    prisma.booking.create({
+      data: {
+        guestId: guests[0].id,
+        hallId: hamHall.id,
+        serviceId: hamSteam.id,
+        status: BookingStatus.CONFIRMED,
+        startsAt: atTime(today, 14, 0),
+        endsAt: atTime(today, 17, 0),
+        partySize: 5,
       },
     }),
   ]);
@@ -357,7 +372,7 @@ async function main() {
       bookingId: todayBookings[3].id,
       hallId: hamHall.id,
       startsAt: atTime(today, 9, 0),
-      endsAt: atTime(today, 11, 30),
+      endsAt: atTime(today, 13, 0),
       staffLabel: "Хамам-мастер Айгуль",
     },
   });
@@ -999,7 +1014,7 @@ async function main() {
   ]);
 
     console.info(
-      "Seed OK: 4 зала, 6 гостей, брони (сегодня/вчера), spa/kitchen, FIFO, finance (день/неделя/месяц + прошлые периоды), checklists."
+      "Seed OK: 4 зала, 6 гостей, брони (~50% загрузка залов сегодня), spa/kitchen, FIFO, finance, checklists."
     );
   } finally {
     await prisma.$disconnect();
