@@ -1,5 +1,7 @@
 # Предложения команды Muster: адаптация Banya-Digital под сегмент SPA / банные комплексы
 
+> **Консолидированная версия для команды:** [`SPA-SEGMENT-TEAM-REVIEW.md`](SPA-SEGMENT-TEAM-REVIEW.md)
+
 **Дата:** 2026-05-26  
 **Инициатор:** Human Architect (запрос «предложения от всех ролей»)  
 **Product Map:** фазы **1 Strategy** → **2 Generation** → **3 Analysis** (артефакты Delivery — в эпиках `T-0xx`)  

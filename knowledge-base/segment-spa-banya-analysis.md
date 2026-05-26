@@ -1,5 +1,7 @@
 # Сегмент SPA / банные комплексы — анализ и адаптация Banya-Digital
 
+> **Консолидированная версия для команды:** [`SPA-SEGMENT-TEAM-REVIEW.md`](SPA-SEGMENT-TEAM-REVIEW.md)
+
 **Дата:** 2026-05-26  
 **Автор:** PM (muster-pm)  
 **Аудитория:** Pavel (Human Architect), команда Muster  
