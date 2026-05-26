@@ -89,6 +89,18 @@ export type ShiftChecklistsSummary = {
   groups: ShiftChecklistGroup[];
 };
 
+/** North Star пилота: Weekly Active Managed Zones (WAMZ). */
+export type WamzSummary = {
+  activeCount: number;
+  totalCount: number;
+  /** Цель пилота: ≥3 из 4 зон */
+  pilotTarget: number;
+  meetsPilotTarget: boolean;
+  hint: string;
+  /** Зоны без активности за 7 дней (для drill-down) */
+  inactiveHalls: string[];
+};
+
 export type DashboardData = {
   hallLoads: HallLoadRow[];
   revenuePeriods: RevenuePeriodMetric[];
@@ -97,6 +109,7 @@ export type DashboardData = {
   alerts: CriticalAlert[];
   operations: TodayOperationRow[];
   shiftChecklists: ShiftChecklistsSummary;
+  wamz: WamzSummary;
 };
 
 export type DashboardEmptyState = {

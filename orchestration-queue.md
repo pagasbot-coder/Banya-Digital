@@ -49,7 +49,7 @@
 | T-006 | Wire dashboard KPIs to PostgreSQL + seed data | Developer | DONE | P0 | T-004, T-002, T-003 | `@knowledge-base/product-brief.md` (AC T-006), `@prisma/schema.prisma` | docker-compose, rich seed, dashboard live KPIs/alerts/ops, `db:seed`, build OK |
 | T-008 | Обзоры docs: technical + management (RU) | PM | DONE | P2 | T-006 | `@docs/technical-overview.md`, `@docs/management-overview.md` | Черновики для dev и руководства; roadmap обновлён |
 | T-009 | Auth: Auth.js v5 staff sessions + middleware | Developer | DONE | P1 | T-006 | `@knowledge-base/architecture-decisions.md` ADR-001 | Auth.js + Prisma; roles owner/ops/admin/warehouse; `/login`; seed @demo.local; build OK |
-| T-010 | CRM: CRUD гостя + создание/редактирование брони | Developer | READY | P1 | T-006 | `@knowledge-base/product-brief.md`, `modules/crm/` | Wave 2 (D.2) — после P0 pilot exit |
+| T-010 | CRM: CRUD гостя + создание/редактирование брони | Developer | DONE | P1 | T-006 | `@knowledge-base/product-brief.md`, `modules/crm/` | `/crm` CRUD guests+bookings; `/crm/guests/*`; conflict check; WAMZ on dashboard; build OK |
 | T-011 | Finance: ввод RevenueLine / CostLine за business day | Developer | DONE | P0 | T-006 | `@knowledge-base/product-brief.md`, `modules/finance/` | Формы на `/finance`, server actions, revalidate dashboard |
 | T-012 | Inventory: FIFO UI (лоты, движения, пороги) | Developer | DONE | P0 | T-006, T-002 | `@knowledge-base/architecture.md`, `modules/operations/inventory/` | `/operations/inventory`: партии, история, FIFO OUT; алерты на dashboard |
 | T-013 | Operations: чеклисты смены (прогресс N/M, отметки) | Developer | DONE | P1 | T-006, T-003 | `@knowledge-base/product-brief.md`, `modules/operations/` | Toggle на `/dashboard`, N/M из БД, touch ≥44px |
@@ -166,11 +166,11 @@
 ### T-010 — CRM CRUD
 
 **Acceptance criteria:**
-- [ ] `/crm` — кнопка «Добавить гостя»; форма: имя, телефон, email (опционально); сохранение в `Guest`
-- [ ] Карточка `/crm/guests/[id]` — просмотр и редактирование контактов
-- [ ] Создание брони на зал: дата/время, зал, статус RU; связь с `Hall` / `SpaProgram` где применимо
-- [ ] Валидация конфликта слота (базовая: пересечение по залу) — сообщение RU
-- [ ] RU UI, shadcn Form + Table; `npm run build` OK
+- [x] `/crm` — кнопка «Добавить гостя»; форма: имя, телефон, email (опционально); сохранение в `Guest`
+- [x] Карточка `/crm/guests/[id]` — просмотр и редактирование контактов
+- [x] Создание брони на зал: дата/время, зал, статус RU; связь с `Hall` / `SpaProgram` где применимо
+- [x] Валидация конфликта слота (базовая: пересечение по залу) — сообщение RU
+- [x] RU UI, shadcn Form + Table; `npm run build` OK
 
 **Out of scope:** маркетинговая воронка, оплата, SMS.
 

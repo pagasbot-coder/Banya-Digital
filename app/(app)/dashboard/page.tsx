@@ -1,6 +1,7 @@
 import { CriticalAlertsSection } from "@/components/dashboard/critical-alerts-section";
 import { HallLoadSection } from "@/components/dashboard/hall-load-section";
 import { InventoryAlertsCard } from "@/components/dashboard/inventory-alerts-card";
+import { WamzCard } from "@/components/dashboard/wamz-card";
 import { MarginSection } from "@/components/dashboard/margin-section";
 import { RevenuePeriodsSection } from "@/components/dashboard/revenue-periods-section";
 import { ShiftChecklistsInteractive } from "@/components/dashboard/shift-checklists-interactive";
@@ -58,11 +59,14 @@ export default async function DashboardPage() {
         </Button>
       </header>
 
-      <div className="grid gap-6 xl:grid-cols-4">
-        <div className="xl:col-span-3">
+      <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-5">
+        <div className="sm:col-span-2 xl:col-span-3">
           <HallLoadSection rows={data.hallLoads} />
         </div>
-        <div className="xl:col-span-1">
+        <div>
+          <WamzCard summary={data.wamz} />
+        </div>
+        <div>
           <InventoryAlertsCard summary={data.inventoryAlerts} />
         </div>
       </div>

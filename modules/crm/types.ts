@@ -8,10 +8,17 @@ export type GuestRow = {
 
 export type TodayBookingRow = {
   id: string;
+  guestId: string;
   guestName: string;
+  hallId: string | null;
   hallName: string | null;
+  spaProgramId: string | null;
+  spaProgramName: string | null;
   serviceName: string | null;
   timeLabel: string;
+  startsAt: string;
+  endsAt: string;
+  durationMinutes: number;
   status: string;
   statusCode: string;
   partySize: number;

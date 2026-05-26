@@ -17,6 +17,7 @@ import type {
   ServiceMarginRow,
   ShiftChecklistsSummary,
   TodayOperationRow,
+  WamzSummary,
 } from "@/modules/dashboard/types";
 
 const SHIFT_MINUTES = 480;
@@ -24,6 +25,9 @@ const INVENTORY_EXPIRY_DAYS = 7;
 const MARGIN_ALERT_THRESHOLD = 40;
 /** Целевая загрузка залов (итого), % — для KPI «Операции сегодня». */
 const HALL_LOAD_TARGET_PERCENT = 60;
+/** Цель пилота WAMZ: активных зон из 4. */
+const WAMZ_PILOT_TARGET = 3;
+const WAMZ_WINDOW_DAYS = 7;
 
 function formatRelativeTime(from: Date): string {
   const diffMs = Date.now() - from.getTime();
@@ -484,6 +488,88 @@ async function buildTodayOperations(today: Date): Promise<TodayOperationRow[]> {
   ];
 }
 
+/**
+ * WAMZ — зоны с операционной активностью за скользящие 7 дней (Москва).
+ * Активность: revenue/cost, чеклист с отметкой, обновление брони.
+ */
+async function buildWamzSummary(today: Date): Promise<WamzSummary> {
+  const windowStart = addDays(today, -(WAMZ_WINDOW_DAYS - 1));
+  const windowEnd = addDays(today, 1);
+
+  const halls = await prisma.hall.findMany({
+    where: { isActive: true },
+    orderBy: { name: "asc" },
+    select: { id: true, name: true },
+  });
+
+  const activeHallIds = new Set<string>();
+
+  const [revenueHalls, costHalls, checklistHalls, bookingHalls] =
+    await Promise.all([
+      prisma.revenueLine.findMany({
+        where: {
+          hallId: { not: null },
+          businessDate: { gte: windowStart, lt: windowEnd },
+        },
+        select: { hallId: true },
+        distinct: ["hallId"],
+      }),
+      prisma.costLine.findMany({
+        where: {
+          hallId: { not: null },
+          businessDate: { gte: windowStart, lt: windowEnd },
+        },
+        select: { hallId: true },
+        distinct: ["hallId"],
+      }),
+      prisma.shiftChecklist.findMany({
+        where: {
+          hallId: { not: null },
+          shiftDate: { gte: windowStart, lt: windowEnd },
+          items: { some: { completedAt: { not: null } } },
+        },
+        select: { hallId: true },
+      }),
+      prisma.booking.findMany({
+        where: {
+          hallId: { not: null },
+          updatedAt: { gte: windowStart, lt: windowEnd },
+        },
+        select: { hallId: true },
+        distinct: ["hallId"],
+      }),
+    ]);
+
+  for (const row of revenueHalls) {
+    if (row.hallId) activeHallIds.add(row.hallId);
+  }
+  for (const row of costHalls) {
+    if (row.hallId) activeHallIds.add(row.hallId);
+  }
+  for (const row of checklistHalls) {
+    if (row.hallId) activeHallIds.add(row.hallId);
+  }
+  for (const row of bookingHalls) {
+    if (row.hallId) activeHallIds.add(row.hallId);
+  }
+
+  const inactiveHalls = halls
+    .filter((h) => !activeHallIds.has(h.id))
+    .map((h) => h.name);
+
+  const activeCount = activeHallIds.size;
+  const totalCount = halls.length;
+
+  return {
+    activeCount,
+    totalCount,
+    pilotTarget: WAMZ_PILOT_TARGET,
+    meetsPilotTarget: activeCount >= WAMZ_PILOT_TARGET,
+    hint: "Скользящие 7 дней (МСК): выручка/COGS, чеклист или бронь",
+    inactiveHalls,
+  };
+}
+
 /** Чеклисты смены: группы по залам с пунктами и статусом выполнения. */
 async function buildShiftChecklists(today: Date): Promise<ShiftChecklistsSummary> {
   const checklists = await prisma.shiftChecklist.findMany({
@@ -543,7 +629,7 @@ export async function getDashboardData(): Promise<DashboardResult> {
 
     const margin = await buildMarginSummary(today);
 
-    const [hallLoads, revenuePeriods, inventoryAlerts, alerts, operations, shiftChecklists] =
+    const [hallLoads, revenuePeriods, inventoryAlerts, alerts, operations, shiftChecklists, wamz] =
       await Promise.all([
         buildHallLoads(today),
         buildRevenuePeriods(today),
@@ -551,6 +637,7 @@ export async function getDashboardData(): Promise<DashboardResult> {
         buildCriticalAlerts(today, margin.byService),
         buildTodayOperations(today),
         buildShiftChecklists(today),
+        buildWamzSummary(today),
       ]);
 
     return {
@@ -561,6 +648,7 @@ export async function getDashboardData(): Promise<DashboardResult> {
       alerts,
       operations,
       shiftChecklists,
+      wamz,
     };
   } catch (error) {
     console.error("[dashboard] DB query failed:", error);

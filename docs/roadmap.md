@@ -34,7 +34,7 @@
 ## Phase 4 — CRM
 
 - [x] Guests list + today's bookings (`/crm`)
-- [ ] **T-010** — Guest detail / edit + booking CRUD — **READY**
+- [x] **T-010** — Guest detail / edit + booking CRUD — **DONE**
 
 ## Phase 3 — Input & pilot (queue T-009…T-017)
 

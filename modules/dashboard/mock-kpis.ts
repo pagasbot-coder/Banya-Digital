@@ -168,4 +168,12 @@ export const mockDashboardData: import("./types").DashboardData = {
   alerts: mockCriticalAlerts,
   operations: mockTodayOperations,
   shiftChecklists: mockShiftChecklists,
+  wamz: {
+    activeCount: 3,
+    totalCount: 4,
+    pilotTarget: 3,
+    meetsPilotTarget: true,
+    hint: "Mock: скользящие 7 дней (МСК)",
+    inactiveHalls: ["Сеновал"],
+  },
 };

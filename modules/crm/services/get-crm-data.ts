@@ -63,20 +63,33 @@ export async function getCrmData(): Promise<CrmResult> {
         guest: true,
         hall: true,
         service: true,
+        spaProgram: true,
       },
       orderBy: { startsAt: "asc" },
     });
 
-    const todayBookings: TodayBookingRow[] = bookings.map((b) => ({
-      id: b.id,
-      guestName: b.guest.fullName,
-      hallName: b.hall?.name ?? null,
-      serviceName: b.service?.name ?? null,
-      timeLabel: formatTimeRange(b.startsAt, b.endsAt),
-      status: BOOKING_STATUS_RU[b.status] ?? b.status,
-      statusCode: b.status,
-      partySize: b.partySize,
-    }));
+    const todayBookings: TodayBookingRow[] = bookings.map((b) => {
+      const durationMinutes = Math.round(
+        (b.endsAt.getTime() - b.startsAt.getTime()) / 60_000
+      );
+      return {
+        id: b.id,
+        guestId: b.guestId,
+        guestName: b.guest.fullName,
+        hallId: b.hallId,
+        hallName: b.hall?.name ?? null,
+        spaProgramId: b.spaProgramId,
+        spaProgramName: b.spaProgram?.name ?? null,
+        serviceName: b.service?.name ?? null,
+        timeLabel: formatTimeRange(b.startsAt, b.endsAt),
+        startsAt: b.startsAt.toISOString(),
+        endsAt: b.endsAt.toISOString(),
+        durationMinutes,
+        status: BOOKING_STATUS_RU[b.status] ?? b.status,
+        statusCode: b.status,
+        partySize: b.partySize,
+      };
+    });
 
     return {
       kind: "data",

@@ -1,11 +1,31 @@
+import { BookingForm } from "@/components/crm/booking-form";
 import { GuestsSection } from "@/components/crm/guests-section";
-import { TodayBookingsSection } from "@/components/crm/today-bookings-section";
+import { TodayBookingsInteractive } from "@/components/crm/today-bookings-interactive";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { BUSINESS_TIMEZONE, startOfDay } from "@/lib/date-utils";
 import { getCrmData, isCrmEmpty } from "@/modules/crm";
+import { getCrmFormOptions } from "@/modules/crm/services/get-crm-form-options";
 
 export const dynamic = "force-dynamic";
 
+function todayInputValue(): string {
+  return startOfDay().toLocaleDateString("en-CA", {
+    timeZone: BUSINESS_TIMEZONE,
+  });
+}
+
 export default async function CrmPage() {
-  const data = await getCrmData();
+  const [data, formOptions] = await Promise.all([
+    getCrmData(),
+    getCrmFormOptions(),
+  ]);
+  const defaultBookingDate = todayInputValue();
 
   if (isCrmEmpty(data)) {
     return (
@@ -41,14 +61,34 @@ export default async function CrmPage() {
           CRM
         </h1>
         <p className="mt-1 max-w-xl text-sm text-muted-foreground">
-          Гости и бронирования на сегодня — данные из PostgreSQL.
+          Гости и бронирования на сегодня — создание, редактирование, проверка
+          слотов по залам.
         </p>
       </header>
 
       <div className="grid gap-6 xl:grid-cols-2">
-        <TodayBookingsSection bookings={data.todayBookings} />
+        <TodayBookingsInteractive
+          bookings={data.todayBookings}
+          options={formOptions}
+          defaultBookingDate={defaultBookingDate}
+        />
         <GuestsSection guests={data.guests} />
       </div>
+
+      <Card className="border-border/80 bg-card/95 shadow-sm">
+        <CardHeader>
+          <CardTitle className="font-heading text-lg">Новая бронь</CardTitle>
+          <CardDescription>
+            Дата, зал, программа и статус — конфликт слота проверяется автоматически
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="max-w-xl">
+          <BookingForm
+            options={formOptions}
+            defaultBookingDate={defaultBookingDate}
+          />
+        </CardContent>
+      </Card>
     </div>
   );
 }
