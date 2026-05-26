@@ -1,6 +1,6 @@
 # GitHub и Vercel — деплой Banya-Digital
 
-**Статус (2026-05-25):** `npm run build` проходит локально. Push на GitHub и Vercel prod **требуют вашей авторизации** (репозиторий на GitHub ещё не создан; `gh` / `vercel login` не выполнены в этой сессии).
+**Статус (2026-05-27):** `npm run build` проходит локально. Vercel CLI (`pagasbot-7394`) — проект `erp-db-spb-s-projects/banya-digital`, prod URL: **https://banya-digital.vercel.app**
 
 ## Что уже готово
 
@@ -82,7 +82,11 @@ vercel login
 | Переменная | Значение |
 |------------|----------|
 | `DATABASE_URL` | Строка подключения **Neon** — скопируйте из локального `.env` (Neon Console → Connection string). Пароль не публикуйте в чатах и коммитах. |
-| `NEXT_PUBLIC_APP_URL` | URL production после первого деплоя, например `https://banya-digital.vercel.app` (ваш фактический домен из Vercel) |
+| `NEXT_PUBLIC_APP_URL` | `https://banya-digital.vercel.app` |
+| `AUTH_SECRET` | Случайная строка ≥32 байт: `openssl rand -base64 32` (или PowerShell — см. ниже). **Не коммитить.** |
+| `AUTH_URL` | `https://banya-digital.vercel.app` |
+| `NEXTAUTH_URL` | То же, что `AUTH_URL` (legacy alias Auth.js v5) |
+| `DEMO_STAFF_PASSWORD` | Пароль demo-персонала для seed; **тот же** при `npm run db:seed` и на Vercel |
 
 Применить для: **Production** (и при желании Preview с тем же Neon или отдельной БД).
 
@@ -105,6 +109,58 @@ npm run db:seed
 4. После деплоя добавить `NEXT_PUBLIC_APP_URL` = production URL → **Redeploy**
 
 Регион в `vercel.json`: `arn1` (близко к RU/EU).
+
+---
+
+## 2.5 Auth on Vercel (T-009)
+
+После первого деплоя с `DATABASE_URL` выполните **один раз** локально (Neon = prod):
+
+```powershell
+cd d:\curorproject\banya-digital
+npm run db:push
+npm run db:seed
+```
+
+Пароль staff берётся из `DEMO_STAFF_PASSWORD` — **одинаковый** в `.env` (seed) и в Vercel Production.
+
+### Переменные (Production)
+
+| Переменная | Назначение |
+|------------|------------|
+| `AUTH_SECRET` | Подпись JWT-сессий (`openssl rand -base64 32`) |
+| `AUTH_URL` | `https://banya-digital.vercel.app` |
+| `NEXTAUTH_URL` | То же (alias) |
+| `DEMO_STAFF_PASSWORD` | Пароль для `*@demo.local` после seed |
+| `DATABASE_URL` | Neon (как в локальном `.env`) |
+| `NEXT_PUBLIC_APP_URL` | `https://banya-digital.vercel.app` |
+
+CLI (если `vercel link` выполнен):
+
+```powershell
+# Пример — значение вводится интерактивно или через pipe:
+vercel env add AUTH_SECRET production
+vercel env add AUTH_URL production
+vercel env add DEMO_STAFF_PASSWORD production
+vercel --prod --yes
+```
+
+### Demo-логины (после seed)
+
+| Email | Роль |
+|-------|------|
+| `owner@demo.local` | owner |
+| `ops@demo.local` | ops |
+| `admin@demo.local` | admin |
+| `warehouse@demo.local` | warehouse |
+
+Пароль: значение **`DEMO_STAFF_PASSWORD`** в Vercel → Settings → Environment Variables (не публикуйте в чатах).
+
+**Тест:** https://banya-digital.vercel.app/login → вход → редирект на `/dashboard`.
+
+### Edge middleware
+
+`middleware.ts` использует только `auth.config.ts` (без Prisma). Полный `auth.ts` с adapter — на Node (API routes, server actions). Иначе Vercel Edge падает с `node:util/types`.
 
 ---
 
