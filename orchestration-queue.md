@@ -5,7 +5,7 @@
 
 **Проект:** Banya-Digital ERP  
 **Архитектор (Human):** _ваше имя_  
-**Последнее обновление:** 2026-05-25 (docs: technical + management overview)
+**Последнее обновление:** 2026-05-26 (PM: Phase 3 backlog T-009…T-014)
 
 ---
 
@@ -46,6 +46,12 @@
 | T-005 | Чеклист QA для foundation | QA | DONE | P2 | T-001 | `@knowledge-base/qa-checklist.md` | PASS: build/lint/db:generate OK; routes 200; dashboard KPI+alerts+ops; hydration note (Cursor refs) non-blocking |
 | T-006 | Wire dashboard KPIs to PostgreSQL + seed data | Developer | DONE | P0 | T-004, T-002, T-003 | `@knowledge-base/product-brief.md` (AC T-006), `@prisma/schema.prisma` | docker-compose, rich seed, dashboard live KPIs/alerts/ops, `db:seed`, build OK |
 | T-008 | Обзоры docs: technical + management (RU) | PM | DONE | P2 | T-006 | `@docs/technical-overview.md`, `@docs/management-overview.md` | Черновики для dev и руководства; roadmap обновлён |
+| T-009 | Auth: роли и доступ к модулям (решение + scaffold) | Developer | BACKLOG | P1 | T-006 | `@knowledge-base/architecture.md`, `@docs/roadmap.md` | |
+| T-010 | CRM: CRUD гостя + создание/редактирование брони | Developer | READY | P1 | T-006 | `@knowledge-base/product-brief.md`, `modules/crm/` | |
+| T-011 | Finance: ввод RevenueLine / CostLine за business day | Developer | READY | P0 | T-006 | `@knowledge-base/product-brief.md`, `modules/finance/` | |
+| T-012 | Inventory: FIFO UI (лоты, движения, пороги) | Developer | READY | P0 | T-006, T-002 | `@knowledge-base/architecture.md`, `modules/operations/inventory/` | |
+| T-013 | Operations: чеклисты смены (прогресс N/M, отметки) | Developer | READY | P1 | T-006, T-003 | `@knowledge-base/product-brief.md`, `modules/operations/` | |
+| T-014 | Pilot: регламент 8-недельного пилота (RU) | PM | READY | P1 | T-008 | `@docs/management-overview.md`, `@knowledge-base/product-brief.md` | |
 
 ---
 
@@ -126,6 +132,90 @@
 
 ---
 
+### T-009 — Auth (роли и доступ)
+
+**Роль:** Developer | **Статус:** BACKLOG (ждёт решения Architect)
+
+**Given/When/Then:**
+- **Given** выбранный провайдер (NextAuth / Clerk / custom JWT), **When** пользователь без роли `finance` открывает `/finance`, **Then** 403 или редирект на login.
+- **Given** роль `ops`, **When** открывает `/dashboard`, **Then** видит сводку без редактирования финансовых проводок (если так задокументировано).
+
+**Checklist (после решения):**
+- [ ] ADR или Notes в `architecture.md`: провайдер, модель ролей (owner, ops, warehouse, crm)
+- [ ] `.env.example` дополнен переменными auth
+- [ ] Минимум 2 роли в seed для демо
+- [ ] `npm run build` / lint OK
+
+**Notes:** Roadmap Phase 1 — «Auth (decision deferred)». PM ставит `READY` только после ответа Architect (провайдер + список ролей).
+
+---
+
+### T-010 — CRM CRUD
+
+**Acceptance criteria:**
+- [ ] `/crm` — кнопка «Добавить гостя»; форма: имя, телефон, email (опционально); сохранение в `Guest`
+- [ ] Карточка `/crm/guests/[id]` — просмотр и редактирование контактов
+- [ ] Создание брони на зал: дата/время, зал, статус RU; связь с `Hall` / `SpaProgram` где применимо
+- [ ] Валидация конфликта слота (базовая: пересечение по залу) — сообщение RU
+- [ ] RU UI, shadcn Form + Table; `npm run build` OK
+
+**Out of scope:** маркетинговая воронка, оплата, SMS.
+
+---
+
+### T-011 — Finance input
+
+**Acceptance criteria:**
+- [ ] Форма добавления `RevenueLine`: businessDate (default today), зал/услуга, сумма, валюта RUB
+- [ ] Форма добавления `CostLine`: COGS, опционально `lotId` для органики
+- [ ] После сохранения — `/finance` и dashboard KPI пересчитываются при refresh (SSR/revalidate)
+- [ ] RU labels; ошибки валидации на форме
+- [ ] Seed-совместимость: `db:seed` не ломается
+
+**Out of scope:** экспорт в 1С, НДС, мульти-валюта.
+
+---
+
+### T-012 — Inventory FIFO UI
+
+**Acceptance criteria:**
+- [ ] Страница `/operations/inventory` (или подраздел): список `InventoryItem` + остатки по `InventoryLot`
+- [ ] Действие OUT: списание по FIFO (сервисный слой), обновление `quantityLeft`
+- [ ] Пороговый алерт при OUT ниже `minThreshold` — отражение на dashboard KPI «Алерты склада»
+- [ ] RU UI; движения `StockMovement` видны в истории лота
+- [ ] AC product-brief: точность остатков — сценарий для QA описан в Notes
+
+**Out of scope:** закупки/поставщики, штрихкоды.
+
+---
+
+### T-013 — Operations checklists
+
+**Acceptance criteria:**
+- [ ] Список `ShiftChecklist` на сегодня с прогрессом **N/M** по `ChecklistItem`
+- [ ] Отметка пункта выполненным (toggle) с `updatedAt`
+- [ ] Dashboard block «Операции смены» показывает актуальный N/M из БД (не stub)
+- [ ] RU статусы; mobile-friendly touch targets (min 44px)
+- [ ] `npm run build` OK
+
+**Out of scope:** назначение чеклиста на сотрудника, push-уведомления.
+
+---
+
+### T-014 — Pilot reglement (8 недель)
+
+**Роль:** PM | **Deliverable:** `docs/pilot-reglement.md` (новый) + ссылки из `management-overview.md`
+
+**Acceptance criteria:**
+- [ ] Цели пилота из product-brief (метрики: −30% закрытие смены, ≥95% остатки, daily margin)
+- [ ] Роли участников, ритм (ежедневная сводка, еженедельная инвентаризация)
+- [ ] Definition of pilot success / stop criteria
+- [ ] Чеклист «до старта пилота» (Neon DB, seed, обучение 30 мин)
+- [ ] RU язык, без IT-жаргона в основном тексте
+- [ ] `roadmap.md` — ссылка на Phase «Pilot»
+
+---
+
 ## Журнал (лог решений)
 
 | Дата | Кто | Событие |
@@ -136,6 +226,7 @@
 | 2026-05-24 | UI/UX | T-003 DONE: dashboard shell, design tokens, mock KPIs, AppShellNav |
 | 2026-05-24 | QA | T-005 DONE: foundation checklist pass; build/lint/routes/dashboard verified |
 | 2026-05-24 | Developer | T-006 DONE: PostgreSQL seed, dashboard live KPIs/alerts/ops, docker-compose |
+| 2026-05-26 | PM | Phase 3: T-009…T-014 в очередь; T-010…013 READY (Developer), T-014 READY (PM), T-009 BACKLOG до auth-решения |
 
 ---
 

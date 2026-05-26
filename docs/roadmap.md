@@ -34,7 +34,15 @@
 ## Phase 4 — CRM
 
 - [x] Guests list + today's bookings (`/crm`)
-- [ ] Guest detail / edit flows
+- [ ] **T-010** — Guest detail / edit + booking CRUD — **READY**
+
+## Phase 3 — Input & pilot (queue T-009…T-014)
+
+- [ ] **T-009** — Auth (BACKLOG — Architect decision)
+- [ ] **T-011** — Finance data entry — **READY**
+- [ ] **T-012** — Inventory FIFO UI — **READY**
+- [ ] **T-013** — Shift checklists completion — **READY**
+- [ ] **T-014** — Pilot reglement (PM) — **READY**
 
 ## Документация
 
