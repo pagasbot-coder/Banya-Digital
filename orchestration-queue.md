@@ -54,7 +54,7 @@
 | T-012 | Inventory: FIFO UI (лоты, движения, пороги) | Developer | READY | P0 | T-006, T-002 | `@knowledge-base/architecture.md`, `modules/operations/inventory/` | |
 | T-013 | Operations: чеклисты смены (прогресс N/M, отметки) | Developer | READY | P1 | T-006, T-003 | `@knowledge-base/product-brief.md`, `modules/operations/` | |
 | T-014 | Pilot: регламент 8-недельного пилота (RU) | PM | READY | P1 | T-008 | `@docs/management-overview.md`, `@knowledge-base/product-brief.md` | |
-| T-015 | Product Map: Phase 2 discovery → brief + roadmap | PM | BACKLOG | P2 | T-014 | `@knowledge-base/product-map-workflow.md`, `@knowledge-base/product-map-notes-from-pdf.md` | PDF 2026-05-25: workflow+notes+brief Phase2; roadmap/journal partial |
+| T-015 | Product Map: Phase 2 discovery → brief + roadmap | PM | BACKLOG | P2 | T-014 | `@knowledge-base/product-map-workflow.md`, `@knowledge-base/product-map-3.10-cheatsheet.md`, `@knowledge-base/product-map-notes-from-pdf.md` | KB 2026-05-26: cheatsheet+role-pm mandatory; PDF visual (notes+web) |
 | T-016 | iGaming BiJi: Product Map onboarding (новый продукт) | PM | BACKLOG | P2 | — | `@knowledge-base/product-map-workflow.md` (шаблон), `@role-pm` | |
 | T-017 | SME: операционный brief бани (day-in-life, KPI, anti-features) | SME | BACKLOG | P1 | — | `@knowledge-base/industry-brief-template.md`, `@knowledge-base/product-brief.md`, `@role-sme` | |
 
@@ -212,7 +212,8 @@
 **Роль:** PM | **Статус:** BACKLOG (поднять в `READY` после T-014 или по запросу Architect)
 
 **Acceptance criteria:**
-- [x] PDF Human проанализирован → `product-map-notes-from-pdf.md` + workflow session 2026-05-25
+- [x] PM KB: `product-map-3.10-cheatsheet.md`, `@role-pm` Product Map gate (2026-05-26)
+- [x] PDF / web: `product-map-notes-from-pdf.md` + workflow sessions 2026-05-25–26 (PDF — визуальный, TASK+site)
 - [ ] Пройден discovery checklist из `@role-pm` (Strategy → People) **с Human** (ICP, North Star, Phase 2 sign-off)
 - [x] `product-brief.md` — Phase 2 in/out (гипотезы)
 - [ ] `docs/roadmap.md` — Now/Next/Later после пилота
@@ -278,6 +279,7 @@
 | 2026-05-24 | QA | T-005 DONE: foundation checklist pass; build/lint/routes/dashboard verified |
 | 2026-05-24 | Developer | T-006 DONE: PostgreSQL seed, dashboard live KPIs/alerts/ops, docker-compose |
 | 2026-05-26 | PM | Phase 3: T-009…T-014 в очередь; T-010…013 READY (Developer), T-014 READY (PM), T-009 BACKLOG до auth-решения |
+| 2026-05-26 | PM | Product Map 3.10 KB: cheatsheet RU, workflow (PDF blocker), `@role-pm` mandatory layers + gate, `muster-pm`; T-015 partial discovery |
 | 2026-05-26 | PM | Product Map 3.10: `@role-pm` + `product-map-workflow.md`; T-015 Phase 2 discovery BACKLOG; T-016 iGaming BiJi BACKLOG |
 | 2026-05-26 | PM | T-015 partial: PDF `The Product Map 3.10.pdf` → `product-map-notes-from-pdf.md`, workflow session 2026-05-25, `product-brief` Phase 2; T-015 остаётся BACKLOG до Human/Architect (ICP, NSM, roadmap N/N/L) |
 | 2026-05-26 | SME | T-017 BACKLOG: операционный brief бани; `@role-sme` + industry-brief-template |
