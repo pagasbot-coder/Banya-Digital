@@ -5,7 +5,7 @@
 
 **Проект:** Banya-Digital ERP  
 **Архитектор (Human):** _ваше имя_  
-**Последнее обновление:** 2026-05-26 (PM: Phase 3 backlog T-009…T-014)
+**Последнее обновление:** 2026-05-26 (PM: Product Map 3.10 в role-pm; T-015…T-016 BACKLOG)
 
 ---
 
@@ -52,6 +52,8 @@
 | T-012 | Inventory: FIFO UI (лоты, движения, пороги) | Developer | READY | P0 | T-006, T-002 | `@knowledge-base/architecture.md`, `modules/operations/inventory/` | |
 | T-013 | Operations: чеклисты смены (прогресс N/M, отметки) | Developer | READY | P1 | T-006, T-003 | `@knowledge-base/product-brief.md`, `modules/operations/` | |
 | T-014 | Pilot: регламент 8-недельного пилота (RU) | PM | READY | P1 | T-008 | `@docs/management-overview.md`, `@knowledge-base/product-brief.md` | |
+| T-015 | Product Map: Phase 2 discovery → brief + roadmap | PM | BACKLOG | P2 | T-014 | `@knowledge-base/product-map-workflow.md`, `@knowledge-base/product-brief.md` | |
+| T-016 | iGaming BiJi: Product Map onboarding (новый продукт) | PM | BACKLOG | P2 | — | `@knowledge-base/product-map-workflow.md` (шаблон), `@role-pm` | |
 
 ---
 
@@ -202,6 +204,35 @@
 
 ---
 
+### T-015 — Product Map Phase 2 discovery
+
+**Роль:** PM | **Статус:** BACKLOG (поднять в `READY` после T-014 или по запросу Architect)
+
+**Acceptance criteria:**
+- [ ] Пройден discovery checklist из `@role-pm` (Strategy → People)
+- [ ] Обновлены `product-brief.md` (Phase 2 in/out), `docs/roadmap.md` (Now/Next/Later)
+- [ ] `product-map-workflow.md`: сессия в таблице, риски, open questions закрыты или `BLOCKED`
+- [ ] Новые epics разбиты на `T-0xx` с DoR; приоритеты P0/P1 согласованы с метриками пилота
+- [ ] «Журнал» — запись о scope Phase 2
+
+**Notes:** Использовать Figma 3.10 / productmap.io только как референс; артефакты — в git. Не логиниться в app.productmap.io.
+
+---
+
+### T-016 — iGaming BiJi Product Map onboarding
+
+**Роль:** PM | **Статус:** BACKLOG (нет репозитория/ brief в workspace)
+
+**Acceptance criteria:**
+- [ ] Architect: отдельный product context (имя, стадия, регуляторика) или новый каталог в monorepo
+- [ ] `product-brief.md` + `product-map-workflow.md` по шаблону Product Map 3.10
+- [ ] Figma/Product Map ссылки от Human зафиксированы в workflow log
+- [ ] Первые 3–5 `T-0xx` в очереди (foundation) с DoR
+
+**Notes:** До появления `knowledge-base/` для BiJi — не ставить `READY`. Опционально: Human создаёт проект в https://app.productmap.io/profile/assistant/create-project и экспортирует контекст в markdown.
+
+---
+
 ### T-014 — Pilot reglement (8 недель)
 
 **Роль:** PM | **Deliverable:** `docs/pilot-reglement.md` (новый) + ссылки из `management-overview.md`
@@ -227,6 +258,7 @@
 | 2026-05-24 | QA | T-005 DONE: foundation checklist pass; build/lint/routes/dashboard verified |
 | 2026-05-24 | Developer | T-006 DONE: PostgreSQL seed, dashboard live KPIs/alerts/ops, docker-compose |
 | 2026-05-26 | PM | Phase 3: T-009…T-014 в очередь; T-010…013 READY (Developer), T-014 READY (PM), T-009 BACKLOG до auth-решения |
+| 2026-05-26 | PM | Product Map 3.10: `@role-pm` + `product-map-workflow.md`; T-015 Phase 2 discovery BACKLOG; T-016 iGaming BiJi BACKLOG |
 
 ---
 
