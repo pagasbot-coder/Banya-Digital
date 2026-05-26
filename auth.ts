@@ -4,6 +4,7 @@ import { PrismaAdapter } from "@auth/prisma-adapter";
 import bcrypt from "bcryptjs";
 import type { StaffRole } from "@prisma/client";
 import { prisma, isDatabaseConfigured } from "@/lib/db";
+import { authConfig } from "./auth.config";
 
 declare module "next-auth" {
   interface Session {
@@ -24,13 +25,9 @@ declare module "@auth/core/jwt" {
 
 /** Auth.js v5 — staff credentials; JWT session for Credentials provider. */
 export const { handlers, auth, signIn, signOut } = NextAuth({
+  ...authConfig,
   // PrismaAdapter: user rows in PostgreSQL; JWT sessions (Credentials). Cast — @auth/core version skew.
   adapter: PrismaAdapter(prisma) as never,
-  trustHost: true,
-  session: { strategy: "jwt", maxAge: 60 * 60 * 8 },
-  pages: {
-    signIn: "/login",
-  },
   providers: [
     Credentials({
       name: "Учётная запись персонала",
@@ -73,23 +70,4 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       },
     }),
   ],
-  callbacks: {
-    jwt({ token, user }) {
-      if (user) {
-        token.sub = user.id;
-        const staff = user as { role?: StaffRole };
-        if (staff.role) {
-          token.role = staff.role;
-        }
-      }
-      return token;
-    },
-    session({ session, token }) {
-      if (session.user && token.sub) {
-        session.user.id = token.sub;
-        session.user.role = (token.role as StaffRole) ?? "ops";
-      }
-      return session;
-    },
-  },
 });

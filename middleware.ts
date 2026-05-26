@@ -1,5 +1,6 @@
-import { auth } from "@/auth";
+import NextAuth from "next-auth";
 import { NextResponse } from "next/server";
+import { authConfig } from "./auth.config";
 
 const PROTECTED_PREFIXES = [
   "/dashboard",
@@ -13,6 +14,8 @@ function isProtectedPath(pathname: string): boolean {
     (prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`),
   );
 }
+
+const { auth } = NextAuth(authConfig);
 
 /** Redirect unauthenticated staff away from ERP routes. */
 export default auth((req) => {
