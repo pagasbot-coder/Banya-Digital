@@ -16,7 +16,7 @@
 - [x] Dashboard KPI layout — mock (T-003)
 - [x] Product brief: MVP P0/P1, metrics, T-006 acceptance criteria (T-004)
 - [x] **T-006** — Wire dashboard KPIs to PostgreSQL + seed (Developer)
-- [ ] Auth (decision deferred)
+- [x] **T-009** — Auth.js v5 staff sessions (`/login`, middleware)
 
 **Локальная БД:** `docker compose up -d` → `npm run db:push` → `npm run db:seed` (см. README).
 
@@ -38,7 +38,7 @@
 
 ## Phase 3 — Input & pilot (queue T-009…T-017)
 
-- [ ] **T-009** — Auth (BACKLOG — ждёт Auth.js / Human, см. `architecture.md`)
+- [x] **T-009** — Auth.js staff roles (ADR-001)
 - [x] **T-011** — Finance data entry (RevenueLine / CostLine forms)
 - [x] **T-012** — Inventory FIFO UI (`/operations/inventory`, FIFO OUT)
 - [x] **T-013** — Shift checklists toggle on dashboard
