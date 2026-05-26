@@ -1,0 +1,162 @@
+/* SPA Segment Team Review — print/PDF (Banya-Digital warm gold) */
+@page {
+  margin: 2cm 2.2cm;
+  size: A4;
+}
+
+@page :first {
+  margin-top: 2.5cm;
+}
+
+@media print {
+  body {
+    font-size: 11pt;
+    line-height: 1.45;
+  }
+
+  h1, h2, h3, h4 {
+    page-break-after: avoid;
+    break-after: avoid;
+  }
+
+  table, pre, blockquote, img {
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  tr {
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+}
+
+body {
+  font-family: Calibri, "Carlito", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  color: #3d3229;
+  max-width: 100%;
+}
+
+h1 {
+  color: #5c4a32;
+  font-size: 1.75rem;
+  border-bottom: 2px solid #c9a227;
+  padding-bottom: 0.35em;
+  margin-top: 0;
+}
+
+h2 {
+  color: #5c4a32;
+  font-size: 1.35rem;
+  margin-top: 1.6em;
+  border-bottom: 1px solid #e8dcc8;
+  padding-bottom: 0.25em;
+}
+
+h3 {
+  color: #6b5740;
+  font-size: 1.1rem;
+  margin-top: 1.2em;
+}
+
+h4 {
+  color: #6b5740;
+  font-size: 1rem;
+}
+
+hr {
+  border: none;
+  border-top: 1px solid #d4c4a8;
+  margin: 1.5em 0;
+}
+
+a {
+  color: #8a6d2f;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 10pt;
+  margin: 1em 0;
+}
+
+th {
+  background: #f5efe3;
+  color: #4a3d2e;
+  font-weight: 600;
+  text-align: left;
+  padding: 0.5em 0.65em;
+  border: 1px solid #ddd0b8;
+}
+
+td {
+  padding: 0.45em 0.65em;
+  border: 1px solid #e8dcc8;
+  vertical-align: top;
+}
+
+tr:nth-child(even) td {
+  background: #faf8f4;
+}
+
+blockquote {
+  margin: 1em 0;
+  padding: 0.75em 1em;
+  border-left: 4px solid #c9a227;
+  background: #faf6ee;
+  border-radius: 0 4px 4px 0;
+}
+
+blockquote strong {
+  color: #5c4a32;
+}
+
+blockquote p {
+  margin: 0.35em 0;
+}
+
+.title-page {
+  text-align: center;
+  padding: 2em 0 1.5em;
+  page-break-after: always;
+}
+
+.title-page h1 {
+  border: none;
+  font-size: 1.9rem;
+}
+
+.title-meta {
+  color: #6b5740;
+  font-size: 11pt;
+  line-height: 1.6;
+}
+
+.toc {
+  background: #faf8f4;
+  padding: 1em 1.25em;
+  border: 1px solid #e8dcc8;
+  border-radius: 6px;
+  margin: 1em 0 1.5em;
+}
+
+.toc ul {
+  margin: 0.5em 0 0;
+  padding-left: 1.25em;
+}
+
+.toc li {
+  margin: 0.35em 0;
+}
+
+.role-section {
+  margin-top: 1.5em;
+  padding-top: 0.5em;
+}
+
+code {
+  font-size: 0.9em;
+  background: #f0ebe0;
+  padding: 0.1em 0.35em;
+  border-radius: 3px;
+}

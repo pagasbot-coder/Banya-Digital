@@ -1,0 +1,976 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Сегмент SPA / банные комплексы — командное ревью</title>
+<style>
+/* SPA Segment Team Review — print/PDF (Banya-Digital warm gold) */
+@page {
+  margin: 2cm 2.2cm;
+  size: A4;
+}
+
+@page :first {
+  margin-top: 2.5cm;
+}
+
+@media print {
+  body {
+    font-size: 11pt;
+    line-height: 1.45;
+  }
+
+  h1, h2, h3, h4 {
+    page-break-after: avoid;
+    break-after: avoid;
+  }
+
+  table, pre, blockquote, img {
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  tr {
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+}
+
+body {
+  font-family: Calibri, "Carlito", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  color: #3d3229;
+  max-width: 100%;
+}
+
+h1 {
+  color: #5c4a32;
+  font-size: 1.75rem;
+  border-bottom: 2px solid #c9a227;
+  padding-bottom: 0.35em;
+  margin-top: 0;
+}
+
+h2 {
+  color: #5c4a32;
+  font-size: 1.35rem;
+  margin-top: 1.6em;
+  border-bottom: 1px solid #e8dcc8;
+  padding-bottom: 0.25em;
+}
+
+h3 {
+  color: #6b5740;
+  font-size: 1.1rem;
+  margin-top: 1.2em;
+}
+
+h4 {
+  color: #6b5740;
+  font-size: 1rem;
+}
+
+hr {
+  border: none;
+  border-top: 1px solid #d4c4a8;
+  margin: 1.5em 0;
+}
+
+a {
+  color: #8a6d2f;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 10pt;
+  margin: 1em 0;
+}
+
+th {
+  background: #f5efe3;
+  color: #4a3d2e;
+  font-weight: 600;
+  text-align: left;
+  padding: 0.5em 0.65em;
+  border: 1px solid #ddd0b8;
+}
+
+td {
+  padding: 0.45em 0.65em;
+  border: 1px solid #e8dcc8;
+  vertical-align: top;
+}
+
+tr:nth-child(even) td {
+  background: #faf8f4;
+}
+
+blockquote {
+  margin: 1em 0;
+  padding: 0.75em 1em;
+  border-left: 4px solid #c9a227;
+  background: #faf6ee;
+  border-radius: 0 4px 4px 0;
+}
+
+blockquote strong {
+  color: #5c4a32;
+}
+
+blockquote p {
+  margin: 0.35em 0;
+}
+
+.title-page {
+  text-align: center;
+  padding: 2em 0 1.5em;
+  page-break-after: always;
+}
+
+.title-page h1 {
+  border: none;
+  font-size: 1.9rem;
+}
+
+.title-meta {
+  color: #6b5740;
+  font-size: 11pt;
+  line-height: 1.6;
+}
+
+.toc {
+  background: #faf8f4;
+  padding: 1em 1.25em;
+  border: 1px solid #e8dcc8;
+  border-radius: 6px;
+  margin: 1em 0 1.5em;
+}
+
+.toc ul {
+  margin: 0.5em 0 0;
+  padding-left: 1.25em;
+}
+
+.toc li {
+  margin: 0.35em 0;
+}
+
+.role-section {
+  margin-top: 1.5em;
+  padding-top: 0.5em;
+}
+
+code {
+  font-size: 0.9em;
+  background: #f0ebe0;
+  padding: 0.1em 0.35em;
+  border-radius: 3px;
+}
+
+</style>
+</head>
+<body>
+<div class="title-page"><h1>Сегмент SPA и банные комплексы</h1>
+<h2>Единый отчёт для командного ревью</h2>
+<table>
+<thead>
+<tr>
+<th align="left"></th>
+<th align="left"></th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><strong>Дата</strong></td>
+<td align="left">26&nbsp;мая&nbsp;2026</td>
+</tr>
+<tr>
+<td align="left"><strong>Версия</strong></td>
+<td align="left">1.1 (редакционная вычитка)</td>
+</tr>
+<tr>
+<td align="left"><strong>Product Map</strong></td>
+<td align="left">фазы <strong>1 Strategy</strong>, <strong>2 Generation</strong>, <strong>3 Analysis</strong> (People — пилот T-014)</td>
+</tr>
+<tr>
+<td align="left"><strong>Статус</strong></td>
+<td align="left">на согласование командой Muster и Human Architect</td>
+</tr>
+</tbody></table>
+<div class="title-meta"><p><strong>Источники (без изменения смысла):</strong> <code>segment-spa-banya-analysis.md</code>, <code>team-proposals-spa-segment.md</code>, блок позиционирования в <code>product-brief.md</code></p>
+</div>
+</div><hr>
+<h2>Краткое резюме</h2>
+<p><a id="executive-summary"></a></p>
+<p><strong>Продукт сегодня.</strong> Banya-Digital — операционный B2B-дашборд для премиального банно-SPA комплекса: unit economics по зонам, загрузка залов (yield), синхронизация кухни и SPA, учёт органики по FIFO. Это не замена YCLIENTS, DIKIDI и онлайн-записи. Дашборд уже читает KPI из PostgreSQL (T-006 — DONE); finance, CRM и operations пока в основном только для просмотра, пока не закрыт ввод данных по P0.</p>
+<p><strong>Целевой клиент (черновик на утверждение).</strong> Управляющий одного комплекса 1 500–8 000 м², 3–10 зон, F&amp;B, штат 15–80 человек. Запись и касса уже есть — YCLIENTS, 1С или Excel — но нет дневной маржи по зонам, yield и единого пульта смены. Позиционирование: <strong>ERP-слой поверх записи и кассы</strong>.</p>
+<p><strong>Рынок (качественная оценка).</strong> В РФ растёт сегмент wellness и urban-терм; цифровизация записи отделена от управления сменой — есть окно для операционного слоя. Сервисы записи слабы в P&amp;L по залу и в синхронизации с кухней; 1С и классические ERP тяжёлы для пульта смены; hotel spa (Zenoti) избыточны для standalone-комплекса.</p>
+<p><strong>Главные пробелы.</strong> Ввод RevenueLine и COGS (T-011), экран FIFO (T-012), чеклисты смены (T-013), регламент пилота (T-014), отраслевое discovery SME (T-017); далее — auth, разбор конфликтов, персонал, абонементы, сезонность, комплаенс.</p>
+<p><strong>Демо «Дегтярные Бани».</strong> Учебный эталон: 4 зала, около 196 тыс. ₽ в день, yield 60–80% как <strong>цель пилота</strong>, не отраслевой стандарт. Рекомендация: два seed-пресета — «баня + кухня» и «urban SPA».</p>
+<p><strong>Приоритет на 8 недель.</strong> Не запускать внешний пилот, пока не закрыты <strong>T-011, T-012, T-013, T-014</strong> и не поднят <strong>T-017 (SME)</strong>. Задачи T-018…T-025 — после утверждения Human (часть C).</p>
+<p><strong>Метрики пилота</strong> (из <code>product-brief.md</code>): сокращение времени закрытия смены на 30%; точность FIFO не ниже 95%; ежедневная маржа на дашборде; 0 необработанных конфликтов kitchen↔SPA за смену.</p>
+<hr>
+<h2>Содержание</h2>
+<div class="toc"><ol>
+<li><a href="#executive-summary">Краткое резюме</a></li>
+<li><a href="#how-to-use">Как пользоваться отчётом</a></li>
+<li><a href="#part-a">Часть A — Анализ рынка и продукта</a></li>
+<li><a href="#part-b">Часть B — Предложения по ролям</a></li>
+<li><a href="#part-c">Часть C — Решения Human Architect</a></li>
+<li><a href="#part-d">Часть D — Следующие шаги</a></li>
+<li><a href="#changelog">Журнал согласования</a></li>
+</ol>
+<p><strong>Роли в части B:</strong> <a href="#role-sme">SME</a> · <a href="#role-cmo">CMO</a> · <a href="#role-pm">PM</a> · <a href="#role-architect">IT-Architect</a> · <a href="#role-ui">UI/UX</a> · <a href="#role-dev">Developer</a> · <a href="#role-qa">QA</a> · <a href="#role-devops">DevOps</a></p>
+</div><hr>
+<h2>1. Как пользоваться отчётом</h2>
+<p><a id="how-to-use"></a></p>
+<h3>Для кого</h3>
+<table>
+<thead>
+<tr>
+<th align="left">Аудитория</th>
+<th align="left">Зачем читать</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><strong>Human Architect (Pavel)</strong></td>
+<td align="left">Часть C — пять решений; часть D — приоритеты очереди</td>
+</tr>
+<tr>
+<td align="left"><strong>SME, CMO, PM, Architect, UI/UX, Developer, QA, DevOps</strong></td>
+<td align="left">Своя секция в части B — проверить предложения и внести правки</td>
+</tr>
+<tr>
+<td align="left"><strong>Вся команда</strong></td>
+<td align="left">Краткое резюме и часть A — общий контекст сегмента</td>
+</tr>
+</tbody></table>
+<h3>Порядок чтения</h3>
+<ol>
+<li><strong>Краткое резюме</strong> (5–10 минут) — общая картина без повторения двух исходных отчётов.</li>
+<li>При необходимости — <strong>часть A</strong> или полная версия в <a href="segment-spa-banya-analysis.md"><code>segment-spa-banya-analysis.md</code></a>.</li>
+<li>Перейти к <strong>своей роли</strong> в части B: отметить статус и заполнить блок правок.</li>
+<li>Human Architect закрывает <strong>часть C</strong> (чекбоксы) и фиксирует итог в <strong>журнале согласования</strong>.</li>
+</ol>
+<h3>Как внести правки</h3>
+<ul>
+<li>Каждая роль правит <strong>только свой подраздел</strong> <code>### Роль: …</code> в части B.</li>
+<li><strong>Вариант A</strong> — HTML-комментарий у изменённого пункта: <code>&lt;!-- REVIEW: Имя Фамилия, 27.05.2026 --&gt;</code></li>
+<li><strong>Вариант B</strong> — таблица <strong>«Правки»</strong> в конце секции (шаблон в документе).</li>
+<li>После правок — строка в <strong>журнале согласования</strong> (дата, роль, автор, суть изменения).</li>
+<li>Исходные файлы <code>segment-spa-banya-analysis.md</code> и <code>team-proposals-spa-segment.md</code> не удалять — они остаются детальными приложениями.</li>
+</ul>
+<hr>
+<h2>2. Часть A — Анализ рынка и продукта</h2>
+<p><a id="part-a"></a></p>
+<blockquote>
+<p>Сжатая интеграция <a href="segment-spa-banya-analysis.md"><code>segment-spa-banya-analysis.md</code></a>.<br><strong>Полная версия:</strong> все таблицы, mermaid-квадрант, источники и T-018…T-025 — в исходном файле.</p>
+</blockquote>
+<hr>
+<h3>A.1 Аудит продукта</h3>
+<table>
+<thead>
+<tr>
+<th align="left">Область</th>
+<th align="left">Сильные стороны</th>
+<th align="left">Пробелы</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><strong>dashboard</strong></td>
+<td align="left">KPI, алерты, ops, чеклисты из БД</td>
+<td align="left">Нет редактирования с дашборда</td>
+</tr>
+<tr>
+<td align="left"><strong>finance</strong></td>
+<td align="left">Unit economics по залам (просмотр)</td>
+<td align="left">Нет ввода — <strong>T-011 P0</strong></td>
+</tr>
+<tr>
+<td align="left"><strong>crm</strong></td>
+<td align="left">Гости, брони (просмотр)</td>
+<td align="left">Нет CRUD и разбора конфликтов — <strong>T-010 P1</strong></td>
+</tr>
+<tr>
+<td align="left"><strong>operations</strong></td>
+<td align="left">Kitchen↔SPA, тайминги (демо)</td>
+<td align="left">Нет workflow закрытия — <strong>T-018 P1</strong></td>
+</tr>
+<tr>
+<td align="left"><strong>inventory</strong></td>
+<td align="left">Модель FIFO и алерты</td>
+<td align="left">Нет экрана — <strong>T-012 P0</strong></td>
+</tr>
+</tbody></table>
+<p><strong>Модель данных:</strong> ядро заточено под премиальную русскую баню (органика, кухня, залы). Для urban SPA нужны расширения (<code>Hall.zoneType</code>, второй seed), а не замена ядра.</p>
+<hr>
+<h3>A.2 Рынок и конкуренты</h3>
+<table>
+<thead>
+<tr>
+<th align="left">Класс</th>
+<th align="left">Примеры</th>
+<th align="left">Наша ниша</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">Запись + CRM</td>
+<td align="left">YCLIENTS, DIKIDI, Saby</td>
+<td align="left">Слабый unit economics по <strong>залу</strong></td>
+</tr>
+<tr>
+<td align="left">Учёт в РФ</td>
+<td align="left">1С:Салон</td>
+<td align="left">Тяжёлое внедрение, слабый пульт смены</td>
+</tr>
+<tr>
+<td align="left">Таблицы</td>
+<td align="left">Excel</td>
+<td align="left">Нет live-алертов, ошибки FIFO</td>
+</tr>
+<tr>
+<td align="left">Resort spa</td>
+<td align="left">Zenoti</td>
+<td align="left">Дорого, не фокус standalone в РФ</td>
+</tr>
+<tr>
+<td align="left"><strong>Banya-Digital</strong></td>
+<td align="left">—</td>
+<td align="left">Ops + P&amp;L + yield + kitchen + FIFO</td>
+</tr>
+</tbody></table>
+<p><strong>TAM / SAM / SOM (качественно):</strong> крупный растущий рынок wellness; SAM — сотни комплексов от 4 зон с F&B; SOM за 12 месяцев — <strong>3–8 пилотов</strong> при ручных продажах.</p>
+<hr>
+<h3>A.3 Позиционирование и пробелы → очередь</h3>
+<p><strong>Задача владельца (JTBD):</strong> за 15–30 минут после смены понять P&amp;L по зонам и операционные сбои без недельной сводки в Excel.</p>
+<table>
+<thead>
+<tr>
+<th align="left">Приоритет</th>
+<th align="left">Задачи</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><strong>P0</strong></td>
+<td align="left">T-011 finance input · T-012 FIFO UI · T-013 checklists · T-014 pilot reglement · T-017 SME brief</td>
+</tr>
+<tr>
+<td align="left"><strong>P1</strong></td>
+<td align="left">T-010 CRM · T-009 auth · T-018 resolve kitchen · T-019 plan/fact · T-025 brief update</td>
+</tr>
+<tr>
+<td align="left"><strong>P2</strong> (после утверждения Human)</td>
+<td align="left">T-020 zone types + urban seed · T-021 retail COGS · T-022 seasonality · T-023/T-024 export/YC (BLOCKED)</td>
+</tr>
+</tbody></table>
+<hr>
+<h3>A.4 Риски и anti-features (взгляд SME)</h3>
+<p>Не превращаться в «ещё одну CRM записи»; не обещать в v1 AI pricing, полный склад всех SKU, мультифилиал и универсальный wellness ERP.</p>
+<p><strong>Смягчение:</strong> не стартовать пилот без T-011…T-013; второй seed для urban SPA без органики.</p>
+<hr>
+<h2>3. Часть B — Предложения по ролям</h2>
+<p><a id="part-b"></a></p>
+<p>Ниже — черновики из <a href="team-proposals-spa-segment.md"><code>team-proposals-spa-segment.md</code></a>. Обновите пункты при необходимости и заполните таблицу «Правки».</p>
+<hr>
+<div class="role-section"><h3><strong>Роль: SME</strong></h3>
+<p><a id="role-sme"></a></p>
+<p>Отраслевой взгляд на смену, скрытые потери и KPI, которые владелец должен видеть с первого экрана.</p>
+<p><strong>Текущие предложения</strong></p>
+<ul>
+<li><strong>День из жизни (08:00–23:00):</strong> пик заездов, конфликт парная/кухня, 22:30–23:30 — до 45 минут сводки в Excel; цель — <strong>не больше 30 минут</strong> за счёт чеклиста и KPI.</li>
+<li><strong>Скрытая боль «левый» гость:</strong> расхождение брони и факта по залу; дисциплина CRM (T-010).</li>
+<li><strong>Списание органики без партии:</strong> перед закрытием смены обязателен FIFO OUT (T-012).</li>
+<li><strong>Семь KPI на первом экране:</strong> выручка к вчерашнему дню, yield итого и худший зал, маржа %, число критических алертов, kitchen↔SPA, склад, чеклист N/M.</li>
+<li><strong>Anti-features:</strong> зарплаты мастеров в MVP; универсальная CRM записи; Роспотребнадзор без регламента; мультифилиал в продажах.</li>
+<li><strong>Критика generic ERP:</strong> Odoo и Битрикс — сотни справочников до первого алерта; YCLIENTS заточен под мастера, а не под <strong>зал как P&amp;L</strong>.</li>
+</ul>
+<p><strong>Правки от роли</strong></p>
+<table>
+<thead>
+<tr>
+<th align="left">Статус</th>
+<th align="left">Комментарий</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">☐ OK · ☐ Нужна правка</td>
+<td align="left"><em>уточнения полевых KPI, day-in-life, anti-features</em></td>
+</tr>
+</tbody></table>
+<p><strong>Правки</strong></p>
+<table>
+<thead>
+<tr>
+<th align="left">Дата</th>
+<th align="left">Автор</th>
+<th align="left">Изменение</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+</tbody></table>
+</div><hr>
+<div class="role-section"><h3><strong>Роль: CMO / Growth</strong></h3>
+<p><a id="role-cmo"></a></p>
+<p>ICP, каналы на 90 дней, воронка оператора и гипотезы по unit economics — без B2C performance на старте.</p>
+<p><strong>Текущие предложения</strong></p>
+<ul>
+<li><strong>ICP B2B:</strong> (A) премиум-баня + кухня; (B) urban-термы; (C) реконструкция — не салоны и не сети 15+ точек без tenant.</li>
+<li><strong>Каналы 90 дней:</strong> Telegram и WhatsApp владельцев; fit-out подрядчики; консультанты запуска; не performance B2C; 2–3 кейса «−30% на закрытие смены».</li>
+<li><strong>AARRR оператора:</strong> demo 15 мин → Activation (T-011) → Retention (утренний ритуал D7) → Referral после пилота; ARPU setup + MRR на комплекс.</li>
+<li><strong>LTV:CAC (оценка на салфетке):</strong> ARPU 25–45 тыс. ₽/мес, LTV ~480–860 тыс. ₽, CAC 120–200 тыс. ₽ → LTV:CAC ~2,4–4,3; paid — после ≥3 кейсов.</li>
+<li><strong>Аналитика (PostHog OSS):</strong> <code>demo_opened</code>, <code>kpi_viewed</code>, <code>alert_clicked</code>, <code>finance_line_created</code>, <code>fifo_out_completed</code>, <code>checklist_item_toggled</code>, <code>pilot_week_N</code> — без PII.</li>
+<li><strong>GTM-сообщение:</strong> «Запись остаётся. Пульт смены: маржа, yield, кухня↔SPA, склад — 8 недель с метриками в договоре».</li>
+</ul>
+<p><strong>Правки от роли</strong></p>
+<table>
+<thead>
+<tr>
+<th align="left">Статус</th>
+<th align="left">Комментарий</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">☐ OK · ☐ Нужна правка</td>
+<td align="left"><em>каналы, сообщение, события аналитики</em></td>
+</tr>
+</tbody></table>
+<p><strong>Правки</strong></p>
+<table>
+<thead>
+<tr>
+<th align="left">Дата</th>
+<th align="left">Автор</th>
+<th align="left">Изменение</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+</tbody></table>
+</div><hr>
+<div class="role-section"><h3><strong>Роль: PM</strong></h3>
+<p><a id="role-pm"></a></p>
+<p>Стратегия, эпики, критерии приёмки и граница пилота против фазы 2 — в привязке к очереди T-0xx.</p>
+<p><strong>Текущие предложения</strong></p>
+<ul>
+<li><strong>Strategy:</strong> ICP §3.1 analysis → <code>product-brief.md</code> после утверждения; <strong>один</strong> North Star на пилот — margin daily <strong>или</strong> −30% на закрытие смены.</li>
+<li><strong>Эпики:</strong> E1 Pilot-ready (T-011…014); E2 CRM+auth (T-010, T-009); E3 Segment SPA (T-018–T-020); E4 Integrations BLOCKED (T-023, T-024).</li>
+<li><strong>Темы AC:</strong> KPI из PostgreSQL; интерфейс на русском; touch ≥44px; явный out of scope.</li>
+<li><strong>Приоритизация:</strong> P0 — T-011…014, T-017; P1 — T-010, T-009, T-018, T-019, T-025; P2 — остальное.</li>
+<li><strong>Пилот vs фаза 2:</strong> 8 недель = один комплекс, живой ввод, без API YCLIENTS; маркетинг фазы 2 — только после DONE E1.</li>
+<li><strong>People:</strong> T-014 — роли owner/ops/склад, еженедельная сверка остатков.</li>
+</ul>
+<p><strong>Правки от роли</strong></p>
+<table>
+<thead>
+<tr>
+<th align="left">Статус</th>
+<th align="left">Комментарий</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">☐ OK · ☐ Нужна правка</td>
+<td align="left"><em>приоритеты, эпики, OMTM</em></td>
+</tr>
+</tbody></table>
+<p><strong>Правки</strong></p>
+<table>
+<thead>
+<tr>
+<th align="left">Дата</th>
+<th align="left">Автор</th>
+<th align="left">Изменение</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+</tbody></table>
+</div><hr>
+<div class="role-section"><h3><strong>Роль: IT-Architect</strong></h3>
+<p><a id="role-architect"></a></p>
+<p>Стек, tenant, auth и интеграции — с явными BLOCKED и границами GTM.</p>
+<p><strong>Текущие предложения</strong></p>
+<ul>
+<li><strong>Stack:</strong> Next.js monolith + Prisma 7 + PostgreSQL достаточно для одного tenant; PostHog/Umami + Listmonk — отдельные compose на VPS.</li>
+<li><strong>Multi-tenant:</strong> фаза 3+ <code>Organization</code> + <code>tenantId</code>; не обещать в GTM до ADR.</li>
+<li><strong>Auth T-009:</strong> по умолчанию <strong>Auth.js v5</strong> + роли owner/ops/warehouse/crm; запись в finance — owner (+ делегирование).</li>
+<li><strong>Интеграции:</strong> YCLIENTS read-only (T-024 BLOCKED); 1С CSV export (T-023); касса ФЗ-54 — вне scope.</li>
+<li><strong>Модель:</strong> <code>Hall.zoneType</code>; опционально <code>Staff</code>; <code>Booking.source</code> = MANUAL | YCLIENTS.</li>
+</ul>
+<p><strong>Правки от роли</strong></p>
+<table>
+<thead>
+<tr>
+<th align="left">Статус</th>
+<th align="left">Комментарий</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">☐ OK · ☐ Нужна правка</td>
+<td align="left"><em>ADR auth, analytics host, tenant</em></td>
+</tr>
+</tbody></table>
+<p><strong>Правки</strong></p>
+<table>
+<thead>
+<tr>
+<th align="left">Дата</th>
+<th align="left">Автор</th>
+<th align="left">Изменение</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+</tbody></table>
+</div><hr>
+<div class="role-section"><h3><strong>Роль: UI/UX</strong></h3>
+<p><a id="role-ui"></a></p>
+<p>White-label, структура дашборда и мобильная смена — с доступностью и двумя визуальными пресетами.</p>
+<p><strong>Текущие предложения</strong></p>
+<ul>
+<li><strong>White-label:</strong> <code>NEXT_PUBLIC_VENUE_NAME</code>; пресеты <strong>«Баня»</strong> (wood/amber) и <strong>«Термы»</strong> (slate/teal).</li>
+<li><strong>IA дашборда:</strong> KPI 4-up → критические алерты (sticky на mobile) → yield → ops → чеклисты; drill-down в finance по клику.</li>
+<li><strong>Мобильная смена:</strong> bottom sheet алертов; крупные toggle T-013; скрыть finance для роли ops после auth.</li>
+<li><strong>a11y:</strong> WCAG AA на KPI; <code>aria-live</code> для алертов; русский текст без CAPS.</li>
+<li><strong>Urban SPA:</strong> иконки зон; empty state FIFO, не нулевые заглушки.</li>
+<li><strong>Демо:</strong> бейдж «Демо-данные»; tooltip yield «цель пилота ~60%».</li>
+</ul>
+<p><strong>Правки от роли</strong></p>
+<table>
+<thead>
+<tr>
+<th align="left">Статус</th>
+<th align="left">Комментарий</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">☐ OK · ☐ Нужна правка</td>
+<td align="left"><em>IA, темы, mobile</em></td>
+</tr>
+</tbody></table>
+<p><strong>Правки</strong></p>
+<table>
+<thead>
+<tr>
+<th align="left">Дата</th>
+<th align="left">Автор</th>
+<th align="left">Изменение</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+</tbody></table>
+</div><hr>
+<div class="role-section"><h3><strong>Роль: Developer</strong></h3>
+<p><a id="role-dev"></a></p>
+<p>Порядок реализации P0, пробелы в модели, API и оценки — без работ «до пилота» из списка anti-scope.</p>
+<p><strong>Текущие предложения</strong></p>
+<ul>
+<li><strong>Порядок:</strong> T-011 (M) → T-012 (L) → T-013 (M) → T-010 (L) → T-009 (L, после ADR) → T-018 (M).</li>
+<li><strong>Пробелы в модели:</strong> <code>Hall.zoneType</code>; <code>OperationalAlert.resolvedAt</code>; <code>RevenuePlan</code>; расширение <code>InventoryItem.category</code>.</li>
+<li><strong>API:</strong> <code>POST /api/finance/revenue-lines</code>, <code>POST /api/inventory/out</code>, <code>PATCH</code> checklist items, <code>PATCH</code> alerts resolve — thin routes → <code>modules/*/services/</code>.</li>
+<li><strong>Оценки эпиков:</strong> E1 L; E2 L; E3 M; E4 L BLOCKED.</li>
+<li><strong>Seed:</strong> <code>seed-urban-spa.ts</code> — без сено/пихты, F&amp;B, kitchen off (M).</li>
+<li><strong>Не делать до пилота:</strong> multi-tenant, WebSocket, guest app, AI pricing.</li>
+</ul>
+<p><strong>Правки от роли</strong></p>
+<table>
+<thead>
+<tr>
+<th align="left">Статус</th>
+<th align="left">Комментарий</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">☐ OK · ☐ Нужна правка</td>
+<td align="left"><em>оценки, API, порядок</em></td>
+</tr>
+</tbody></table>
+<p><strong>Правки</strong></p>
+<table>
+<thead>
+<tr>
+<th align="left">Дата</th>
+<th align="left">Автор</th>
+<th align="left">Изменение</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+</tbody></table>
+</div><hr>
+<div class="role-section"><h3><strong>Роль: QA</strong></h3>
+<p><a id="role-qa"></a></p>
+<p>Сценарии «премиум-баня» и «urban SPA», темы регресса и UAT на 8 недель пилота.</p>
+<p><strong>Текущие предложения</strong></p>
+<ul>
+<li><strong>Сценарий «премиум-баня»:</strong> KPI = SQL; RevenueLine → margin; FIFO OUT → alert; checklist N/M; kitchen conflict + resolve (T-018).</li>
+<li><strong>Сценарий «urban SPA»:</strong> пустой FIFO — OK; нет kitchen alert; PRODUCT line в finance.</li>
+<li><strong>Темы:</strong> 100% P0 KPI из БД; валидация RU; TZ Europe/Moscow; graceful без <code>DATABASE_URL</code>.</li>
+<li><strong>Demo vs prod:</strong> запрет <code>db:seed</code> на production; баннер «не финансовая отчётность»; без реальных телефонов в скриншотах.</li>
+<li><strong>UAT 8 недель:</strong> чеклисты неделя 1/4/8 в <code>qa-checklist.md</code> § Pilot.</li>
+<li><strong>Auth:</strong> матрица ролей — ops без finance write; warehouse без экспорта PII из CRM.</li>
+</ul>
+<p><strong>Правки от роли</strong></p>
+<table>
+<thead>
+<tr>
+<th align="left">Статус</th>
+<th align="left">Комментарий</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">☐ OK · ☐ Нужна правка</td>
+<td align="left"><em>сценарии, UAT</em></td>
+</tr>
+</tbody></table>
+<p><strong>Правки</strong></p>
+<table>
+<thead>
+<tr>
+<th align="left">Дата</th>
+<th align="left">Автор</th>
+<th align="left">Изменение</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+</tbody></table>
+</div><hr>
+<div class="role-section"><h3><strong>Роль: DevOps / SRE</strong></h3>
+<p><a id="role-devops"></a></p>
+<p>Хостинг пилота, резервное копирование, 152-ФЗ и мониторинг — с разделением demo и paid tier.</p>
+<p><strong>Текущие предложения</strong></p>
+<ul>
+<li><strong>Пилоты:</strong> Vercel+Neon — demo на 1–2 объекта; self-host (Coolify/VPS) — paid tier при требовании хранения данных в РФ.</li>
+<li><strong>Backup:</strong> Neon PITR или <code>pg_dump</code> daily → S3-compatible; RPO 24h / RTO 4h.</li>
+<li><strong>152-ФЗ:</strong> ПДн гостей — БД в РФ на production; политика + согласие CRM; решение Human/legal по Neon/Vercel DPA.</li>
+<li><strong>Monitoring:</strong> Uptime Kuma / Healthchecks <code>/api/health</code>; Grafana + Postgres exporter; Telegram при 5xx.</li>
+<li><strong>CI/CD:</strong> GH Actions lint/build/migrate check; preview на PR; prod — tag + manual approval.</li>
+<li><strong>Секреты:</strong> не в repo; ротация при утечке demo URL.</li>
+</ul>
+<p><strong>Правки от роли</strong></p>
+<table>
+<thead>
+<tr>
+<th align="left">Статус</th>
+<th align="left">Комментарий</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">☐ OK · ☐ Нужна правка</td>
+<td align="left"><em>хостинг пилота, backup, compliance</em></td>
+</tr>
+</tbody></table>
+<p><strong>Правки</strong></p>
+<table>
+<thead>
+<tr>
+<th align="left">Дата</th>
+<th align="left">Автор</th>
+<th align="left">Изменение</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+</tbody></table>
+</div><hr>
+<h2>4. Часть C — Решения Human Architect</h2>
+<p><a id="part-c"></a></p>
+<blockquote>
+<p>Только Human отмечает <code>[x]</code>. Рекомендации PM — в колонке «Рекомендация».</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th align="center">#</th>
+<th align="left">Решение</th>
+<th align="left">Варианты</th>
+<th align="left">Рекомендация PM</th>
+<th align="left">Решение Human</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">1</td>
+<td align="left"><strong>ICP сегмента</strong></td>
+<td align="left">A) Премиум-баня + кухня · B) Urban-термы · C) Оба + два seed</td>
+<td align="left"><strong>C</strong></td>
+<td align="left">[ ] A [ ] B [ ] C</td>
+</tr>
+<tr>
+<td align="center">2</td>
+<td align="left"><strong>North Star пилота (8 нед)</strong></td>
+<td align="left">A) Daily margin visibility · B) −30% закрытие смены</td>
+<td align="left"><strong>A</strong> primary; <strong>B</strong> co-metric в T-014</td>
+<td align="left">[ ] A [ ] B [ ] оба</td>
+</tr>
+<tr>
+<td align="center">3</td>
+<td align="left"><strong>T-018…T-025 в queue</strong></td>
+<td align="left">Все · Только T-018–T-020 · Отложить</td>
+<td align="left"><strong>T-018–T-020</strong> после DONE T-011…T-013</td>
+<td align="left">[ ]</td>
+</tr>
+<tr>
+<td align="center">4</td>
+<td align="left"><strong>T-017 SME в READY</strong></td>
+<td align="left">Да / Нет</td>
+<td align="left"><strong>Да</strong> — до outbound CMO</td>
+<td align="left">[ ] Да [ ] Нет</td>
+</tr>
+<tr>
+<td align="center">5</td>
+<td align="left"><strong>Auth (T-009)</strong></td>
+<td align="left">Auth.js · Clerk · Пилот без auth</td>
+<td align="left"><strong>Auth.js</strong></td>
+<td align="left">[ ] Auth.js [ ] Clerk [ ] Отложить</td>
+</tr>
+</tbody></table>
+<p><strong>Дополнительно (по желанию):</strong></p>
+<ul>
+<li><input disabled="" type="checkbox"> Подтвердить commit+push пакета docs на <code>master</code></li>
+<li><input disabled="" type="checkbox"> Разрешить пилот на <strong>Vercel+Neon</strong> без self-host для первого объекта</li>
+<li><input disabled="" type="checkbox"> Запретить маркетинг «мультифилиал» до ADR tenant</li>
+</ul>
+<hr>
+<h2>5. Часть D — Следующие шаги</h2>
+<p><a id="part-d"></a></p>
+<blockquote>
+<p><strong>P0 — блокирующие задачи до пилота</strong><br>Внешний пилот не стартует, пока не закрыты T-011, T-012, T-013, T-014 и не поднят T-017 (SME).</p>
+</blockquote>
+<h3>D.1 P0 — до утверждения и пилота (T-011…T-017)</h3>
+<table>
+<thead>
+<tr>
+<th align="left">ID</th>
+<th align="left">Задача</th>
+<th align="left">Роль</th>
+<th align="left">Статус</th>
+<th align="left">Действие</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><strong>T-011</strong></td>
+<td align="left">Finance: ввод RevenueLine / CostLine</td>
+<td align="left">Developer</td>
+<td align="left">READY</td>
+<td align="left">Реализовать ввод за business day</td>
+</tr>
+<tr>
+<td align="left"><strong>T-012</strong></td>
+<td align="left">Inventory: FIFO UI</td>
+<td align="left">Developer</td>
+<td align="left">READY</td>
+<td align="left">Экран лотов, OUT, пороги</td>
+</tr>
+<tr>
+<td align="left"><strong>T-013</strong></td>
+<td align="left">Operations: чеклисты смены</td>
+<td align="left">Developer</td>
+<td align="left">READY</td>
+<td align="left">N/M, toggle из БД</td>
+</tr>
+<tr>
+<td align="left"><strong>T-014</strong></td>
+<td align="left">Регламент пилота 8 нед</td>
+<td align="left">PM</td>
+<td align="left">READY</td>
+<td align="left">Документ RU, роли, метрики</td>
+</tr>
+<tr>
+<td align="left"><strong>T-017</strong></td>
+<td align="left">SME: operational brief</td>
+<td align="left">SME</td>
+<td align="left">BACKLOG → <strong>READY</strong>*</td>
+<td align="left"><code>industry-brief.md</code> по шаблону</td>
+</tr>
+</tbody></table>
+<p>*T-017 — поднять в READY после решения Human (часть C, п. 4).</p>
+<hr>
+<h3>D.2 После утверждения Human (T-018+)</h3>
+<table>
+<thead>
+<tr>
+<th align="left">ID</th>
+<th align="left">Задача</th>
+<th align="left">Роль</th>
+<th align="left">Приоритет</th>
+<th align="left">Зависимости</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">T-018</td>
+<td align="left">Resolve kitchen↔SPA + audit</td>
+<td align="left">Developer</td>
+<td align="left">P1</td>
+<td align="left">T-006, T-011…013</td>
+</tr>
+<tr>
+<td align="left">T-019</td>
+<td align="left">Plan/fact неделя на dashboard</td>
+<td align="left">Developer</td>
+<td align="left">P1</td>
+<td align="left">T-011</td>
+</tr>
+<tr>
+<td align="left">T-020</td>
+<td align="left">Hall zone types + seed urban SPA</td>
+<td align="left">Developer</td>
+<td align="left">P2</td>
+<td align="left">T-006</td>
+</tr>
+<tr>
+<td align="left">T-021</td>
+<td align="left">Retail COGS PRODUCT</td>
+<td align="left">Developer</td>
+<td align="left">P2</td>
+<td align="left">T-012</td>
+</tr>
+<tr>
+<td align="left">T-022</td>
+<td align="left">Seasonality calendar</td>
+<td align="left">PM/Dev</td>
+<td align="left">P2</td>
+<td align="left">T-019</td>
+</tr>
+<tr>
+<td align="left">T-023</td>
+<td align="left">Export CSV / 1С</td>
+<td align="left">Developer</td>
+<td align="left">P2 BLOCKED</td>
+<td align="left">Architect</td>
+</tr>
+<tr>
+<td align="left">T-024</td>
+<td align="left">YCLIENTS import</td>
+<td align="left">Developer</td>
+<td align="left">P2 BLOCKED</td>
+<td align="left">T-010, T-009</td>
+</tr>
+<tr>
+<td align="left">T-025</td>
+<td align="left">Обновить ICP в brief post-SME</td>
+<td align="left">PM</td>
+<td align="left">P1</td>
+<td align="left">T-017</td>
+</tr>
+</tbody></table>
+<p>PM добавляет строки T-018+ в <code>orchestration-queue.md</code> <strong>после</strong> отметок в части C.</p>
+<hr>
+<h3>D.3 Кто что делает после ревью</h3>
+<table>
+<thead>
+<tr>
+<th align="left">Роль</th>
+<th align="left">Действие</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><strong>Human Architect</strong></td>
+<td align="left">Закрыть часть C; разрешить T-017 READY и T-018+ в очередь</td>
+</tr>
+<tr>
+<td align="left"><strong>SME</strong></td>
+<td align="left">Правки §B SME → T-017 <code>industry-brief.md</code></td>
+</tr>
+<tr>
+<td align="left"><strong>CMO</strong></td>
+<td align="left">Правки §B CMO → черновик <code>marketing-brief.md</code></td>
+</tr>
+<tr>
+<td align="left"><strong>PM</strong></td>
+<td align="left">Журнал queue; T-014; T-025 после T-017; строки T-018+</td>
+</tr>
+<tr>
+<td align="left"><strong>IT-Architect</strong></td>
+<td align="left">ADR auth + analytics; unblock T-009</td>
+</tr>
+<tr>
+<td align="left"><strong>UI/UX</strong></td>
+<td align="left">White-label / темы «Термы» в backlog после E1</td>
+</tr>
+<tr>
+<td align="left"><strong>Developer</strong></td>
+<td align="left">T-011 → T-012 → T-013 (P0)</td>
+</tr>
+<tr>
+<td align="left"><strong>QA</strong></td>
+<td align="left">Регресс T-006 + сценарии §B QA; § Pilot в checklist</td>
+</tr>
+<tr>
+<td align="left"><strong>DevOps</strong></td>
+<td align="left"><code>devops-runbook.md</code>; health + backup для пилота</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>6. Журнал согласования</h2>
+<p><a id="changelog"></a></p>
+<table>
+<thead>
+<tr>
+<th align="left">Дата</th>
+<th align="left">Роль</th>
+<th align="left">Автор</th>
+<th align="left">Что изменили</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">26.05.2026</td>
+<td align="left">PM</td>
+<td align="left">muster-pm</td>
+<td align="left">Создан консолидированный документ из analysis + team-proposals</td>
+</tr>
+<tr>
+<td align="left">26.05.2026</td>
+<td align="left">Developer</td>
+<td align="left">muster-developer</td>
+<td align="left">Вёрстка для PDF: резюме, TOC, callouts, роли</td>
+</tr>
+<tr>
+<td align="left">26.05.2026</td>
+<td align="left">Copywriter</td>
+<td align="left">muster-copywriter</td>
+<td align="left">Редакционная вычитка RU: тон, термины, вступления к ролям</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+</tbody></table>
+<hr>
+<p><em>Дальше: каждая роль — часть B и строка в журнале; Human — часть C; PM — очередь и brief после утверждения.</em></p>
+
+</body>
+</html>
