@@ -5,7 +5,7 @@
 
 **Проект:** Banya-Digital ERP  
 **Архитектор (Human):** _ваше имя_  
-**Последнее обновление:** 2026-05-26 (PM: Product Map 3.10 в role-pm; T-015…T-016 BACKLOG)
+**Последнее обновление:** 2026-05-26 (SME: T-017 BACKLOG; Product Map 3.10 в role-pm)
 
 ---
 
@@ -18,6 +18,7 @@
 | UI/UX | `muster-ui-ux` | «Role: UI/UX» | `@role-ui-ux` |
 | QA | `muster-qa` | «Role: QA» | `@role-qa` |
 | Growth / CMO | `muster-growth-marketer` | «Role: CMO» / «Role: Growth» / «Роль: Директор по маркетингу» | `@role-growth-marketer` |
+| SME | `muster-sme` | «Role: SME» / «Role: Business Consultant» / «Роль: Прожжённый отраслевой бизнес-консультант» / «Role: Industry Expert» | `@role-sme` |
 
 Контекст из `knowledge-base/` подключайте через **@** (например `@knowledge-base/product-brief.md`).
 
@@ -55,6 +56,7 @@
 | T-014 | Pilot: регламент 8-недельного пилота (RU) | PM | READY | P1 | T-008 | `@docs/management-overview.md`, `@knowledge-base/product-brief.md` | |
 | T-015 | Product Map: Phase 2 discovery → brief + roadmap | PM | BACKLOG | P2 | T-014 | `@knowledge-base/product-map-workflow.md`, `@knowledge-base/product-brief.md` | |
 | T-016 | iGaming BiJi: Product Map onboarding (новый продукт) | PM | BACKLOG | P2 | — | `@knowledge-base/product-map-workflow.md` (шаблон), `@role-pm` | |
+| T-017 | SME: операционный brief бани (day-in-life, KPI, anti-features) | SME | BACKLOG | P1 | — | `@knowledge-base/industry-brief-template.md`, `@knowledge-base/product-brief.md`, `@role-sme` | |
 
 ---
 
@@ -234,6 +236,21 @@
 
 ---
 
+### T-017 — SME: операционный brief бани
+
+**Роль:** SME | **Статус:** BACKLOG
+
+**Acceptance criteria:**
+- [ ] `knowledge-base/industry-brief.md` заполнен по `@knowledge-base/industry-brief-template.md` (day-in-life, hidden pains, daily KPIs, anti-features, glossary)
+- [ ] `knowledge-base/operational-processes.md` — процессы смены, брони, закрытия кассы
+- [ ] `product-brief.md` § проблемы/персоны обновлены с handoff для PM
+- [ ] Top-5 MUST KPI на первом экране дашборда явно перечислены
+- [ ] Критика минимум 2 текущих гипотез PM/CMO (если есть в brief)
+
+**Notes:** SME идёт **до** раздувания backlog Phase 3+. Human может перевести в `READY` когда нужен operational discovery.
+
+---
+
 ### T-014 — Pilot reglement (8 недель)
 
 **Роль:** PM | **Deliverable:** `docs/pilot-reglement.md` (новый) + ссылки из `management-overview.md`
@@ -260,6 +277,7 @@
 | 2026-05-24 | Developer | T-006 DONE: PostgreSQL seed, dashboard live KPIs/alerts/ops, docker-compose |
 | 2026-05-26 | PM | Phase 3: T-009…T-014 в очередь; T-010…013 READY (Developer), T-014 READY (PM), T-009 BACKLOG до auth-решения |
 | 2026-05-26 | PM | Product Map 3.10: `@role-pm` + `product-map-workflow.md`; T-015 Phase 2 discovery BACKLOG; T-016 iGaming BiJi BACKLOG |
+| 2026-05-26 | SME | T-017 BACKLOG: операционный brief бани; `@role-sme` + industry-brief-template |
 
 ---
 
