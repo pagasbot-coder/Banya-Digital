@@ -86,7 +86,7 @@ vercel login
 | `AUTH_SECRET` | Случайная строка ≥32 байт: `openssl rand -base64 32` (или PowerShell — см. ниже). **Не коммитить.** |
 | `AUTH_URL` | `https://banya-digital.vercel.app` |
 | `NEXTAUTH_URL` | То же, что `AUTH_URL` (legacy alias Auth.js v5) |
-| `DEMO_STAFF_PASSWORD` | Пароль demo-персонала для seed; **тот же** при `npm run db:seed` и на Vercel |
+| `DEMO_STAFF_PASSWORD` | `banya-demo` — учебный пароль; **тот же** при `npm run db:seed` и на Vercel |
 
 Применить для: **Production** (и при желании Preview с тем же Neon или отдельной БД).
 
@@ -154,7 +154,7 @@ vercel --prod --yes
 | `admin@demo.local` | admin |
 | `warehouse@demo.local` | warehouse |
 
-Пароль: значение **`DEMO_STAFF_PASSWORD`** в Vercel → Settings → Environment Variables (не публикуйте в чатах).
+**Учебный вход:** `owner@demo.local` / пароль `banya-demo` (видно на `/login`).
 
 **Тест:** https://banya-digital.vercel.app/login → вход → редирект на `/dashboard`.
 

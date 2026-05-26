@@ -4,6 +4,7 @@ import { useState } from "react";
 import { signIn } from "next-auth/react";
 import { useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
+import { DEMO_STAFF_EMAIL, DEMO_STAFF_PASSWORD } from "@/lib/demo-auth";
 import { STAFF_ROLE_LABELS, type StaffRoleName } from "@/lib/auth/roles";
 
 type DemoAccount = {
@@ -51,6 +52,18 @@ export function LoginForm({ demoAccounts }: LoginFormProps) {
 
   return (
     <div className="w-full max-w-md space-y-6">
+      <div className="rounded-xl border border-accent/40 bg-accent/5 p-4 text-sm">
+        <p className="font-medium text-foreground">Учебный доступ (демо)</p>
+        <p className="mt-2 text-foreground">
+          Демо:{" "}
+          <span className="font-mono">{DEMO_STAFF_EMAIL}</span> / пароль:{" "}
+          <span className="font-mono font-semibold">{DEMO_STAFF_PASSWORD}</span>
+        </p>
+        <p className="mt-1 text-xs text-muted-foreground">
+          Один пароль для всех demo-аккаунтов после <code className="rounded bg-muted px-1">db:seed</code>
+        </p>
+      </div>
+
       <form onSubmit={onSubmit} className="space-y-4 rounded-xl border border-border bg-card p-6 shadow-sm">
         <div className="space-y-2">
           <label htmlFor="email" className="text-sm font-medium text-foreground">
@@ -62,8 +75,9 @@ export function LoginForm({ demoAccounts }: LoginFormProps) {
             type="email"
             autoComplete="username"
             required
+            defaultValue={DEMO_STAFF_EMAIL}
             className="flex h-9 w-full rounded-lg border border-input bg-background px-3 text-sm outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
-            placeholder="owner@demo.local"
+            placeholder={DEMO_STAFF_EMAIL}
           />
         </div>
         <div className="space-y-2">
@@ -76,6 +90,7 @@ export function LoginForm({ demoAccounts }: LoginFormProps) {
             type="password"
             autoComplete="current-password"
             required
+            defaultValue={DEMO_STAFF_PASSWORD}
             className="flex h-9 w-full rounded-lg border border-input bg-background px-3 text-sm outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
           />
         </div>
@@ -89,25 +104,22 @@ export function LoginForm({ demoAccounts }: LoginFormProps) {
         </Button>
       </form>
 
-      {demoAccounts.length > 0 ? (
+      {demoAccounts.length > 1 ? (
         <div className="rounded-xl border border-dashed border-border/80 bg-muted/30 p-4 text-sm text-muted-foreground">
-          <p className="font-medium text-foreground">Демо-аккаунты (после db:seed)</p>
+          <p className="font-medium text-foreground">Другие роли (тот же пароль)</p>
           <ul className="mt-2 space-y-1">
-            {demoAccounts.map((account) => (
-              <li key={account.email}>
-                <span className="text-foreground">{account.email}</span>
-                <span className="text-muted-foreground">
-                  {" "}
-                  — {STAFF_ROLE_LABELS[account.role]}
-                </span>
-              </li>
-            ))}
+            {demoAccounts
+              .filter((account) => account.email !== DEMO_STAFF_EMAIL)
+              .map((account) => (
+                <li key={account.email}>
+                  <span className="font-mono text-foreground">{account.email}</span>
+                  <span className="text-muted-foreground">
+                    {" "}
+                    — {STAFF_ROLE_LABELS[account.role]}
+                  </span>
+                </li>
+              ))}
           </ul>
-          <p className="mt-2 text-xs">
-            Пароль: переменная <code className="rounded bg-muted px-1">DEMO_STAFF_PASSWORD</code> в{" "}
-            <code className="rounded bg-muted px-1">.env</code> (см.{" "}
-            <code className="rounded bg-muted px-1">.env.example</code>)
-          </p>
         </div>
       ) : null}
     </div>

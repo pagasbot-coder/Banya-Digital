@@ -27,7 +27,7 @@ function minutesAgo(minutes: number): Date {
 
 /** Демо-пользователи персонала (пароль только в .env, не в репозитории). */
 async function seedStaffUsers(prisma: PrismaClient) {
-  const password = process.env.DEMO_STAFF_PASSWORD ?? "demo-change-me";
+  const password = process.env.DEMO_STAFF_PASSWORD ?? "banya-demo";
   const passwordHash = await bcrypt.hash(password, 10);
 
   const staff: { email: string; name: string; role: StaffRole }[] = [

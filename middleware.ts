@@ -1,6 +1,7 @@
 import NextAuth from "next-auth";
 import { NextResponse } from "next/server";
 import { authConfig } from "./auth.config";
+import { isDemoSkipAuth } from "./lib/demo-auth";
 
 const PROTECTED_PREFIXES = [
   "/dashboard",
@@ -17,9 +18,17 @@ function isProtectedPath(pathname: string): boolean {
 
 const { auth } = NextAuth(authConfig);
 
-/** Redirect unauthenticated staff away from ERP routes. */
+/** Redirect unauthenticated staff away from ERP routes (unless demo bypass is on). */
 export default auth((req) => {
   const { pathname } = req.nextUrl;
+  const demoBypass = isDemoSkipAuth();
+
+  if (demoBypass) {
+    if (pathname === "/" || pathname === "/login") {
+      return NextResponse.redirect(new URL("/dashboard", req.nextUrl));
+    }
+    return NextResponse.next();
+  }
 
   if (pathname === "/") {
     const target = req.auth ? "/dashboard" : "/login";
