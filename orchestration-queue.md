@@ -64,7 +64,7 @@
 | T-022 | Seasonality calendar | PM | BACKLOG | P2 | T-019 | — | |
 | T-023 | Export CSV / 1С | Developer | BLOCKED | P2 | Architect ADR | — | |
 | T-024 | YCLIENTS import | Developer | BLOCKED | P2 | T-010, T-009 | — | |
-| T-025 | Обновить ICP в brief post-SME | PM | READY | P1 | T-017 | `@knowledge-base/industry-brief.md`, `product-brief.md` | |
+| T-025 | Обновить ICP в brief post-SME | PM | READY | P1 | T-017 | `@knowledge-base/industry-brief.md`, `product-brief.md` | **PARTIAL:** ICP premium-banya + WAMZ NSM (Human 2026-05-25); сверка industry-brief |
 
 ---
 
@@ -294,6 +294,8 @@
 | 2026-05-26 | PM | Сегмент SPA/бани: `knowledge-base/segment-spa-banya-analysis.md`; ICP/позиционирование в `product-brief.md`; кандидаты T-018…T-025 (ожидают sign-off Human) |
 | 2026-05-26 | Developer | D.1 P0: T-011 finance forms, T-012 inventory FIFO UI, T-013 checklist toggle; T-014/T-017 docs; T-018…T-025 в queue; build OK |
 | 2026-05-26 | Developer | T-009 остаётся BACKLOG — Auth.js в architecture.md, ждёт Human ч. C п.5 |
+| 2026-05-25 | Human Architect | Часть C: ICP **A** премиум-баня; North Star **WAMZ** (Weekly Active Managed Zones) |
+| 2026-05-26 | PM | T-025 PARTIAL: `product-brief` ICP+WAMZ; `SPA-SEGMENT-TEAM-REVIEW` ч.C; `pilot-reglement`; workflow ICP/NSM closed |
 
 ### D.3 — владение задачами (после SPA team review)
 

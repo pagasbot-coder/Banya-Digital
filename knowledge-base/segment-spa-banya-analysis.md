@@ -281,11 +281,11 @@ quadrantChart
 
 ## 4. Решения для Human Architect
 
-1. **Подтвердить ICP** из §3.1 или скорректировать (urban-only vs баня+кухня).  
-2. **North Star пилота:** daily margin visibility **или** −30% close shift time — выбрать один OMTM.  
-3. **Добавить T-018…T-025** в очередь или сжать в один epic «Segment SPA».  
-4. **Поднять T-017 (SME) в READY** до масштабного маркетинга.  
-5. **Commit:** по запросу — `docs: SPA/banya segment analysis`.
+1. ~~**Подтвердить ICP**~~ → **DONE 2026-05-25:** премиум-баня + кухня (вариант A), не «оба» как primary.  
+2. ~~**North Star пилота**~~ → **DONE 2026-05-25:** **WAMZ** (Weekly Active Managed Zones); см. `product-brief.md`. Co-metrics: −30% закрытие смены, daily margin.  
+3. **T-018…T-025** — в очереди; T-025 PARTIAL (ICP+WAMZ).  
+4. **T-017 (SME)** — DONE.  
+5. **Auth (T-009)** — ждёт Human ч. C п.5 (`SPA-SEGMENT-TEAM-REVIEW.md`).
 
 ---
 

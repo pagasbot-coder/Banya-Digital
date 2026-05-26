@@ -23,6 +23,7 @@
 |------|-----------|--------------|------|------------------|
 | 2026-05-26 | PM (agent) | Delivery / Knowledge | Интеграция Product Map 3.10 в `@role-pm`; stub workflow | T-015 (BACKLOG) |
 | **2026-05-25** | Human (PDF) + PM (agent) | Strategy → Delivery (full map skim) | Структура 4 фаз + 64 тем; layer→repo mapping; Phase 2 гипотезы в brief | **T-015** (частично) |
+| **2026-05-25** | Human Architect (Pavel) | Strategy / Analysis | ICP **премиум-баня**; North Star **WAMZ** → `product-brief`, Part C SPA review | T-025 PARTIAL |
 
 ### Сессия 2026-05-25 — insights
 
@@ -31,7 +32,7 @@
 3. Для Banya на пилоте критичны **Analysis**: Product Metrics, Unit Economics, MVP/Maturity; **Delivery**: Prioritization, Product Roadmaps.
 4. **3.10 new:** Monetization & Pricing — для ERP не P0; margin/pricing залов уже в finance module.
 5. **Product Ops** (3.6) — аналог нашего `orchestration-queue.md` + журнал; усилить после T-014.
-6. **ICP** (3.7) — уточнить с Architect: один комплекс, премиум сегмент, роли owner/ops/warehouse/crm.
+6. **ICP** (3.7) — **закрыто 2026-05-25:** премиум-баня, 1 tenant; urban-термы — не primary.
 7. Навигация **Skills** (15) и **Grades** — для оценки зрелости команды пилота, не для backlog.
 8. Детальные гайды — только ссылки; в git храним **артефакты**, не копию PDF.
 
@@ -62,8 +63,8 @@
 
 - [ ] **Auth** (T-009): провайдер и роли — блокирует RBAC Phase 2.
 - [ ] **Phase 2 scope** после 8-недельного пилота: multi-hall reporting, notifications, guest app — что In/Out?
-- [ ] **ICP:** подтвердить формулировку «премиум баня, 1 tenant» для positioning (PDF: Ideal Customer Profile).
-- [ ] **North Star / OMTM:** один метрика пилота = margin visibility daily или −30% close shift time?
+- [x] **ICP:** премиум-баня, 1 tenant — Human **2026-05-25** (не urban-термы как primary).
+- [x] **North Star / OMTM:** **WAMZ** — Human **2026-05-25**; определение в `product-brief.md`.
 - [ ] **Monetization & Pricing (3.10):** нужен ли модуль ценообразования залов/программ в ERP или вне scope?
 
 ---
