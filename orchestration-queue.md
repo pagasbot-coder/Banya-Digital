@@ -48,7 +48,7 @@
 | T-005 | Чеклист QA для foundation | QA | DONE | P2 | T-001 | `@knowledge-base/qa-checklist.md` | PASS: build/lint/db:generate OK; routes 200; dashboard KPI+alerts+ops; hydration note (Cursor refs) non-blocking |
 | T-006 | Wire dashboard KPIs to PostgreSQL + seed data | Developer | DONE | P0 | T-004, T-002, T-003 | `@knowledge-base/product-brief.md` (AC T-006), `@prisma/schema.prisma` | docker-compose, rich seed, dashboard live KPIs/alerts/ops, `db:seed`, build OK |
 | T-008 | Обзоры docs: technical + management (RU) | PM | DONE | P2 | T-006 | `@docs/technical-overview.md`, `@docs/management-overview.md` | Черновики для dev и руководства; roadmap обновлён |
-| T-009 | Auth: роли и доступ к модулям (решение + scaffold) | Developer | BACKLOG | P1 | T-006 | `@knowledge-base/architecture.md`, `@docs/roadmap.md` | |
+| T-009 | Auth: Auth.js v5 staff sessions + middleware | Developer | DONE | P1 | T-006 | `@knowledge-base/architecture-decisions.md` ADR-001 | Auth.js + Prisma; roles owner/ops/admin/warehouse; `/login`; seed @demo.local; build OK |
 | T-010 | CRM: CRUD гостя + создание/редактирование брони | Developer | READY | P1 | T-006 | `@knowledge-base/product-brief.md`, `modules/crm/` | Wave 2 (D.2) — после P0 pilot exit |
 | T-011 | Finance: ввод RevenueLine / CostLine за business day | Developer | DONE | P0 | T-006 | `@knowledge-base/product-brief.md`, `modules/finance/` | Формы на `/finance`, server actions, revalidate dashboard |
 | T-012 | Inventory: FIFO UI (лоты, движения, пороги) | Developer | DONE | P0 | T-006, T-002 | `@knowledge-base/architecture.md`, `modules/operations/inventory/` | `/operations/inventory`: партии, история, FIFO OUT; алерты на dashboard |
@@ -147,19 +147,19 @@
 
 ### T-009 — Auth (роли и доступ)
 
-**Роль:** Developer | **Статус:** BACKLOG (ждёт решения Architect)
+**Роль:** Developer | **Статус:** DONE (Human Architect 2026-05-25)
 
 **Given/When/Then:**
-- **Given** выбранный провайдер (NextAuth / Clerk / custom JWT), **When** пользователь без роли `finance` открывает `/finance`, **Then** 403 или редирект на login.
-- **Given** роль `ops`, **When** открывает `/dashboard`, **Then** видит сводку без редактирования финансовых проводок (если так задокументировано).
+- **Given** Auth.js Credentials, **When** неавторизованный staff открывает `/finance`, **Then** редирект на `/login`.
+- **Given** роль `ops`, **When** входит и открывает `/dashboard`, **Then** видит сводку (finance write RBAC — backlog).
 
-**Checklist (после решения):**
-- [ ] ADR или Notes в `architecture.md`: провайдер, модель ролей (owner, ops, warehouse, crm)
-- [ ] `.env.example` дополнен переменными auth
-- [ ] Минимум 2 роли в seed для демо
-- [ ] `npm run build` / lint OK
+**Checklist:**
+- [x] ADR-001 `architecture-decisions.md`; `architecture.md` обновлён
+- [x] `.env.example`: `AUTH_SECRET`, `AUTH_URL`, `DEMO_STAFF_PASSWORD`
+- [x] 4 роли в seed: owner, ops, admin, warehouse @demo.local
+- [x] `npm run build` / lint OK
 
-**Notes:** Roadmap Phase 1 — «Auth (decision deferred)». PM ставит `READY` только после ответа Architect (провайдер + список ролей).
+**Notes:** YCLIENTS (T-024) — отдельный sprint, остаётся BLOCKED. Module-level RBAC — после T-009.
 
 ---
 
@@ -293,7 +293,8 @@
 | 2026-05-26 | SME | T-017 BACKLOG: операционный brief бани; `@role-sme` + industry-brief-template |
 | 2026-05-26 | PM | Сегмент SPA/бани: `knowledge-base/segment-spa-banya-analysis.md`; ICP/позиционирование в `product-brief.md`; кандидаты T-018…T-025 (ожидают sign-off Human) |
 | 2026-05-26 | Developer | D.1 P0: T-011 finance forms, T-012 inventory FIFO UI, T-013 checklist toggle; T-014/T-017 docs; T-018…T-025 в queue; build OK |
-| 2026-05-26 | Developer | T-009 остаётся BACKLOG — Auth.js в architecture.md, ждёт Human ч. C п.5 |
+| 2026-05-26 | Developer | T-009 DONE: Auth.js v5 staff auth, middleware, seed, ADR-001 |
+| 2026-05-25 | Human Architect | T-009 Auth.js APPROVED; T-018+ wave 2; T-017 ACCEPTED → T-025 |
 | 2026-05-25 | Human Architect | Часть C: ICP **A** премиум-баня; North Star **WAMZ** (Weekly Active Managed Zones) |
 | 2026-05-26 | PM | T-025 PARTIAL: `product-brief` ICP+WAMZ; `SPA-SEGMENT-TEAM-REVIEW` ч.C; `pilot-reglement`; workflow ICP/NSM closed |
 
@@ -301,13 +302,13 @@
 
 | Роль | Task IDs |
 |------|----------|
-| **Human Architect** | Часть C sign-off; unblock T-009; T-023 ADR |
+| **Human Architect** | Часть C ✅; T-023 ADR |
 | **SME** | T-017 ✅; правки `industry-brief.md` |
 | **CMO** | `marketing-brief.md` (черновик из § CMO) |
-| **PM** | T-014 ✅; T-025; T-022; journal queue |
-| **IT-Architect** | T-009 ADR Auth.js; analytics; unblock T-023 |
+| **PM** | T-014 ✅; T-025 READY; T-022; journal queue |
+| **IT-Architect** | Analytics ADR; unblock T-023 |
 | **UI/UX** | White-label «Термы» backlog post-E1 |
-| **Developer** | T-011…013 ✅; T-010, T-018, T-019, T-020 READY |
+| **Developer** | T-009 ✅; T-010, T-018 READY; T-019, T-020 READY; **T-024 BLOCKED** (YCLIENTS — не в этом спринте) |
 | **QA** | Регресс T-006 + pilot UAT `qa-checklist.md` |
 | **DevOps** | `devops-runbook.md`; health + backup пилота |
 

@@ -1,4 +1,5 @@
 import { AppShellNav } from "@/components/app-shell-nav";
+import { StaffSessionBar } from "@/components/auth/staff-session-bar";
 
 export const dynamic = "force-dynamic";
 
@@ -23,7 +24,8 @@ export default function AppGroupLayout({
         </div>
         <AppShellNav />
         <footer className="mt-auto border-t border-sidebar-border px-4 py-3 text-xs text-sidebar-foreground/60">
-          Операционная смена
+          <StaffSessionBar />
+          <p className="mt-3">Операционная смена</p>
         </footer>
       </aside>
       <main className="flex flex-1 flex-col overflow-auto bg-background">

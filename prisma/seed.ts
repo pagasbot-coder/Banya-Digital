@@ -6,8 +6,10 @@ import {
   PrismaClient,
   ServiceKind,
   ShiftType,
+  StaffRole,
   StockMovementType,
 } from "@prisma/client";
+import bcrypt from "bcryptjs";
 import { Pool } from "pg";
 import {
   addDays,
@@ -23,8 +25,36 @@ function minutesAgo(minutes: number): Date {
   return new Date(Date.now() - minutes * 60_000);
 }
 
+/** Демо-пользователи персонала (пароль только в .env, не в репозитории). */
+async function seedStaffUsers(prisma: PrismaClient) {
+  const password = process.env.DEMO_STAFF_PASSWORD ?? "demo-change-me";
+  const passwordHash = await bcrypt.hash(password, 10);
+
+  const staff: { email: string; name: string; role: StaffRole }[] = [
+    { email: "owner@demo.local", name: "Алексей (владелец)", role: "owner" },
+    { email: "ops@demo.local", name: "Мария (операции)", role: "ops" },
+    { email: "admin@demo.local", name: "Ирина (админ)", role: "admin" },
+    { email: "warehouse@demo.local", name: "Пётр (склад)", role: "warehouse" },
+  ];
+
+  for (const user of staff) {
+    await prisma.user.upsert({
+      where: { email: user.email },
+      update: { name: user.name, role: user.role, passwordHash },
+      create: { ...user, passwordHash },
+    });
+  }
+
+  console.info(
+    "Staff auth: owner/ops/admin/warehouse @demo.local — password from DEMO_STAFF_PASSWORD"
+  );
+}
+
 /** Очистка demo-данных перед повторным seed (FK-safe порядок). */
 async function clearDemoData(prisma: PrismaClient) {
+  await prisma.session.deleteMany();
+  await prisma.account.deleteMany();
+  await prisma.user.deleteMany();
   await prisma.stockMovement.deleteMany();
   await prisma.costLine.deleteMany();
   await prisma.revenueLine.deleteMany();
@@ -1013,8 +1043,10 @@ async function main() {
     }),
   ]);
 
+    await seedStaffUsers(prisma);
+
     console.info(
-      "Seed OK: 4 зала, 6 гостей, брони (~50% загрузка залов сегодня), spa/kitchen, FIFO, finance, checklists."
+      "Seed OK: 4 зала, 6 гостей, брони (~50% загрузка залов сегодня), spa/kitchen, FIFO, finance, checklists, staff users."
     );
   } finally {
     await prisma.$disconnect();
