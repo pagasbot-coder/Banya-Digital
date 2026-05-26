@@ -98,6 +98,29 @@
 
 ---
 
+## Phase 2 (post-pilot) — гипотезы из Product Map 3.10
+
+> Уточнить с Architect после T-014 (пилот 8 нед). Источник: PDF Product Map 3.10 + TASK Delivery/Analysis.
+
+**In (кандидаты P1→P0):**
+
+- Auth + роли (owner, ops, warehouse, crm) — тема Delivery / Stakeholder Analysis
+- Finance: отчёт по залу за период, углубление unit economics (Unit Economics Improvements)
+- CRM: полный CRUD + конфликты слотов (Backlog / Prioritization)
+- Operations: kitchen↔SPA sync в UI, чеклисты с ответственными
+- Inventory: прогноз исчерпания, закупки (лёгкий контур)
+- Product analytics: воронка пилота, dashboard без ручного refresh (Application Metrics)
+
+**Out (пока):**
+
+- Мультифилиальность, guest mobile app, AI pricing, GTM/Growth Hacking
+- Monetization & Pricing как отдельный SaaS-модуль (margin по залу уже в finance)
+- Web3, performance marketing, полная бухгалтерия
+
+**Pilot success (напоминание):** метрики в таблице выше; stop criteria — в `docs/pilot-reglement.md` (T-014).
+
+---
+
 ## Вне scope (v1)
 
 - Полная бухгалтерия, НДС, 1С / банк-интеграция
@@ -149,6 +172,8 @@
 
 ## Референсы / ссылки
 
+- `@knowledge-base/product-map-workflow.md` — discovery log, layer→repo
+- `@knowledge-base/product-map-notes-from-pdf.md` — структура Product Map 3.10 (PDF Human)
 - `@knowledge-base/architecture.md` — модули, Prisma-модели, FIFO и unit economics
 - `@knowledge-base/design-tokens.md` — layout dashboard, KPI ids
 - `@modules/dashboard/mock-kpis.ts` — контракт UI до T-006
