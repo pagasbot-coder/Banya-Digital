@@ -50,15 +50,24 @@ export function ChecklistsLinkCard({ summary }: ChecklistsLinkCardProps) {
           выполнено
         </p>
         <p className="text-xs text-muted-foreground">
-          Детальные пункты с галочками — на странице{" "}
-          <span className="text-foreground">Сводка</span>
+          Отмечайте пункты на{" "}
+          <span className="text-foreground">Сводке</span> — прогресс N/M обновится
+          здесь и на дашборде KPI.
         </p>
-        <Link
-          href="/dashboard"
-          className={cn(buttonVariants({ variant: "outline", size: "sm" }))}
-        >
-          Открыть чеклисты на сводке
-        </Link>
+        <div className="flex flex-wrap gap-2">
+          <Link
+            href="/dashboard"
+            className={cn(buttonVariants({ variant: "outline", size: "sm" }))}
+          >
+            Чеклисты на сводке
+          </Link>
+          <Link
+            href="/operations/inventory"
+            className={cn(buttonVariants({ variant: "outline", size: "sm" }))}
+          >
+            Склад FIFO
+          </Link>
+        </div>
       </CardContent>
     </Card>
   );

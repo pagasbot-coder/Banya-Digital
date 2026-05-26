@@ -36,13 +36,19 @@
 - [x] Guests list + today's bookings (`/crm`)
 - [ ] **T-010** — Guest detail / edit + booking CRUD — **READY**
 
-## Phase 3 — Input & pilot (queue T-009…T-014)
+## Phase 3 — Input & pilot (queue T-009…T-017)
 
-- [ ] **T-009** — Auth (BACKLOG — Architect decision)
-- [ ] **T-011** — Finance data entry — **READY**
-- [ ] **T-012** — Inventory FIFO UI — **READY**
-- [ ] **T-013** — Shift checklists completion — **READY**
-- [ ] **T-014** — Pilot reglement (PM) — **READY**
+- [ ] **T-009** — Auth (BACKLOG — ждёт Auth.js / Human, см. `architecture.md`)
+- [x] **T-011** — Finance data entry (RevenueLine / CostLine forms)
+- [x] **T-012** — Inventory FIFO UI (`/operations/inventory`, FIFO OUT)
+- [x] **T-013** — Shift checklists toggle on dashboard
+- [x] **T-014** — Pilot reglement — [`docs/pilot-reglement.md`](pilot-reglement.md)
+- [x] **T-017** — SME industry brief — `knowledge-base/industry-brief.md`
+- [ ] **T-018…T-025** — после sign-off Human (см. queue)
+
+## Pilot documentation
+
+- [x] `docs/pilot-reglement.md` — 8 недель, метрики, роли (T-014)
 
 ## Документация
 

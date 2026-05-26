@@ -1,3 +1,4 @@
+import { RevenueCostForms } from "@/components/finance/revenue-cost-forms";
 import { HallEconomicsSection } from "@/components/finance/hall-economics-section";
 import {
   Card,
@@ -6,13 +7,25 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { BUSINESS_TIMEZONE, startOfDay } from "@/lib/date-utils";
 import { formatRubles } from "@/lib/format-money";
 import { getFinanceData, isFinanceEmpty } from "@/modules/finance";
+import { getFinanceFormOptions } from "@/modules/finance/services/get-finance-form-options";
 
 export const dynamic = "force-dynamic";
 
+function todayInputValue(): string {
+  return startOfDay().toLocaleDateString("en-CA", {
+    timeZone: BUSINESS_TIMEZONE,
+  });
+}
+
 export default async function FinancePage() {
-  const data = await getFinanceData();
+  const [data, formOptions] = await Promise.all([
+    getFinanceData(),
+    getFinanceFormOptions(),
+  ]);
+  const defaultBusinessDate = todayInputValue();
 
   if (isFinanceEmpty(data)) {
     return (
@@ -81,6 +94,19 @@ export default async function FinancePage() {
           </CardContent>
         </Card>
       </div>
+
+      <section aria-labelledby="finance-entry-heading" className="space-y-4">
+        <h2
+          id="finance-entry-heading"
+          className="font-heading text-lg font-semibold tracking-tight"
+        >
+          Ввод за день
+        </h2>
+        <RevenueCostForms
+          options={formOptions}
+          defaultBusinessDate={defaultBusinessDate}
+        />
+      </section>
 
       <HallEconomicsSection
         dateLabel={data.dateLabel}

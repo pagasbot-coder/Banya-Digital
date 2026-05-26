@@ -88,7 +88,7 @@ erDiagram
 
 1. ~~**T-002:** `lib/db/` + Prisma + PostgreSQL~~
 2. Каждый модуль получает `modules/<name>/services/` и API routes `app/api/<name>/`
-3. Auth: middleware + роли (owner, ops, warehouse)
+3. **Auth (T-009, BLOCKED):** ждёт решения Human в `SPA-SEGMENT-TEAM-REVIEW.md` ч. C п.5. Рекомендация PM/Architect: **Auth.js** (NextAuth v5), роли `owner | ops | warehouse | crm`. До решения — пилот на общем URL без middleware; ops без finance write — после scaffold.
 4. Dashboard читает агрегаты из finance + operations
 
 ## Конфиг

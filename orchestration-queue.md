@@ -5,7 +5,7 @@
 
 **Проект:** Banya-Digital ERP  
 **Архитектор (Human):** _ваше имя_  
-**Последнее обновление:** 2026-05-26 (T-015 partial: PDF Product Map 3.10; SME T-017 BACKLOG)
+**Последнее обновление:** 2026-05-26 (пилот P0 D.1: T-011…014, T-017 DONE; T-018+ READY wave 2)
 
 ---
 
@@ -49,14 +49,22 @@
 | T-006 | Wire dashboard KPIs to PostgreSQL + seed data | Developer | DONE | P0 | T-004, T-002, T-003 | `@knowledge-base/product-brief.md` (AC T-006), `@prisma/schema.prisma` | docker-compose, rich seed, dashboard live KPIs/alerts/ops, `db:seed`, build OK |
 | T-008 | Обзоры docs: technical + management (RU) | PM | DONE | P2 | T-006 | `@docs/technical-overview.md`, `@docs/management-overview.md` | Черновики для dev и руководства; roadmap обновлён |
 | T-009 | Auth: роли и доступ к модулям (решение + scaffold) | Developer | BACKLOG | P1 | T-006 | `@knowledge-base/architecture.md`, `@docs/roadmap.md` | |
-| T-010 | CRM: CRUD гостя + создание/редактирование брони | Developer | READY | P1 | T-006 | `@knowledge-base/product-brief.md`, `modules/crm/` | |
-| T-011 | Finance: ввод RevenueLine / CostLine за business day | Developer | READY | P0 | T-006 | `@knowledge-base/product-brief.md`, `modules/finance/` | |
-| T-012 | Inventory: FIFO UI (лоты, движения, пороги) | Developer | READY | P0 | T-006, T-002 | `@knowledge-base/architecture.md`, `modules/operations/inventory/` | |
-| T-013 | Operations: чеклисты смены (прогресс N/M, отметки) | Developer | READY | P1 | T-006, T-003 | `@knowledge-base/product-brief.md`, `modules/operations/` | |
-| T-014 | Pilot: регламент 8-недельного пилота (RU) | PM | READY | P1 | T-008 | `@docs/management-overview.md`, `@knowledge-base/product-brief.md` | |
+| T-010 | CRM: CRUD гостя + создание/редактирование брони | Developer | READY | P1 | T-006 | `@knowledge-base/product-brief.md`, `modules/crm/` | Wave 2 (D.2) — после P0 pilot exit |
+| T-011 | Finance: ввод RevenueLine / CostLine за business day | Developer | DONE | P0 | T-006 | `@knowledge-base/product-brief.md`, `modules/finance/` | Формы на `/finance`, server actions, revalidate dashboard |
+| T-012 | Inventory: FIFO UI (лоты, движения, пороги) | Developer | DONE | P0 | T-006, T-002 | `@knowledge-base/architecture.md`, `modules/operations/inventory/` | `/operations/inventory`: партии, история, FIFO OUT; алерты на dashboard |
+| T-013 | Operations: чеклисты смены (прогресс N/M, отметки) | Developer | DONE | P1 | T-006, T-003 | `@knowledge-base/product-brief.md`, `modules/operations/` | Toggle на `/dashboard`, N/M из БД, touch ≥44px |
+| T-014 | Pilot: регламент 8-недельного пилота (RU) | PM | DONE | P1 | T-008 | `@docs/management-overview.md`, `@knowledge-base/product-brief.md` | `docs/pilot-reglement.md` + ссылка в management-overview |
 | T-015 | Product Map: Phase 2 discovery → brief + roadmap | PM | BACKLOG | P2 | T-014 | `@knowledge-base/product-map-workflow.md`, `@knowledge-base/product-map-3.10-cheatsheet.md`, `@knowledge-base/product-map-notes-from-pdf.md` | KB 2026-05-26: cheatsheet+role-pm mandatory; PDF visual (notes+web) |
 | T-016 | iGaming BiJi: Product Map onboarding (новый продукт) | PM | BACKLOG | P2 | — | `@knowledge-base/product-map-workflow.md` (шаблон), `@role-pm` | |
-| T-017 | SME: операционный brief бани (day-in-life, KPI, anti-features) | SME | BACKLOG | P1 | — | `@knowledge-base/industry-brief-template.md`, `@knowledge-base/product-brief.md`, `@role-sme` | |
+| T-017 | SME: операционный brief бани (day-in-life, KPI, anti-features) | SME | DONE | P1 | — | `@knowledge-base/industry-brief.md`, `@knowledge-base/operational-processes.md` | Brief + processes из SPA team review § SME |
+| T-018 | Resolve kitchen↔SPA conflict + audit log | Developer | READY | P1 | T-006, T-011…013 | `@knowledge-base/SPA-SEGMENT-TEAM-REVIEW.md` D.2 | Wave 2 — после Human sign-off ч. C |
+| T-019 | Plan/fact неделя на dashboard | Developer | READY | P1 | T-011 | `@knowledge-base/product-brief.md` | |
+| T-020 | Hall zone types + seed urban SPA | Developer | READY | P2 | T-006 | `@knowledge-base/segment-spa-banya-analysis.md` | |
+| T-021 | Retail COGS PRODUCT line | Developer | BACKLOG | P2 | T-012 | `@knowledge-base/product-brief.md` | |
+| T-022 | Seasonality calendar | PM | BACKLOG | P2 | T-019 | — | |
+| T-023 | Export CSV / 1С | Developer | BLOCKED | P2 | Architect ADR | — | |
+| T-024 | YCLIENTS import | Developer | BLOCKED | P2 | T-010, T-009 | — | |
+| T-025 | Обновить ICP в brief post-SME | PM | READY | P1 | T-017 | `@knowledge-base/industry-brief.md`, `product-brief.md` | |
 
 ---
 
@@ -283,6 +291,23 @@
 | 2026-05-26 | PM | Product Map 3.10: `@role-pm` + `product-map-workflow.md`; T-015 Phase 2 discovery BACKLOG; T-016 iGaming BiJi BACKLOG |
 | 2026-05-26 | PM | T-015 partial: PDF `The Product Map 3.10.pdf` → `product-map-notes-from-pdf.md`, workflow session 2026-05-25, `product-brief` Phase 2; T-015 остаётся BACKLOG до Human/Architect (ICP, NSM, roadmap N/N/L) |
 | 2026-05-26 | SME | T-017 BACKLOG: операционный brief бани; `@role-sme` + industry-brief-template |
+| 2026-05-26 | PM | Сегмент SPA/бани: `knowledge-base/segment-spa-banya-analysis.md`; ICP/позиционирование в `product-brief.md`; кандидаты T-018…T-025 (ожидают sign-off Human) |
+| 2026-05-26 | Developer | D.1 P0: T-011 finance forms, T-012 inventory FIFO UI, T-013 checklist toggle; T-014/T-017 docs; T-018…T-025 в queue; build OK |
+| 2026-05-26 | Developer | T-009 остаётся BACKLOG — Auth.js в architecture.md, ждёт Human ч. C п.5 |
+
+### D.3 — владение задачами (после SPA team review)
+
+| Роль | Task IDs |
+|------|----------|
+| **Human Architect** | Часть C sign-off; unblock T-009; T-023 ADR |
+| **SME** | T-017 ✅; правки `industry-brief.md` |
+| **CMO** | `marketing-brief.md` (черновик из § CMO) |
+| **PM** | T-014 ✅; T-025; T-022; journal queue |
+| **IT-Architect** | T-009 ADR Auth.js; analytics; unblock T-023 |
+| **UI/UX** | White-label «Термы» backlog post-E1 |
+| **Developer** | T-011…013 ✅; T-010, T-018, T-019, T-020 READY |
+| **QA** | Регресс T-006 + pilot UAT `qa-checklist.md` |
+| **DevOps** | `devops-runbook.md`; health + backup пилота |
 
 ---
 

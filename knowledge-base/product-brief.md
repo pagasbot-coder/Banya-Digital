@@ -4,6 +4,8 @@
 
 ### Позиционирование (сегмент SPA / банные комплексы)
 
+**Операционный контекст (SME):** `@knowledge-base/industry-brief.md`, `@knowledge-base/operational-processes.md`.
+
 **ICP:** управляющий **одного** премиального или upper-middle банно-SPA комплекса (несколько зон, F&B), у которого запись/касса уже есть (YCLIENTS, 1С, Excel), но нет **дневной маржи по зонам, yield и пульта смены**. Banya-Digital — **операционный B2B-дашборд**, не замена онлайн-записи гостя. **Командный ревью (все роли):** `@knowledge-base/SPA-SEGMENT-TEAM-REVIEW.md`. Детали: `@knowledge-base/segment-spa-banya-analysis.md`, `@knowledge-base/team-proposals-spa-segment.md` (2026-05-26).
 
 ---

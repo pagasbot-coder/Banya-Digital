@@ -3,7 +3,7 @@ import { HallLoadSection } from "@/components/dashboard/hall-load-section";
 import { InventoryAlertsCard } from "@/components/dashboard/inventory-alerts-card";
 import { MarginSection } from "@/components/dashboard/margin-section";
 import { RevenuePeriodsSection } from "@/components/dashboard/revenue-periods-section";
-import { ShiftChecklistsSection } from "@/components/dashboard/shift-checklists-section";
+import { ShiftChecklistsInteractive } from "@/components/dashboard/shift-checklists-interactive";
 import { TodayOperationsSection } from "@/components/dashboard/today-operations-section";
 import { Button } from "@/components/ui/button";
 import { getDashboardData } from "@/modules/dashboard/services/get-dashboard-data";
@@ -77,7 +77,7 @@ export default async function DashboardPage() {
         </div>
         <div className="flex flex-col gap-6 xl:col-span-2">
           <TodayOperationsSection rows={data.operations} />
-          <ShiftChecklistsSection summary={data.shiftChecklists} />
+          <ShiftChecklistsInteractive summary={data.shiftChecklists} />
         </div>
       </div>
     </div>
