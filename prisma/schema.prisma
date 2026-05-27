@@ -429,6 +429,30 @@ model RevenueWeekPlan {
   @@map("revenue_week_plans")
 }
 
+/// Тип дня в сезонном календаре (премиум-баня) — T-022.
+enum SeasonKind {
+  WEEKEND
+  HOLIDAY
+  NY_PEAK
+  SUMMER_DIP
+  EVENT
+}
+
+/// Поправка к дневному плану выручки (множитель к доле недельного плана) — T-022.
+model SeasonCalendarEntry {
+  id              String     @id @default(cuid())
+  calendarDate    DateTime   @unique @db.Date
+  kind            SeasonKind
+  planMultiplier  Decimal    @db.Decimal(5, 3)
+  label           String
+  notes           String?
+  createdAt       DateTime   @default(now())
+  updatedAt       DateTime   @updatedAt
+
+  @@index([calendarDate])
+  @@map("season_calendar_entries")
+}
+
 // ─── Retail: bar / shop sales (T-021) ────────────────────────────────────────
 
 /// Розничный продукт (бар/магазин при бане): цена и себестоимость на единицу.

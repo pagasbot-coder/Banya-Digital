@@ -98,7 +98,27 @@ export type ShiftChecklistsSummary = {
   groups: ShiftChecklistGroup[];
 };
 
-/** План/факт выручки за календарную неделю (T-019). */
+/** Сезонный день в неделе (T-022). */
+export type SeasonalityDayChip = {
+  dateLabel: string;
+  label: string;
+  kind: string;
+  planMultiplier: number;
+  deltaPercent: number;
+};
+
+export type WeekSeasonalitySummary = {
+  adjustedPlanAmount: number;
+  adjustedPlanToDate: number;
+  weekDeltaPercent: number;
+  toDateDeltaPercent: number;
+  hint: string;
+  chips: SeasonalityDayChip[];
+  todayMultiplier: number | null;
+  todayLabel: string | null;
+};
+
+/** План/факт выручки за календарную неделю (T-019 + T-022). */
 export type WeekPlanFactSummary = {
   weekLabel: string;
   periodHint: string;
@@ -109,6 +129,8 @@ export type WeekPlanFactSummary = {
   deltaLabel: string;
   trend: KpiTrend;
   planFromDb: boolean;
+  seasonality: WeekSeasonalitySummary | null;
+  percentOfSeasonalPlan: number | null;
 };
 
 /** North Star пилота: Weekly Active Managed Zones (WAMZ). */

@@ -15,9 +15,14 @@ type PlanFactWeekCardProps = {
   summary: WeekPlanFactSummary;
 };
 
-/** KPI план/факт выручки за календарную неделю. */
+/** KPI план/факт выручки за календарную неделю (с сезонной поправкой T-022). */
 export function PlanFactWeekCard({ summary }: PlanFactWeekCardProps) {
   const percentLabel = `${summary.percentOfPlan.toFixed(1).replace(".", ",")}%`;
+  const season = summary.seasonality;
+  const planDisplay =
+    season && season.chips.length > 0
+      ? season.adjustedPlanToDate
+      : summary.planAmount;
 
   return (
     <Card className="h-full border-border/80 bg-card/95 py-0 shadow-sm">
@@ -36,7 +41,8 @@ export function PlanFactWeekCard({ summary }: PlanFactWeekCardProps) {
         <CardTitle className="font-heading text-2xl font-semibold tracking-tight tabular-nums leading-snug">
           {formatRubles(summary.factAmount)}
           <span className="block text-base font-medium text-muted-foreground">
-            из {formatRubles(summary.planAmount)} · {percentLabel}
+            из {formatRubles(planDisplay)}
+            {season && season.chips.length > 0 ? " (сезон)" : ""} · {percentLabel}
           </span>
         </CardTitle>
       </CardHeader>
@@ -55,9 +61,25 @@ export function PlanFactWeekCard({ summary }: PlanFactWeekCardProps) {
           {summary.meetsPlan ? "План выполнен" : summary.deltaLabel}
         </Badge>
         <p className="text-xs text-muted-foreground">
-          План {formatRubles(summary.planAmount)} / факт{" "}
-          {formatRubles(summary.factAmount)} / {percentLabel}
+          База {formatRubles(summary.planAmount)}
+          {season && season.chips.length > 0
+            ? ` · сезон ${formatRubles(season.adjustedPlanToDate)} (${season.toDateDeltaPercent >= 0 ? "+" : ""}${season.toDateDeltaPercent}%)`
+            : ""}{" "}
+          / факт {formatRubles(summary.factAmount)}
         </p>
+        {season?.todayLabel ? (
+          <Badge variant="outline" className="text-xs">
+            Сегодня: {season.todayLabel}
+            {season.todayMultiplier !== null
+              ? ` (${season.todayMultiplier >= 1 ? "+" : ""}${Math.round((season.todayMultiplier - 1) * 100)}%)`
+              : ""}
+          </Badge>
+        ) : null}
+        {season && season.chips.length > 0 ? (
+          <p className="text-xs text-muted-foreground line-clamp-2">
+            {season.hint}
+          </p>
+        ) : null}
         <p className="text-xs text-muted-foreground">{summary.periodHint}</p>
       </CardContent>
     </Card>

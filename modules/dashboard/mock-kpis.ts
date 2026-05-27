@@ -173,6 +173,8 @@ export const mockDashboardData: import("./types").DashboardData = {
     deltaLabel: "+8% к плану",
     trend: "up",
     planFromDb: true,
+    seasonality: null,
+    percentOfSeasonalPlan: null,
   },
   margin: mockMargin,
   inventoryAlerts: mockInventoryAlerts,

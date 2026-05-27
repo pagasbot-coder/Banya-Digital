@@ -14,6 +14,7 @@ import {
   resolveVenueSeedPreset,
   VENUE_PRESET_LABELS,
 } from "../lib/hall-zone";
+import { seedSeasonality } from "./seed-seasonality";
 import { seedUrbanSpa } from "./seed-urban-spa";
 import bcrypt from "bcryptjs";
 import { Pool } from "pg";
@@ -66,6 +67,7 @@ async function clearDemoData(prisma: PrismaClient) {
   await prisma.retailProduct.deleteMany();
   await prisma.stockMovement.deleteMany();
   await prisma.costLine.deleteMany();
+  await prisma.seasonCalendarEntry.deleteMany();
   await prisma.revenueWeekPlan.deleteMany();
   await prisma.revenueLine.deleteMany();
   await prisma.kitchenSlot.deleteMany();
@@ -1269,6 +1271,9 @@ async function main() {
       notes: "Прошлая неделя — архив плана",
     },
   });
+
+  const seasonalityCount = await seedSeasonality(prisma, today);
+  console.info(`Seasonality calendar: ${seasonalityCount} entries (±6 мес, МСК)`);
 
   // COGS прошлого месяца (не влияет на delta выручки, но для полноты демо)
   const historicalCosts: ReturnType<typeof prisma.costLine.create>[] = [];

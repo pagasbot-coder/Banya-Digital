@@ -14,9 +14,12 @@ type WeekPlanFactSectionProps = {
   summary: WeekPlanFactSummary;
 };
 
-/** Блок план/факт на странице финансов. */
+/** Блок план/факт на странице финансов (T-019 + сезонность T-022). */
 export function WeekPlanFactSection({ summary }: WeekPlanFactSectionProps) {
   const percentLabel = `${summary.percentOfPlan.toFixed(1).replace(".", ",")}%`;
+  const season = summary.seasonality;
+  const seasonalPlan =
+    season && season.chips.length > 0 ? season.adjustedPlanToDate : null;
 
   return (
     <section aria-labelledby="week-plan-fact-heading" className="space-y-4">
@@ -35,13 +38,27 @@ export function WeekPlanFactSection({ summary }: WeekPlanFactSectionProps) {
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-3">
-          <div className="grid gap-3 sm:grid-cols-3">
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
             <div>
-              <p className="text-xs text-muted-foreground">План</p>
+              <p className="text-xs text-muted-foreground">План (база)</p>
               <p className="font-heading text-xl tabular-nums">
                 {formatRubles(summary.planAmount)}
               </p>
             </div>
+            {seasonalPlan !== null ? (
+              <div>
+                <p className="text-xs text-muted-foreground">
+                  План с сезоном (пн–сегодня)
+                </p>
+                <p className="font-heading text-xl tabular-nums">
+                  {formatRubles(seasonalPlan)}
+                </p>
+                <p className="text-xs text-muted-foreground">
+                  {season!.toDateDeltaPercent >= 0 ? "+" : ""}
+                  {season!.toDateDeltaPercent}% к базе
+                </p>
+              </div>
+            ) : null}
             <div>
               <p className="text-xs text-muted-foreground">Факт</p>
               <p className="font-heading text-xl tabular-nums">
@@ -65,6 +82,27 @@ export function WeekPlanFactSection({ summary }: WeekPlanFactSectionProps) {
               : summary.deltaLabel}
           </Badge>
           <p className="text-xs text-muted-foreground">{summary.periodHint}</p>
+          {season && season.chips.length > 0 ? (
+            <div className="flex flex-wrap gap-2 pt-1">
+              {season.chips.map((chip) => (
+                <Badge key={chip.dateLabel + chip.label} variant="outline">
+                  {chip.dateLabel}: {chip.label}{" "}
+                  <span className="tabular-nums">
+                    ({chip.deltaPercent >= 0 ? "+" : ""}
+                    {chip.deltaPercent}%)
+                  </span>
+                </Badge>
+              ))}
+            </div>
+          ) : null}
+          {season ? (
+            <p className="text-xs text-muted-foreground">
+              Неделя целиком (пн–вс): сезонный план{" "}
+              {formatRubles(season.adjustedPlanAmount)} (
+              {season.weekDeltaPercent >= 0 ? "+" : ""}
+              {season.weekDeltaPercent}% к базе)
+            </p>
+          ) : null}
         </CardContent>
       </Card>
     </section>

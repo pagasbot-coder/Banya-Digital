@@ -44,7 +44,9 @@
 - [x] **T-013** — Shift checklists toggle on dashboard
 - [x] **T-014** — Pilot reglement — [`docs/pilot-reglement.md`](pilot-reglement.md)
 - [x] **T-017** — SME industry brief — `knowledge-base/industry-brief.md`
-- [ ] **T-018…T-025** — после sign-off Human (см. queue)
+- [x] **T-019** — план/факт недели (RevenueWeekPlan, МСК)
+- [x] **T-022** — сезонный календарь (праздники, выходные, НГ/лето)
+- [ ] **T-023…T-025** — после sign-off / ADR (см. queue)
 
 ## Pilot documentation
 

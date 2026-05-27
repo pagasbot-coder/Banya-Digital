@@ -10,6 +10,10 @@ import {
 } from "@/lib/date-utils";
 import { prisma } from "@/lib/db";
 import type { KpiTrend } from "@/modules/dashboard/types";
+import {
+  getSeasonalityForWeek,
+  type WeekSeasonalitySummary,
+} from "@/modules/finance/services/get-seasonality-for-week";
 
 /** Доля факта от плана, % (1 знак). */
 const PLAN_FALLBACK_RATIO = 0.92;
@@ -25,6 +29,10 @@ export type WeekPlanFactSummary = {
   deltaLabel: string;
   trend: KpiTrend;
   planFromDb: boolean;
+  /** Сезонная поправка к плану (T-022); null если нет календаря или план = 0 */
+  seasonality: WeekSeasonalitySummary | null;
+  /** % факта к сезонному плану на прошедшие дни недели */
+  percentOfSeasonalPlan: number | null;
 };
 
 function formatWeekdayShort(date: Date): string {
@@ -112,20 +120,39 @@ export async function getWeekPlanFact(
         ? Math.round((factAmount / planAmount) * 1000) / 10
         : 0;
 
-    const { deltaLabel, trend } = buildDeltaLabel(factAmount, planAmount);
+    const seasonality = await getSeasonalityForWeek(
+      weekStart,
+      referenceDate,
+      planAmount
+    );
+    const planTarget =
+      seasonality && seasonality.adjustedPlanToDate > 0
+        ? seasonality.adjustedPlanToDate
+        : planAmount;
+    const percentOfSeasonalPlan =
+      seasonality && seasonality.adjustedPlanToDate > 0
+        ? Math.round((factAmount / seasonality.adjustedPlanToDate) * 1000) / 10
+        : null;
+    const effectivePercent =
+      percentOfSeasonalPlan ?? percentOfPlan;
+    const { deltaLabel, trend } = buildDeltaLabel(factAmount, planTarget);
 
     return {
       weekLabel: formatWeekRange(weekStart, referenceDate),
       periodHint: planFromDb
-        ? "Календарная неделя (пн–вс, МСК), план из БД"
+        ? seasonality && seasonality.chips.length > 0
+          ? "Календарная неделя (пн–вс, МСК), план с сезонной поправкой"
+          : "Календарная неделя (пн–вс, МСК), план из БД"
         : "Календарная неделя (пн–вс, МСК), план ≈92% факта (демо)",
       planAmount,
       factAmount,
-      percentOfPlan,
-      meetsPlan: percentOfPlan >= 100,
+      percentOfPlan: effectivePercent,
+      meetsPlan: effectivePercent >= 100,
       deltaLabel,
       trend,
       planFromDb,
+      seasonality,
+      percentOfSeasonalPlan,
     };
   } catch (error) {
     console.error("[finance] week plan/fact failed:", error);
