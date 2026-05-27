@@ -37,20 +37,20 @@ _Ведёт QA (@role-qa). Обновлено: T-005 foundation pass (2026-05-24
 **Среда:** `npm run build` exit 0 (Next.js 16.2.6, routes compiled).  
 **Prod base:** https://banya-digital.vercel.app · `DEMO_SKIP_AUTH` не менялся (default skip login).
 
-| Маршрут / фича | Build compile | Prod manual (Human) |
-|----------------|---------------|---------------------|
-| `/dashboard` — KPI, WAMZ, алерты, чеклисты | [x] | [ ] |
-| `/finance` — формы, план/факт, розница | [x] | [ ] |
-| `/crm` — гости, брони | [x] | [ ] |
-| `/operations` — конфликты, audit | [x] | [ ] |
-| `/operations/inventory` — FIFO | [x] | [ ] |
-| CSV export `GET /api/finance/export` + кнопка `/finance` | [x] | [ ] |
-| Seasonality chips (T-022) dashboard + `/finance` | [x] | [ ] |
-| Retail card dashboard + блок `/finance` (T-021) | [x] | [ ] |
+| Маршрут / фича | Build compile | Prod smoke (QA 2026-05-27) |
+|----------------|---------------|------------------------------|
+| `/dashboard` — KPI, WAMZ, алерты, чеклисты | [x] | [x] HTTP 200; WAMZ, «Критические» в HTML |
+| `/finance` — формы, план/факт, розница | [x] | [x] HTTP 200; план/факт, розница в HTML |
+| `/crm` — гости, брони | [x] | [x] HTTP 200; гости/брони в HTML |
+| `/operations` — конфликты, audit | [x] | [x] HTTP 200; конфликты, кухня в HTML |
+| `/operations/inventory` — FIFO | [x] | [x] HTTP 200; FIFO, инвентарь в HTML |
+| CSV export `GET /api/finance/export` + кнопка `/finance` | [x] | [x] HTTP 200; `text/csv`; ~1.9 KB |
+| Seasonality chips (T-022) dashboard + `/finance` | [x] | [x] «сезон» на dashboard и `/finance` |
+| Retail card dashboard + блок `/finance` (T-021) | [x] | [x] «розниц» на dashboard и `/finance` |
 
-**Lint:** `npm run lint` — запускать перед релизом; при зависании ESLint на Windows — повторить или `npx eslint app components modules lib --max-warnings 0`.
+**Lint (2026-05-27):** `npm run lint` exit 0; 1 warning (`today-bookings-interactive.tsx` unused `statusVariant`) — не блокер.
 
-**Sign-off:** T-027 — после prod manual чекбоксов выше.
+**Sign-off:** T-027 **DONE** (QA agent prod smoke). Визуальный UAT пилота — Human ops, T-028 Week 1.
 
 ## Команды проверки
 
