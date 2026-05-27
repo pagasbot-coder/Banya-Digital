@@ -784,23 +784,6 @@ async function main() {
     }),
     prisma.costLine.create({
       data: {
-        hallId: vipHall.id,
-        amount: 8400,
-        costType: CostType.LABOR,
-        businessDate: today,
-        description: "SPA-мастер, смена",
-      },
-    }),
-    prisma.costLine.create({
-      data: {
-        amount: 5200,
-        costType: CostType.OVERHEAD,
-        businessDate: today,
-        description: "Коммунальные, пропорция дня",
-      },
-    }),
-    prisma.costLine.create({
-      data: {
         hallId: parHall.id,
         amount: 11200,
         costType: CostType.COGS,
@@ -1043,6 +1026,36 @@ async function main() {
     }
   }
 
+  // Дни месяца до скользящей 7-дневки — KPI «Выручка за месяц» ~2,2–2,8 млн ₽
+  const weekWindowStart = addDays(today, -6);
+  for (let d = monthStart; d < weekWindowStart; d = addDays(d, 1)) {
+    for (let h = 0; h < halls.length; h++) {
+      historicalRevenue.push(
+        prisma.revenueLine.create({
+          data: {
+            hallId: halls[h].id,
+            serviceId: hallServices[h].id,
+            amount: 7_000 + h * 1_500 + (d.getDate() % 7) * 200,
+            businessDate: d,
+            description: `Месяц (будни): ${halls[h].name}`,
+          },
+        })
+      );
+    }
+    if (d.getDate() % 3 === 0) {
+      historicalRevenue.push(
+        prisma.revenueLine.create({
+          data: {
+            serviceId: barHerb.id,
+            amount: 2_400,
+            businessDate: d,
+            description: "Бар — месяц",
+          },
+        })
+      );
+    }
+  }
+
   // Текущий месяц — доп. VIP до сегодня (если месяц уже идёт)
   for (let i = 1; i <= 4; i++) {
     const d = addDays(monthStart, i * 4);
@@ -1090,6 +1103,28 @@ async function main() {
   }
 
   await Promise.all(historicalRevenue);
+
+  // COGS по дням 2–6 назад — тренд маржи на dashboard (не нулевой)
+  const historicalDayCosts: ReturnType<typeof prisma.costLine.create>[] = [];
+  for (let dayOffset = 2; dayOffset <= 6; dayOffset++) {
+    const d = addDays(today, -dayOffset);
+    const dayFactor = 0.62 + dayOffset * 0.02;
+    for (let h = 0; h < halls.length; h++) {
+      historicalDayCosts.push(
+        prisma.costLine.create({
+          data: {
+            hallId: halls[h].id,
+            serviceId: hallServices[h].id,
+            amount: Math.round((26500 + dayOffset * 1300 + h * 2600) * dayFactor),
+            costType: CostType.COGS,
+            businessDate: d,
+            description: `Себестоимость: ${halls[h].name}`,
+          },
+        })
+      );
+    }
+  }
+  await Promise.all(historicalDayCosts);
 
   // ─── План выручки на календарную неделю (T-019) ─────────────────────────
   const weekStart = startOfWeek(today);
@@ -1219,8 +1254,40 @@ async function main() {
 
     await seedStaffUsers(prisma);
 
+    const [dayRev, weekRev, monthRev, dayCost] = await Promise.all([
+      prisma.revenueLine.aggregate({
+        where: { businessDate: today },
+        _sum: { amount: true },
+      }),
+      prisma.revenueLine.aggregate({
+        where: {
+          businessDate: { gte: addDays(today, -6), lt: addDays(today, 1) },
+        },
+        _sum: { amount: true },
+      }),
+      prisma.revenueLine.aggregate({
+        where: {
+          businessDate: { gte: startOfMonth(today), lt: addDays(today, 1) },
+        },
+        _sum: { amount: true },
+      }),
+      prisma.costLine.aggregate({
+        where: { businessDate: today },
+        _sum: { amount: true },
+      }),
+    ]);
+    const revDay = Number(dayRev._sum.amount ?? 0);
+    const revWeek = Number(weekRev._sum.amount ?? 0);
+    const revMonth = Number(monthRev._sum.amount ?? 0);
+    const costDay = Number(dayCost._sum.amount ?? 0);
+    const marginDay =
+      revDay > 0 ? Math.round(((revDay - costDay) / revDay) * 1000) / 10 : 0;
+
     console.info(
-      `Seed OK [${VENUE_PRESET_LABELS.banya}]: 4 зала с zoneType, finance + week plan/fact, checklists, staff.`
+      `Seed OK [${VENUE_PRESET_LABELS.banya}]: 4 зала, WAMZ, finance, checklists 5/8×2, kitchen audit.`
+    );
+    console.info(
+      `  KPI: день ${Math.round(revDay).toLocaleString("ru-RU")} ₽, маржа ${marginDay}%; неделя ${Math.round(revWeek).toLocaleString("ru-RU")} ₽; месяц ${Math.round(revMonth).toLocaleString("ru-RU")} ₽`
     );
   } finally {
     await prisma.$disconnect();
