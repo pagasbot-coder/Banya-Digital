@@ -59,7 +59,7 @@
 | T-017 | SME: операционный brief бани (day-in-life, KPI, anti-features) | SME | DONE | P1 | — | `@knowledge-base/industry-brief.md`, `@knowledge-base/operational-processes.md` | Brief + processes из SPA team review § SME |
 | T-018 | Resolve kitchen↔SPA conflict + audit log | Developer | DONE | P1 | T-006, T-011…013 | `@knowledge-base/SPA-SEGMENT-TEAM-REVIEW.md` D.2 | `/operations`: конфликты + «Разобрано», audit log; `resolvedAt`/`resolvedBy`; dashboard revalidate |
 | T-019 | Plan/fact неделя на dashboard | Developer | DONE | P1 | T-011 | `@knowledge-base/product-brief.md` | `RevenueWeekPlan`, `getWeekPlanFact`, карточка dashboard + блок `/finance`; seed ~94% плана; build OK |
-| T-020 | Hall zone types + seed urban SPA | Developer | READY | P2 | T-006 | `@knowledge-base/segment-spa-banya-analysis.md` | |
+| T-020 | Hall zone types + seed urban SPA | Developer | DONE | P2 | T-006 | `@knowledge-base/segment-spa-banya-analysis.md` | `HallZoneType` + tags; seed `SEED_PRESET=urban-spa`; badge типа на dashboard hall load; Neon push+seed; build OK |
 | T-021 | Retail COGS PRODUCT line | Developer | BACKLOG | P2 | T-012 | `@knowledge-base/product-brief.md` | |
 | T-022 | Seasonality calendar | PM | BACKLOG | P2 | T-019 | — | |
 | T-023 | Export CSV / 1С | Developer | BLOCKED | P2 | Architect ADR | — | |
@@ -301,6 +301,7 @@
 | 2026-05-27 | CMO | T-025 DONE: `knowledge-base/marketing-brief.md` (ICP, каналы, AARRR, LTV:CAC, PostHog) |
 | 2026-05-27 | PM | Pilot prep: `pilot-reglement` §5 WAMZ + TBD object/date; `docs/pilot-start.md` |
 | 2026-05-27 | Developer | T-019 DONE: план/факт недели (календарная неделя МСК), dashboard + finance, `RevenueWeekPlan` |
+| 2026-05-27 | Developer | T-020 DONE: `Hall.zoneType`/`tags`, urban SPA seed preset, dashboard zone badges |
 
 ### D.3 — владение задачами (после SPA team review)
 

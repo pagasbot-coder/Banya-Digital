@@ -7,6 +7,7 @@
  */
 import { addDays, startOfDay, startOfMonth } from "@/lib/date-utils";
 import { prisma } from "@/lib/db";
+import { formatHallZoneLabel } from "@/lib/hall-zone";
 import { getWeekPlanFact } from "@/modules/finance/services/get-week-plan-fact";
 import type {
   CriticalAlert,
@@ -130,6 +131,7 @@ async function buildHallLoads(businessDate: Date): Promise<HallLoadRow[]> {
   const rows: HallLoadRow[] = halls.map((hall) => ({
     id: hall.id,
     label: hall.name,
+    zoneLabel: formatHallZoneLabel(hall.zoneType),
     percent: Math.round(hallLoadForBookings(hall, businessDate)),
   }));
 

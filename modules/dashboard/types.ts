@@ -5,6 +5,8 @@ export type KpiTrend = "up" | "down" | "neutral";
 export type HallLoadRow = {
   id: string;
   label: string;
+  /** RU-тип зоны (парная, термы, …) — T-020 */
+  zoneLabel?: string;
   percent: number;
   /** Средняя по всем залам — отдельная строка в UI */
   isTotal?: boolean;

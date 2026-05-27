@@ -2,6 +2,7 @@ import { PrismaPg } from "@prisma/adapter-pg";
 import {
   BookingStatus,
   CostType,
+  HallZoneType,
   KitchenSyncStatus,
   PrismaClient,
   ServiceKind,
@@ -9,6 +10,11 @@ import {
   StaffRole,
   StockMovementType,
 } from "@prisma/client";
+import {
+  resolveVenueSeedPreset,
+  VENUE_PRESET_LABELS,
+} from "../lib/hall-zone";
+import { seedUrbanSpa } from "./seed-urban-spa";
 import bcrypt from "bcryptjs";
 import { Pool } from "pg";
 import {
@@ -90,22 +96,55 @@ async function main() {
   try {
     await clearDemoData(prisma);
 
+    const preset = resolveVenueSeedPreset();
+    if (preset === "urban-spa") {
+      await seedUrbanSpa(prisma);
+      await seedStaffUsers(prisma);
+      console.info(
+        `Seed OK [${VENUE_PRESET_LABELS["urban-spa"]}]: 4 зоны (термы/бассейн/хамам/VIP), finance, staff.`
+      );
+      return;
+    }
+
     const today = startOfDay();
     const yesterday = addDays(today, -1);
 
-    // ─── Залы ───────────────────────────────────────────────────────────────
+    // ─── Залы (премиум-баня, T-020 zone types) ─────────────────────────────
     const [parHall, vipHall, senHall, hamHall] = await Promise.all([
       prisma.hall.create({
-        data: { code: "PAR", name: "Парная", capacity: 12 },
+        data: {
+          code: "PAR",
+          name: "Парная",
+          capacity: 12,
+          zoneType: HallZoneType.STEAM_ROOM,
+          tags: ["banya", "ritual"],
+        },
       }),
       prisma.hall.create({
-        data: { code: "VIP", name: "VIP", capacity: 6 },
+        data: {
+          code: "VIP",
+          name: "VIP",
+          capacity: 6,
+          zoneType: HallZoneType.VIP_SUITE,
+          tags: ["premium"],
+        },
       }),
       prisma.hall.create({
-        data: { code: "SEN", name: "Сеновал", capacity: 8 },
+        data: {
+          code: "SEN",
+          name: "Сеновал",
+          capacity: 8,
+          zoneType: HallZoneType.HAY_LOFT,
+          tags: ["organic"],
+        },
       }),
       prisma.hall.create({
-        data: { code: "HAM", name: "Хамам", capacity: 10 },
+        data: {
+          code: "HAM",
+          name: "Хамам",
+          capacity: 10,
+          zoneType: HallZoneType.HAMMAM,
+        },
       }),
     ]);
 
@@ -313,6 +352,30 @@ async function main() {
         partySize: 5,
       },
     }),
+    prisma.booking.create({
+      data: {
+        guestId: guests[2].id,
+        hallId: vipHall.id,
+        serviceId: vipRitual.id,
+        status: BookingStatus.PENDING,
+        startsAt: atTime(today, 19, 0),
+        endsAt: atTime(today, 21, 0),
+        partySize: 2,
+        notes: "Ожидает предоплату",
+      },
+    }),
+    prisma.booking.create({
+      data: {
+        guestId: guests[4].id,
+        hallId: parHall.id,
+        serviceId: parSession.id,
+        status: BookingStatus.CANCELLED,
+        startsAt: atTime(today, 20, 0),
+        endsAt: atTime(today, 22, 0),
+        partySize: 4,
+        notes: "Отмена гостем — перенос на выходные",
+      },
+    }),
   ]);
 
   // Вчера — меньше загрузка для delta hall_load (все залы)
@@ -428,7 +491,7 @@ async function main() {
         syncStatus: KitchenSyncStatus.IN_PROGRESS,
       },
     }),
-    // Задержка кухни +15 мин для детокс
+    // Открытый конфликт kitchen↔SPA (T-018 журнал)
     prisma.kitchenSlot.create({
       data: {
         programTimingId: detoxTiming.id,
@@ -438,6 +501,31 @@ async function main() {
         syncStatus: KitchenSyncStatus.CONFLICT,
         notes: "Задержка подачи +15 мин — очередь на гриле",
         updatedAt: minutesAgo(60),
+      },
+    }),
+    // Разобранные конфликты (audit log на /operations)
+    prisma.kitchenSlot.create({
+      data: {
+        programTimingId: imperialTiming.id,
+        startsAt: atTime(yesterday, 16, 0),
+        endsAt: atTime(yesterday, 16, 45),
+        station: "Горячий цех",
+        syncStatus: KitchenSyncStatus.CONFLICT,
+        notes: "Сдвиг VIP-ужина — согласовано с залом",
+        resolvedAt: atTime(yesterday, 17, 15),
+        resolvedBy: "Мария (операции)",
+      },
+    }),
+    prisma.kitchenSlot.create({
+      data: {
+        programTimingId: detoxTiming.id,
+        startsAt: atTime(addDays(today, -2), 11, 30),
+        endsAt: atTime(addDays(today, -2), 12, 0),
+        station: "Чайная",
+        syncStatus: KitchenSyncStatus.CONFLICT,
+        notes: "Пересечение с техобслуживанием — перенос слота",
+        resolvedAt: atTime(addDays(today, -2), 13, 0),
+        resolvedBy: "Ирина (админ)",
       },
     }),
   ]);
@@ -470,7 +558,7 @@ async function main() {
       lotCode: "HAY-2026-03",
       receivedAt: addDays(today, -45),
       quantityIn: 120,
-      quantityLeft: 95,
+      quantityLeft: 62,
       unitCost: 85.5,
       expiresAt: addDays(today, 30),
     },
@@ -792,17 +880,17 @@ async function main() {
       data: {
         hallId: parHall.id,
         serviceId: parSession.id,
-        amount: 14200,
+        amount: 28600,
         costType: CostType.COGS,
         businessDate: today,
-        description: "COGS — классический пар",
+        description: "COGS — классический пар (веники, пихта)",
       },
     }),
     prisma.costLine.create({
       data: {
         hallId: vipHall.id,
         serviceId: vipRitual.id,
-        amount: 11200,
+        amount: 14200,
         costType: CostType.LABOR,
         businessDate: today,
         description: "Мастера VIP-ритуала",
@@ -812,7 +900,7 @@ async function main() {
       data: {
         hallId: vipHall.id,
         serviceId: vipRitual.id,
-        amount: 9800,
+        amount: 10800,
         costType: CostType.COGS,
         businessDate: today,
         description: "COGS — VIP-ритуал (расходники)",
@@ -822,29 +910,55 @@ async function main() {
       data: {
         hallId: senHall.id,
         serviceId: senHay.id,
-        amount: 9800,
+        amount: 14200,
         costType: CostType.COGS,
         businessDate: today,
-        description: "COGS — сеновал",
+        description: "COGS — сеновал (сено, травы)",
       },
     }),
     prisma.costLine.create({
       data: {
         hallId: hamHall.id,
         serviceId: hamSteam.id,
-        amount: 15200,
+        amount: 14800,
         costType: CostType.COGS,
         businessDate: today,
-        description: "COGS — хамам (низкая маржа)",
+        description: "COGS — хамам (низкая маржа, демо-алерт)",
       },
     }),
     prisma.costLine.create({
       data: {
         serviceId: barHerb.id,
-        amount: 4200,
+        amount: 3900,
         costType: CostType.COGS,
         businessDate: today,
         description: "Закупка трав и расходники бара",
+      },
+    }),
+    prisma.costLine.create({
+      data: {
+        hallId: parHall.id,
+        amount: 11800,
+        costType: CostType.LABOR,
+        businessDate: today,
+        description: "Пармастера и обход зала",
+      },
+    }),
+    prisma.costLine.create({
+      data: {
+        hallId: senHall.id,
+        amount: 8200,
+        costType: CostType.LABOR,
+        businessDate: today,
+        description: "Склад и сеновал — смена",
+      },
+    }),
+    prisma.costLine.create({
+      data: {
+        amount: 13800,
+        costType: CostType.OVERHEAD,
+        businessDate: today,
+        description: "Коммунальные и амортизация (доля дня)",
       },
     }),
   ]);
@@ -877,7 +991,7 @@ async function main() {
           data: {
             hallId: halls[h].id,
             serviceId: hallServices[h].id,
-            amount: 24000 + dayOffset * 1200 + h * 2500,
+            amount: 26500 + dayOffset * 1300 + h * 2600,
             businessDate: d,
             description: `Текущая неделя: ${halls[h].name}`,
           },
@@ -988,13 +1102,13 @@ async function main() {
   await prisma.revenueWeekPlan.upsert({
     where: { weekStart },
     update: {
-      amount: Math.round(weekFactAmount * 0.94),
-      notes: "План недели (демо): ~94% от накопленного факта",
+      amount: Math.round(weekFactAmount * 0.965),
+      notes: "План недели (демо): факт ~104–106% к плану",
     },
     create: {
       weekStart,
-      amount: Math.round(weekFactAmount * 0.94),
-      notes: "План недели (демо): ~94% от накопленного факта",
+      amount: Math.round(weekFactAmount * 0.965),
+      notes: "План недели (демо): факт ~104–106% к плану",
     },
   });
 
@@ -1032,62 +1146,81 @@ async function main() {
   }
   await Promise.all(historicalCosts);
 
-  // ─── Shift checklists ─────────────────────────────────────────────────────
-  const [parChecklist, vipChecklist, senChecklist] = await Promise.all([
+  // ─── Чеклисты: 2 смены, 5/8 пунктов (WAMZ + dashboard) ───────────────────
+  const [dayShiftChecklist, eveningShiftChecklist] = await Promise.all([
     prisma.shiftChecklist.create({
       data: {
         hallId: parHall.id,
         shiftDate: today,
         shiftType: ShiftType.DAY,
-        title: "Открытие смены — Парная",
+        title: "Дневная смена — открытие комплекса",
       },
     }),
     prisma.shiftChecklist.create({
       data: {
         hallId: vipHall.id,
         shiftDate: today,
-        shiftType: ShiftType.DAY,
-        title: "Открытие смены — VIP",
-      },
-    }),
-    prisma.shiftChecklist.create({
-      data: {
-        hallId: senHall.id,
-        shiftDate: today,
-        shiftType: ShiftType.DAY,
-        title: "Склад и сеновал",
+        shiftType: ShiftType.EVENING,
+        title: "Вечерняя смена — VIP и кухня",
       },
     }),
   ]);
 
+  const dayShiftItems = [
+    { sortOrder: 1, label: "Температура печи и влажность пара", done: true, by: "Иван" },
+    { sortOrder: 2, label: "Запас пихты и веников в парной", done: true, by: "Иван" },
+    { sortOrder: 3, label: "Вентиляция и гидрометр", done: true, by: "Иван" },
+    { sortOrder: 4, label: "Проверка аварийного освещения", done: true, by: "Иван" },
+    { sortOrder: 5, label: "Журнал инцидентов за ночь", done: true, by: "Иван" },
+    { sortOrder: 6, label: "Сеновал: остаток сена на полу", done: false },
+    { sortOrder: 7, label: "Хамам: температура пола", done: false },
+    { sortOrder: 8, label: "Сверка кассы с вчерашним днём", done: false },
+  ] as const;
+
+  const eveningShiftItems = [
+    { sortOrder: 1, label: "Подготовка VIP-ложа", done: true, by: "Ольга" },
+    { sortOrder: 2, label: "Массажный кабинет и расходники", done: true, by: "Ольга" },
+    { sortOrder: 3, label: "Мини-бар и премиум-напитки", done: true, by: "Ольга" },
+    { sortOrder: 4, label: "Синхронизация слотов с кухней", done: true, by: "Ольга" },
+    { sortOrder: 5, label: "Брифинг с пармастером", done: true, by: "Ольга" },
+    { sortOrder: 6, label: "Проверка броней на вечер", done: false },
+    { sortOrder: 7, label: "Закрытие склада органики", done: false },
+    { sortOrder: 8, label: "Передача смены ночному дежурному", done: false },
+  ] as const;
+
   await Promise.all([
     prisma.checklistItem.createMany({
-      data: [
-        { checklistId: parChecklist.id, sortOrder: 1, label: "Проверка температуры печи", completedAt: atTime(today, 8, 30), completedBy: "Иван" },
-        { checklistId: parChecklist.id, sortOrder: 2, label: "Запас пихты в зале", completedAt: atTime(today, 8, 45), completedBy: "Иван" },
-        { checklistId: parChecklist.id, sortOrder: 3, label: "Вентиляция и гидромет", completedAt: atTime(today, 9, 0), completedBy: "Иван" },
-      ],
+      data: dayShiftItems.map((item) => ({
+        checklistId: dayShiftChecklist.id,
+        sortOrder: item.sortOrder,
+        label: item.label,
+        ...(item.done
+          ? {
+              completedAt: atTime(today, 8, 15 + item.sortOrder * 5),
+              completedBy: item.by,
+            }
+          : {}),
+      })),
     }),
     prisma.checklistItem.createMany({
-      data: [
-        { checklistId: vipChecklist.id, sortOrder: 1, label: "Подготовка VIP-ложа", completedAt: atTime(today, 9, 0), completedBy: "Ольга" },
-        { checklistId: vipChecklist.id, sortOrder: 2, label: "Проверка массажного кабинета" },
-        { checklistId: vipChecklist.id, sortOrder: 3, label: "Мини-бар и расходники" },
-      ],
-    }),
-    prisma.checklistItem.createMany({
-      data: [
-        { checklistId: senChecklist.id, sortOrder: 1, label: "Остаток сена на полу", completedAt: atTime(today, 8, 15), completedBy: "Пётр" },
-        { checklistId: senChecklist.id, sortOrder: 2, label: "Влажность сеновалa" },
-        { checklistId: senChecklist.id, sortOrder: 3, label: "Инвентаризация веток" },
-      ],
+      data: eveningShiftItems.map((item) => ({
+        checklistId: eveningShiftChecklist.id,
+        sortOrder: item.sortOrder,
+        label: item.label,
+        ...(item.done
+          ? {
+              completedAt: atTime(today, 14, item.sortOrder * 3),
+              completedBy: item.by,
+            }
+          : {}),
+      })),
     }),
   ]);
 
     await seedStaffUsers(prisma);
 
     console.info(
-      "Seed OK: 4 зала, finance + week plan/fact, checklists, staff users."
+      `Seed OK [${VENUE_PRESET_LABELS.banya}]: 4 зала с zoneType, finance + week plan/fact, checklists, staff.`
     );
   } finally {
     await prisma.$disconnect();

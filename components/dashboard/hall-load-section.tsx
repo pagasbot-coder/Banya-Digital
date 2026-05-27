@@ -5,6 +5,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import type { HallLoadRow } from "@/modules/dashboard/types";
 import { cn } from "@/lib/utils";
 
@@ -38,15 +39,25 @@ export function HallLoadSection({ rows }: HallLoadSectionProps) {
                   row.isTotal && "bg-muted/40 font-medium"
                 )}
               >
-                <span
-                  className={cn(
-                    "text-sm",
-                    row.isTotal
-                      ? "text-foreground"
-                      : "text-muted-foreground"
-                  )}
-                >
-                  {row.label}
+                <span className="flex min-w-0 flex-col gap-0.5 sm:flex-row sm:items-center sm:gap-2">
+                  <span
+                    className={cn(
+                      "text-sm",
+                      row.isTotal
+                        ? "text-foreground"
+                        : "text-muted-foreground"
+                    )}
+                  >
+                    {row.label}
+                  </span>
+                  {row.zoneLabel && !row.isTotal ? (
+                    <Badge
+                      variant="outline"
+                      className="w-fit shrink-0 text-[10px] font-normal uppercase tracking-wide"
+                    >
+                      {row.zoneLabel}
+                    </Badge>
+                  ) : null}
                 </span>
                 <span className="font-heading text-xl tabular-nums text-foreground">
                   {row.percent}

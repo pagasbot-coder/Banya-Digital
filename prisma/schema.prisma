@@ -75,15 +75,28 @@ model VerificationToken {
 
 // ─── Shared / core ───────────────────────────────────────────────────────────
 
+/// Тип зоны комплекса (T-020): баня, urban SPA, white-label справочник.
+enum HallZoneType {
+  STEAM_ROOM
+  VIP_SUITE
+  HAMMAM
+  HAY_LOFT
+  THERMAL
+  POOL
+}
+
 /// Зал или зона комплекса (yield, unit economics scope).
 model Hall {
-  id        String   @id @default(cuid())
-  code      String   @unique
+  id        String        @id @default(cuid())
+  code      String        @unique
   name      String
+  zoneType  HallZoneType  @default(STEAM_ROOM)
+  /// Доп. метки white-label (например «ritual», «corporate»).
+  tags      String[]      @default([])
   capacity  Int?
-  isActive  Boolean  @default(true)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  isActive  Boolean       @default(true)
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
 
   services      Service[]
   bookings      Booking[]
