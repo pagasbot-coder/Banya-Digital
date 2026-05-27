@@ -15,6 +15,7 @@ import type {
   HallLoadRow,
   InventoryAlertsSummary,
   MarginSummary,
+  RetailKpiSummary,
   RevenuePeriodMetric,
   ServiceMarginRow,
   ShiftChecklistsSummary,
@@ -91,6 +92,48 @@ function computeMarginTrend(current: number, previous: number): TrendResult {
 function marginPercent(revenue: number, cost: number): number {
   if (revenue <= 0) return 0;
   return ((revenue - cost) / revenue) * 100;
+}
+
+async function buildRetailKpi(today: Date): Promise<RetailKpiSummary> {
+  const tomorrow = addDays(today, 1);
+
+  const [products, dayAgg] = await Promise.all([
+    prisma.retailProduct.findMany({
+      where: { isActive: true },
+      select: { id: true, price: true, cogsPerUnit: true },
+    }),
+    prisma.retailSale.groupBy({
+      by: ["productId"],
+      where: { soldAt: { gte: today, lt: tomorrow } },
+      _sum: { quantity: true },
+    }),
+  ]);
+
+  const byId = new Map(
+    products.map((p) => [
+      p.id,
+      { price: Number(p.price), cogsPerUnit: Number(p.cogsPerUnit) },
+    ])
+  );
+
+  let revenue = 0;
+  let cogs = 0;
+  for (const row of dayAgg) {
+    const p = byId.get(row.productId);
+    if (!p) continue;
+    const qty = Number(row._sum.quantity ?? 0);
+    revenue += qty * p.price;
+    cogs += qty * p.cogsPerUnit;
+  }
+
+  const pct = marginPercent(revenue, cogs);
+
+  return {
+    revenue,
+    cogs,
+    marginPercent: Math.round(pct),
+    hint: "бар/магазин при бане",
+  };
 }
 
 function hallLoadForBookings(
@@ -640,6 +683,7 @@ export async function getDashboardData(): Promise<DashboardResult> {
       revenuePeriods,
       weekPlanFact,
       inventoryAlerts,
+      retail,
       alerts,
       operations,
       shiftChecklists,
@@ -649,6 +693,7 @@ export async function getDashboardData(): Promise<DashboardResult> {
       buildRevenuePeriods(today),
       getWeekPlanFact(today),
       countInventoryAlerts(),
+      buildRetailKpi(today),
       buildCriticalAlerts(today, margin.byService),
       buildTodayOperations(today),
       buildShiftChecklists(today),
@@ -661,6 +706,7 @@ export async function getDashboardData(): Promise<DashboardResult> {
       weekPlanFact,
       margin,
       inventoryAlerts,
+      retail,
       alerts,
       operations,
       shiftChecklists,

@@ -176,6 +176,12 @@ export const mockDashboardData: import("./types").DashboardData = {
   },
   margin: mockMargin,
   inventoryAlerts: mockInventoryAlerts,
+  retail: {
+    revenue: 24_500,
+    cogs: 9_800,
+    marginPercent: 60,
+    hint: "Mock: бар/магазин",
+  },
   alerts: mockCriticalAlerts,
   operations: mockTodayOperations,
   shiftChecklists: mockShiftChecklists,

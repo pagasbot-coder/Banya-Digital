@@ -1,6 +1,7 @@
 import { RevenueCostForms } from "@/components/finance/revenue-cost-forms";
 import { WeekPlanFactSection } from "@/components/finance/week-plan-fact-section";
 import { HallEconomicsSection } from "@/components/finance/hall-economics-section";
+import { RetailSection } from "@/components/finance/retail-section";
 import {
   Card,
   CardContent,
@@ -75,7 +76,7 @@ export default async function FinancePage() {
           <CardHeader className="pb-2">
             <CardDescription>Выручка сегодня</CardDescription>
             <CardTitle className="font-heading text-2xl tabular-nums">
-              {formatRubles(data.totals.revenue)}
+              {formatRubles(data.overallTotals.revenue)}
             </CardTitle>
           </CardHeader>
         </Card>
@@ -83,7 +84,7 @@ export default async function FinancePage() {
           <CardHeader className="pb-2">
             <CardDescription>COGS сегодня</CardDescription>
             <CardTitle className="font-heading text-2xl tabular-nums text-muted-foreground">
-              {formatRubles(data.totals.cogs)}
+              {formatRubles(data.overallTotals.cogs)}
             </CardTitle>
           </CardHeader>
         </Card>
@@ -91,7 +92,7 @@ export default async function FinancePage() {
           <CardHeader className="pb-2">
             <CardDescription>Валовая маржа</CardDescription>
             <CardTitle className="font-heading text-2xl tabular-nums">
-              {data.totals.marginPercent.toFixed(1).replace(".", ",")}%
+              {data.overallTotals.marginPercent.toFixed(1).replace(".", ",")}%
             </CardTitle>
           </CardHeader>
           <CardContent className="pt-0">
@@ -116,8 +117,10 @@ export default async function FinancePage() {
       <HallEconomicsSection
         dateLabel={data.dateLabel}
         rows={data.rows}
-        totals={data.totals}
+        totals={data.hallTotals}
       />
+
+      <RetailSection dateLabel={data.dateLabel} retail={data.retail} />
     </div>
   );
 }

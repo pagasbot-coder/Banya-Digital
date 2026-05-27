@@ -62,6 +62,8 @@ async function clearDemoData(prisma: PrismaClient) {
   await prisma.session.deleteMany();
   await prisma.account.deleteMany();
   await prisma.user.deleteMany();
+  await prisma.retailSale.deleteMany();
+  await prisma.retailProduct.deleteMany();
   await prisma.stockMovement.deleteMany();
   await prisma.costLine.deleteMany();
   await prisma.revenueWeekPlan.deleteMany();
@@ -196,6 +198,109 @@ async function main() {
       basePrice: 650,
     },
   });
+
+  // ─── Розница (бар/магазин при бане, T-021) ───────────────────────────────
+  const retailProducts = await Promise.all([
+    prisma.retailProduct.create({
+      data: {
+        name: "Веник берёзовый (розница)",
+        category: "Веники",
+        unit: "шт",
+        price: 550,
+        cogsPerUnit: 230,
+      },
+    }),
+    prisma.retailProduct.create({
+      data: {
+        name: "Скраб соляной (розница)",
+        category: "Косметика",
+        unit: "шт",
+        price: 890,
+        cogsPerUnit: 420,
+      },
+    }),
+    prisma.retailProduct.create({
+      data: {
+        name: "Чай травяной (упаковка)",
+        category: "Бар",
+        unit: "уп",
+        price: 490,
+        cogsPerUnit: 210,
+      },
+    }),
+    prisma.retailProduct.create({
+      data: {
+        name: "Косметичка мини (подарок)",
+        category: "Мерч",
+        unit: "шт",
+        price: 1290,
+        cogsPerUnit: 760,
+      },
+    }),
+  ]);
+
+  const [broom, scrub, teaPack, merch] = retailProducts;
+
+  // Продажи сегодня/вчера + хвост недели для отчёта «день/неделя»
+  const retailSales = [
+    // today
+    {
+      productId: broom.id,
+      quantity: 6,
+      soldAt: atTime(today, 11, 10),
+      hallId: parHall.id,
+    },
+    {
+      productId: scrub.id,
+      quantity: 3,
+      soldAt: atTime(today, 12, 40),
+      hallId: hamHall.id,
+    },
+    { productId: teaPack.id, quantity: 4, soldAt: atTime(today, 15, 5) },
+    {
+      productId: merch.id,
+      quantity: 1,
+      soldAt: atTime(today, 18, 25),
+      hallId: vipHall.id,
+    },
+    // yesterday
+    {
+      productId: broom.id,
+      quantity: 4,
+      soldAt: atTime(yesterday, 13, 15),
+      hallId: senHall.id,
+    },
+    { productId: scrub.id, quantity: 2, soldAt: atTime(yesterday, 17, 50) },
+    { productId: teaPack.id, quantity: 3, soldAt: atTime(yesterday, 19, 5) },
+    // 2–6 days ago (week window)
+    {
+      productId: broom.id,
+      quantity: 3,
+      soldAt: atTime(addDays(today, -2), 16, 20),
+    },
+    {
+      productId: teaPack.id,
+      quantity: 2,
+      soldAt: atTime(addDays(today, -3), 12, 10),
+    },
+    {
+      productId: scrub.id,
+      quantity: 1,
+      soldAt: atTime(addDays(today, -4), 14, 35),
+    },
+    {
+      productId: broom.id,
+      quantity: 2,
+      soldAt: atTime(addDays(today, -5), 10, 45),
+    },
+    {
+      productId: teaPack.id,
+      quantity: 2,
+      soldAt: atTime(addDays(today, -6), 20, 5),
+    },
+  ];
+
+  await prisma.retailSale.createMany({ data: retailSales });
 
   // ─── Spa-программы ────────────────────────────────────────────────────────
   const [detoxProgram, imperialProgram, relaxProgram] = await Promise.all([

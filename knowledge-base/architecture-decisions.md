@@ -9,7 +9,7 @@
 | **Решение** | **Auth.js (NextAuth v5)** + `@auth/prisma-adapter` + PostgreSQL. Провайдер **Credentials** для демо/пилота. Сессия **JWT** (требование Credentials). |
 | **Роли** | `owner` \| `ops` \| `admin` \| `warehouse` — в `User.role` и `session.user.role`. |
 | **Маршруты** | `(app)` защищены `middleware.ts` → редирект на `/login`. Публично: `/login`, `/api/auth/*`. |
-| **Демо** | `npm run db:seed` — `*@demo.local`; пароль из `DEMO_STAFF_PASSWORD` (`.env.example`). |
+| **Демо** | `npm run db:seed` — `*@demo.local`; пароль `banya-demo` (`DEMO_STAFF_PASSWORD`, виден на `/login`). |
 | **Отложено** | RBAC по модулям (finance write только owner/admin) — отдельные задачи после scaffold. |
 | **Связано** | T-024 YCLIENTS keys — после T-009 DONE, отдельный sprint. |
 

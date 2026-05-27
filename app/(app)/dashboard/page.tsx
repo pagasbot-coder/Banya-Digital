@@ -2,6 +2,7 @@ import { CriticalAlertsSection } from "@/components/dashboard/critical-alerts-se
 import { HallLoadSection } from "@/components/dashboard/hall-load-section";
 import { InventoryAlertsCard } from "@/components/dashboard/inventory-alerts-card";
 import { PlanFactWeekCard } from "@/components/dashboard/plan-fact-week-card";
+import { RetailSummaryCard } from "@/components/dashboard/retail-summary-card";
 import { WamzCard } from "@/components/dashboard/wamz-card";
 import { MarginSection } from "@/components/dashboard/margin-section";
 import { RevenuePeriodsSection } from "@/components/dashboard/revenue-periods-section";
@@ -74,6 +75,9 @@ export default async function DashboardPage() {
         ) : null}
         <div>
           <InventoryAlertsCard summary={data.inventoryAlerts} />
+        </div>
+        <div>
+          <RetailSummaryCard summary={data.retail} />
         </div>
       </div>
 

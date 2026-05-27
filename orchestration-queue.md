@@ -60,7 +60,7 @@
 | T-018 | Resolve kitchen↔SPA conflict + audit log | Developer | DONE | P1 | T-006, T-011…013 | `@knowledge-base/SPA-SEGMENT-TEAM-REVIEW.md` D.2 | `/operations`: конфликты + «Разобрано», audit log; `resolvedAt`/`resolvedBy`; dashboard revalidate |
 | T-019 | Plan/fact неделя на dashboard | Developer | DONE | P1 | T-011 | `@knowledge-base/product-brief.md` | `RevenueWeekPlan`, `getWeekPlanFact`, карточка dashboard + блок `/finance`; seed ~94% плана; build OK |
 | T-020 | Hall zone types + seed urban SPA | Developer | DONE | P2 | T-006 | `@knowledge-base/segment-spa-banya-analysis.md` | `HallZoneType` + tags; seed `SEED_PRESET=urban-spa`; badge типа на dashboard hall load; Neon push+seed; build OK |
-| T-021 | Retail COGS PRODUCT line | Developer | BACKLOG | P2 | T-012 | `@knowledge-base/product-brief.md` | |
+| T-021 | Retail COGS PRODUCT line | Developer | IN_PROGRESS (muster-developer) | P2 | T-012 | `@knowledge-base/product-brief.md` | implementing retail products + sales + finance block |
 | T-022 | Seasonality calendar | PM | BACKLOG | P2 | T-019 | — | |
 | T-023 | Export CSV / 1С | Developer | BLOCKED | P2 | Architect ADR | — | |
 | T-024 | YCLIENTS import | Developer | BLOCKED | P2 | T-010, T-009 | — | |

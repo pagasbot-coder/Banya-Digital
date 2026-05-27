@@ -114,6 +114,36 @@ export async function seedUrbanSpa(prisma: PrismaClient) {
     },
   });
 
+  // ─── Retail products + sales (T-021) ─────────────────────────────────────
+  const [cream, water] = await Promise.all([
+    prisma.retailProduct.create({
+      data: {
+        name: "Крем для тела (розница)",
+        category: "Косметика",
+        unit: "шт",
+        price: 1490,
+        cogsPerUnit: 720,
+      },
+    }),
+    prisma.retailProduct.create({
+      data: {
+        name: "Вода 0,5 л (розница)",
+        category: "Бар",
+        unit: "шт",
+        price: 190,
+        cogsPerUnit: 55,
+      },
+    }),
+  ]);
+
+  await prisma.retailSale.createMany({
+    data: [
+      { productId: cream.id, quantity: 2, soldAt: atTime(today, 16, 10), hallId: vipHall.id },
+      { productId: water.id, quantity: 12, soldAt: atTime(today, 13, 5), hallId: poolHall.id },
+      { productId: water.id, quantity: 9, soldAt: atTime(yesterday, 18, 35) },
+    ],
+  });
+
   const [relaxProgram, aquaProgram] = await Promise.all([
     prisma.spaProgram.create({
       data: {

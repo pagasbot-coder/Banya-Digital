@@ -45,6 +45,13 @@ export type InventoryAlertsSummary = {
   hint: string;
 };
 
+export type RetailKpiSummary = {
+  revenue: number;
+  cogs: number;
+  marginPercent: number;
+  hint: string;
+};
+
 /** @deprecated Используйте секции hallLoads / revenuePeriods; оставлено для mock. */
 export type DashboardKpiMetric = {
   id: "hall_load" | "daily_revenue" | "margin" | "inventory_alerts";
@@ -122,6 +129,7 @@ export type DashboardData = {
   weekPlanFact: WeekPlanFactSummary | null;
   margin: MarginSummary;
   inventoryAlerts: InventoryAlertsSummary;
+  retail: RetailKpiSummary;
   alerts: CriticalAlert[];
   operations: TodayOperationRow[];
   shiftChecklists: ShiftChecklistsSummary;
