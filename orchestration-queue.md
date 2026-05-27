@@ -66,7 +66,8 @@
 | T-024 | YCLIENTS import | Developer | BLOCKED | P2 | T-010, T-009 | — | |
 | T-025 | Обновить ICP в brief post-SME | PM / CMO | DONE | P1 | T-017 | `@knowledge-base/marketing-brief.md` | ICP премиум-баня, 3 B2B канала 90д, AARRR, LTV:CAC, PostHog events; product-brief WAMZ сверен |
 | T-026 | Pilot UX: demo banner на dashboard | Developer / QA | DONE | P1 | T-023 | `@docs/pilot-start.md` | Баннер «Режим демо · Пилот…»; `DEMO_SKIP_AUTH` без изменений |
-| T-027 | QA: prod smoke sign-off | QA | READY | P0 | T-026 | `@knowledge-base/qa-checklist.md` § Prod smoke 2026-05-27 | Build OK; prod manual чекбоксы — Human ops |
+| T-027 | QA: prod smoke sign-off | QA | IN_PROGRESS | P0 | T-026 | `@knowledge-base/qa-checklist.md` § Prod smoke 2026-05-27 | Build OK; **prod manual чекбоксы — Human ops (в процессе)** |
+| T-028 | Pilot Week 1 execution | Human / Ops | IN_PROGRESS | P0 | T-027 | `@docs/pilot-start.md`, `@docs/pilot-reglement.md` | День 1–7 выполнены; daily отметки; WAMZ tracking |
 
 ---
 
@@ -266,7 +267,7 @@
 
 ### T-027 — QA prod smoke sign-off
 
-**Роль:** QA | **Статус:** READY
+**Роль:** QA | **Статус:** IN_PROGRESS
 
 **Acceptance criteria:**
 - [x] `npm run build` exit 0 (все маршруты в build output)
@@ -276,6 +277,24 @@
 - [ ] Статус → DONE после prod UAT
 
 **Notes:** T-024 YCLIENTS не трогать. `DEMO_SKIP_AUTH` не менять.
+
+---
+
+### T-028 — Pilot Week 1 execution
+
+**Роль:** Human / Ops | **Статус:** IN_PROGRESS | **Зависимости:** T-027
+
+**Acceptance criteria (Week 1):**
+- [ ] **Object name** зафиксирован в `docs/pilot-start.md` и `docs/pilot-reglement.md` (§5) (заменить `TBD (премиум-баня)`).
+- [ ] День 1: команда открыла `/dashboard`, понятны KPI и WAMZ; назначен ответственный за ежедневную сводку.
+- [ ] Дни 2–5: по зонам внесены активности (finance/checklist/booking) для роста WAMZ.
+- [ ] День 7: выгрузка CSV сделана; ретро 30 мин; зафиксирован **WAMZ X/4** недели 1.
+- [ ] Минимальный итог недели 1: **WAMZ ≥ 2/4**, stretch **3/4**.
+
+**Checklist (операционно):**
+- [ ] Каждый день: утренний просмотр `/dashboard` (ops + владелец).
+- [ ] Минимум 1 действие/день в системе (finance или чеклист или CRM-бронь) по активным зонам.
+- [ ] Перед закрытием: закрыть чеклист N/M; при необходимости FIFO OUT.
 
 ---
 
@@ -324,6 +343,7 @@
 | 2026-05-27 | Developer | T-023 MVP DONE: CSV export `/api/finance/export`, ADR-002; `NEXT_PUBLIC_BRAND_NAME`/`TAGLINE` в sidebar |
 | 2026-05-27 | QA | Pilot readiness: `npm run build` OK; `docs/pilot-start.md` неделя 1 (7 дней); qa-checklist § Prod smoke; T-026 DONE, T-027 READY |
 | 2026-05-27 | QA | Prod deploy target: https://banya-digital.vercel.app — commit+`vercel --prod` после sign-off diff |
+| 2026-05-27 | PM | Pilot STARTED: `docs/pilot-start.md` статус STARTED, day-1 checklist с prod URLs; week-1 one-pager в `docs/pilot-reglement.md`; T-028 создан |
 
 ### D.3 — владение задачами (после SPA team review)
 

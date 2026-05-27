@@ -1,5 +1,9 @@
 # Старт пилота — неделя 1 (операционная команда)
 
+**Статус пилота:** **STARTED**  
+**Дата старта (Europe/Moscow):** **2026-05-27**  
+**Объект пилота (заполнить Human):** **TBD (премиум-баня)**  
+
 **Проект:** Banya-Digital ERP · **Дата шаблона:** 2026-05-27  
 **Prod (демо):** https://banya-digital.vercel.app  
 **North Star пилота:** **WAMZ ≥ 3 из 4** залов за скользящие 7 дней (см. `@knowledge-base/product-brief.md`).
@@ -12,8 +16,8 @@
 
 | Поле | Значение |
 |------|----------|
-| **Объект пилота** | _название комплекса, город_ |
-| **Дата старта недели 1** | _ДД.ММ.ГГГГ_ |
+| **Объект пилота** | **TBD (премиум-баня)** → заменить на _название комплекса, город_ |
+| **Дата старта недели 1** | **2026-05-27** (Europe/Moscow) |
 | **Ответственный ops** | _ФИО, телефон_ |
 | **Ответственный владелец** | _ФИО_ |
 | **БД prod** | Neon — `db:push` + `db:seed` выполнены (см. `docs/GITHUB-DEPLOY.md`) |
@@ -26,6 +30,14 @@
 ## Неделя 1 — по дням (7 дней)
 
 ### День 1 — Знакомство со сводкой
+
+**Day 1 — чеклист (prod ссылки):**
+
+- `/dashboard`: https://banya-digital.vercel.app/dashboard  
+- `/finance`: https://banya-digital.vercel.app/finance  
+- `/operations`: https://banya-digital.vercel.app/operations  
+- `/operations/inventory`: https://banya-digital.vercel.app/operations/inventory  
+- `/crm`: https://banya-digital.vercel.app/crm
 
 | Время | Действие | Кто | Готово |
 |-------|----------|-----|--------|
