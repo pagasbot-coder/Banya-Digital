@@ -1,9 +1,9 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
-import { CostType } from "@prisma/client";
-import { startOfDay } from "@/lib/date-utils";
+import { CostType, Prisma } from "@prisma/client";
+import { parseBusinessDateInput } from "@/lib/date-utils";
 import { prisma } from "@/lib/db";
+import { safeRevalidatePaths } from "@/lib/safe-revalidate";
 
 export type FinanceActionState = {
   ok: boolean;
@@ -11,6 +11,8 @@ export type FinanceActionState = {
 };
 
 const OK: FinanceActionState = { ok: true, message: "" };
+
+const REVALIDATE_PATHS = ["/finance", "/dashboard"] as const;
 
 function fail(message: string): FinanceActionState {
   return { ok: false, message };
@@ -22,21 +24,6 @@ function parseAmount(raw: FormDataEntryValue | null): number | null {
   const value = Number(normalized);
   if (!Number.isFinite(value) || value <= 0) return null;
   return Math.round(value * 100) / 100;
-}
-
-function parseBusinessDate(raw: FormDataEntryValue | null): Date {
-  if (raw && String(raw).length >= 10) {
-    const [y, m, d] = String(raw).slice(0, 10).split("-").map(Number);
-    if (y && m && d) {
-      return startOfDay(new Date(Date.UTC(y, m - 1, d)));
-    }
-  }
-  return startOfDay();
-}
-
-async function revalidateFinanceViews() {
-  revalidatePath("/finance");
-  revalidatePath("/dashboard");
 }
 
 /** Добавляет строку выручки за бизнес-день. */
@@ -52,7 +39,7 @@ export async function createRevenueLine(
   const serviceId = String(formData.get("serviceId") ?? "").trim() || null;
   const amount = parseAmount(formData.get("amount"));
   const description = String(formData.get("description") ?? "").trim() || null;
-  const businessDate = parseBusinessDate(formData.get("businessDate"));
+  const businessDate = parseBusinessDateInput(formData.get("businessDate"));
 
   if (!hallId) return fail("Выберите зал.");
   if (amount === null) return fail("Укажите сумму больше нуля.");
@@ -61,18 +48,27 @@ export async function createRevenueLine(
     const hall = await prisma.hall.findUnique({ where: { id: hallId } });
     if (!hall) return fail("Зал не найден.");
 
+    if (serviceId) {
+      const service = await prisma.service.findUnique({
+        where: { id: serviceId },
+        select: { id: true, isActive: true },
+      });
+      if (!service) return fail("Услуга не найдена в справочнике.");
+      if (!service.isActive) return fail("Услуга неактивна — выберите другую.");
+    }
+
     await prisma.revenueLine.create({
       data: {
         hallId,
         serviceId,
-        amount,
+        amount: new Prisma.Decimal(amount),
         currency: "RUB",
         businessDate,
         description,
       },
     });
 
-    await revalidateFinanceViews();
+    safeRevalidatePaths([...REVALIDATE_PATHS]);
     return { ok: true, message: "Выручка сохранена." };
   } catch (error) {
     console.error("[finance] createRevenueLine:", error);
@@ -94,7 +90,7 @@ export async function createCostLine(
   const lotId = String(formData.get("lotId") ?? "").trim() || null;
   const amount = parseAmount(formData.get("amount"));
   const description = String(formData.get("description") ?? "").trim() || null;
-  const businessDate = parseBusinessDate(formData.get("businessDate"));
+  const businessDate = parseBusinessDateInput(formData.get("businessDate"));
   const costTypeRaw = String(formData.get("costType") ?? "COGS");
   const costType =
     costTypeRaw in CostType ? (costTypeRaw as CostType) : CostType.COGS;
@@ -107,12 +103,20 @@ export async function createCostLine(
       if (!lot) return fail("Партия склада не найдена.");
     }
 
+    if (serviceId) {
+      const service = await prisma.service.findUnique({
+        where: { id: serviceId },
+        select: { id: true },
+      });
+      if (!service) return fail("Услуга не найдена.");
+    }
+
     await prisma.costLine.create({
       data: {
         hallId,
         serviceId,
         lotId,
-        amount,
+        amount: new Prisma.Decimal(amount),
         costType,
         currency: "RUB",
         businessDate,
@@ -120,7 +124,7 @@ export async function createCostLine(
       },
     });
 
-    await revalidateFinanceViews();
+    safeRevalidatePaths([...REVALIDATE_PATHS]);
     return { ok: true, message: "COGS сохранён." };
   } catch (error) {
     console.error("[finance] createCostLine:", error);

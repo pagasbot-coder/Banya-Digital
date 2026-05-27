@@ -26,6 +26,27 @@ export function startOfDay(date = new Date()): Date {
   return new Date(Date.UTC(y, m - 1, d) - MOSCOW_OFFSET_MS);
 }
 
+/**
+ * Значение для Prisma @db.Date (RevenueLine.businessDate и т.п.).
+ * Тот же якорь, что startOfDay — совпадает с seed и фильтрами gte/lt.
+ */
+export function businessDateForDb(date = new Date()): Date {
+  return startOfDay(date);
+}
+
+/** Парсит YYYY-MM-DD из формы в businessDateForDb. */
+export function parseBusinessDateInput(
+  raw: FormDataEntryValue | null | undefined
+): Date {
+  if (raw && String(raw).length >= 10) {
+    const [y, m, d] = String(raw).slice(0, 10).split("-").map(Number);
+    if (y && m && d) {
+      return businessDateForDb(new Date(Date.UTC(y, m - 1, d)));
+    }
+  }
+  return businessDateForDb();
+}
+
 export function addDays(date: Date, days: number): Date {
   return startOfDay(new Date(date.getTime() + days * 86_400_000));
 }

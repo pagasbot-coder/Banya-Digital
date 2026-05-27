@@ -23,9 +23,22 @@
 | Seasonality (T-022) | **PASS** | «сезон» на `/dashboard` и `/finance` |
 | Retail (T-021) | **PASS** | «розниц» на `/dashboard` и `/finance` |
 
+## Hotfix T-029 (2026-05-27)
+
+**Симптом:** при отправке форм на `/finance` (выручка за услугу в зале) и `/operations/inventory` (FIFO OUT) — «This page couldn't load — server error».
+
+**Исправление:** server actions не отдают необработанные исключения; FIFO — интерактивная `$transaction` + `Prisma.Decimal`; `safeRevalidatePaths`; валидация `serviceId`.
+
+**Повторная проверка (Human):**
+
+| URL | Действие |
+|-----|----------|
+| https://banya-digital.vercel.app/finance | Добавить выручку: зал + услуга + сумма |
+| https://banya-digital.vercel.app/operations/inventory | «Списать по FIFO» на позиции с остатком |
+
 ## Блокеры
 
-Нет.
+Нет (после деплоя T-029).
 
 ## Ручная проверка UI (Human / пилот)
 
