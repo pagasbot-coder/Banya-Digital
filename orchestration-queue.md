@@ -304,7 +304,7 @@
 | 2026-05-27 | Developer | T-020 DONE: `Hall.zoneType`/`tags`, urban SPA seed preset, dashboard zone badges |
 | 2026-05-27 | Developer | T-021 DONE: `RetailProduct`/`RetailSale` schema; seed бар/магазин (веники, скраб, чай, мерч); `/finance` «Розница» день/неделя; `/dashboard` карточка «Розница за день»; Neon push+seed; build+vercel OK |
 | 2026-05-27 | Developer | T-022 DONE: `SeasonCalendarEntry` (выходные, праздники, НГ-пик, летний спад); план/факт с сезонной поправкой на dashboard + `/finance`; seed ±6 мес МСК |
-| 2026-05-27 | Developer | T-023 MVP DONE: CSV export `/api/finance/export`, ADR-002; `NEXT_PUBLIC_BRAND_NAME`/`TAGLINE` в sidebar; T-022 остаётся PM BACKLOG |
+| 2026-05-27 | Developer | T-023 MVP DONE: CSV export `/api/finance/export`, ADR-002; `NEXT_PUBLIC_BRAND_NAME`/`TAGLINE` в sidebar |
 
 ### D.3 — владение задачами (после SPA team review)
 

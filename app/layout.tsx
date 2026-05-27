@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { getBrandConfig } from "@/lib/brand";
+
+const brand = getBrandConfig();
 
 export const metadata: Metadata = {
-  title: "Дегтярные Бани · ERP",
-  description:
-    "ERP/CRM для премиального банного комплекса — загрузка залов, финансы, операции",
+  title: `${brand.name} · ERP`,
+  description: brand.description,
 };
 
 export default function RootLayout({

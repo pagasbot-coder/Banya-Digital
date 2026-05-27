@@ -1,3 +1,4 @@
+import { FinanceExportLink } from "@/components/finance/finance-export-link";
 import { RevenueCostForms } from "@/components/finance/revenue-cost-forms";
 import { WeekPlanFactSection } from "@/components/finance/week-plan-fact-section";
 import { HallEconomicsSection } from "@/components/finance/hall-economics-section";
@@ -57,16 +58,19 @@ export default async function FinancePage() {
 
   return (
     <div className="flex flex-1 flex-col gap-8 p-6 md:p-8">
-      <header>
-        <p className="text-xs font-medium uppercase tracking-widest text-accent">
-          Модуль
-        </p>
-        <h1 className="font-heading text-2xl font-semibold tracking-tight md:text-3xl">
-          Финансы
-        </h1>
-        <p className="mt-1 max-w-xl text-sm text-muted-foreground">
-          Unit economics за сегодня: выручка, COGS и маржа по залам из PostgreSQL.
-        </p>
+      <header className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+        <div>
+          <p className="text-xs font-medium uppercase tracking-widest text-accent">
+            Модуль
+          </p>
+          <h1 className="font-heading text-2xl font-semibold tracking-tight md:text-3xl">
+            Финансы
+          </h1>
+          <p className="mt-1 max-w-xl text-sm text-muted-foreground">
+            Unit economics за сегодня: выручка, COGS и маржа по залам из PostgreSQL.
+          </p>
+        </div>
+        <FinanceExportLink />
       </header>
 
       {weekPlanFact ? <WeekPlanFactSection summary={weekPlanFact} /> : null}

@@ -23,3 +23,13 @@
 - Prisma-модели `User`, `Account`, `Session`, `VerificationToken`.
 - Обязательные env: `AUTH_SECRET`, `AUTH_URL` (или `NEXTAUTH_URL` legacy alias).
 - Guest-facing auth — out of scope v1 (`product-brief`).
+
+## ADR-002 — Finance CSV export (T-023 MVP)
+
+| Поле | Значение |
+|------|----------|
+| **Статус** | Accepted (Developer MVP 2026-05-27) |
+| **Контекст** | Пилот требует выгрузку для бухгалтерии/Excel до интеграции с 1С. |
+| **Решение** | `GET /api/finance/export` — UTF-8 CSV (BOM): сводка дня, план/факт недели, залы, розница день/неделя. Кнопка на `/finance`. |
+| **Отложено** | Формат 1С, НДС, проводки, расписание cron — отдельный sprint после Human sign-off. |
+| **White-label** | `NEXT_PUBLIC_BRAND_NAME`, `NEXT_PUBLIC_BRAND_TAGLINE` в sidebar (без смены seed). |
