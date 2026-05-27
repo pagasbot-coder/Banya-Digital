@@ -89,6 +89,19 @@ export type ShiftChecklistsSummary = {
   groups: ShiftChecklistGroup[];
 };
 
+/** План/факт выручки за календарную неделю (T-019). */
+export type WeekPlanFactSummary = {
+  weekLabel: string;
+  periodHint: string;
+  planAmount: number;
+  factAmount: number;
+  percentOfPlan: number;
+  meetsPlan: boolean;
+  deltaLabel: string;
+  trend: KpiTrend;
+  planFromDb: boolean;
+};
+
 /** North Star пилота: Weekly Active Managed Zones (WAMZ). */
 export type WamzSummary = {
   activeCount: number;
@@ -104,6 +117,7 @@ export type WamzSummary = {
 export type DashboardData = {
   hallLoads: HallLoadRow[];
   revenuePeriods: RevenuePeriodMetric[];
+  weekPlanFact: WeekPlanFactSummary | null;
   margin: MarginSummary;
   inventoryAlerts: InventoryAlertsSummary;
   alerts: CriticalAlert[];

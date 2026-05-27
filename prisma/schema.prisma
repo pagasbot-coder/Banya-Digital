@@ -400,3 +400,17 @@ enum CostType {
   OVERHEAD
   OTHER
 }
+
+/// План выручки на календарную неделю (пн–вс, Europe/Moscow) — T-019.
+model RevenueWeekPlan {
+  id        String   @id @default(cuid())
+  weekStart DateTime @db.Date
+  amount    Decimal  @db.Decimal(12, 2)
+  currency  String   @default("RUB")
+  notes     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([weekStart])
+  @@map("revenue_week_plans")
+}

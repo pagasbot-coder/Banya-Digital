@@ -1,6 +1,7 @@
 import { CriticalAlertsSection } from "@/components/dashboard/critical-alerts-section";
 import { HallLoadSection } from "@/components/dashboard/hall-load-section";
 import { InventoryAlertsCard } from "@/components/dashboard/inventory-alerts-card";
+import { PlanFactWeekCard } from "@/components/dashboard/plan-fact-week-card";
 import { WamzCard } from "@/components/dashboard/wamz-card";
 import { MarginSection } from "@/components/dashboard/margin-section";
 import { RevenuePeriodsSection } from "@/components/dashboard/revenue-periods-section";
@@ -59,13 +60,18 @@ export default async function DashboardPage() {
         </Button>
       </header>
 
-      <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-5">
+      <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-6">
         <div className="sm:col-span-2 xl:col-span-3">
           <HallLoadSection rows={data.hallLoads} />
         </div>
         <div>
           <WamzCard summary={data.wamz} />
         </div>
+        {data.weekPlanFact ? (
+          <div>
+            <PlanFactWeekCard summary={data.weekPlanFact} />
+          </div>
+        ) : null}
         <div>
           <InventoryAlertsCard summary={data.inventoryAlerts} />
         </div>

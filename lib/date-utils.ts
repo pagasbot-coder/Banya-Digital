@@ -35,6 +35,20 @@ export function startOfMonth(date: Date): Date {
   return new Date(Date.UTC(y, m - 1, 1) - MOSCOW_OFFSET_MS);
 }
 
+/** Понедельник календарной недели (ISO, Europe/Moscow). */
+export function startOfWeek(date = new Date()): Date {
+  let cursor = startOfDay(date);
+  for (let i = 0; i < 7; i++) {
+    const weekday = new Intl.DateTimeFormat("en-US", {
+      timeZone: BUSINESS_TIMEZONE,
+      weekday: "short",
+    }).format(cursor);
+    if (weekday === "Mon") return cursor;
+    cursor = addDays(cursor, -1);
+  }
+  return startOfDay(date);
+}
+
 /** Локальное время внутри бизнес-дня (часы/минуты по Москве). */
 export function atBusinessTime(base: Date, hours: number, minutes = 0): Date {
   return new Date(base.getTime() + (hours * 60 + minutes) * 60_000);

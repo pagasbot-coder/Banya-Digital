@@ -1,4 +1,5 @@
 import { RevenueCostForms } from "@/components/finance/revenue-cost-forms";
+import { WeekPlanFactSection } from "@/components/finance/week-plan-fact-section";
 import { HallEconomicsSection } from "@/components/finance/hall-economics-section";
 import {
   Card,
@@ -11,6 +12,7 @@ import { BUSINESS_TIMEZONE, startOfDay } from "@/lib/date-utils";
 import { formatRubles } from "@/lib/format-money";
 import { getFinanceData, isFinanceEmpty } from "@/modules/finance";
 import { getFinanceFormOptions } from "@/modules/finance/services/get-finance-form-options";
+import { getWeekPlanFact } from "@/modules/finance/services/get-week-plan-fact";
 
 export const dynamic = "force-dynamic";
 
@@ -21,9 +23,10 @@ function todayInputValue(): string {
 }
 
 export default async function FinancePage() {
-  const [data, formOptions] = await Promise.all([
+  const [data, formOptions, weekPlanFact] = await Promise.all([
     getFinanceData(),
     getFinanceFormOptions(),
+    getWeekPlanFact(),
   ]);
   const defaultBusinessDate = todayInputValue();
 
@@ -64,6 +67,8 @@ export default async function FinancePage() {
           Unit economics за сегодня: выручка, COGS и маржа по залам из PostgreSQL.
         </p>
       </header>
+
+      {weekPlanFact ? <WeekPlanFactSection summary={weekPlanFact} /> : null}
 
       <div className="grid gap-4 sm:grid-cols-3">
         <Card className="border-border/80 bg-card/95 shadow-sm">

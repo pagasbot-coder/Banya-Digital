@@ -163,6 +163,17 @@ export const mockTodayOperations: import("./types").TodayOperationRow[] = [
 export const mockDashboardData: import("./types").DashboardData = {
   hallLoads: mockHallLoads,
   revenuePeriods: mockRevenuePeriods,
+  weekPlanFact: {
+    weekLabel: "20–27 мая",
+    periodHint: "Mock: календарная неделя (пн–вс, МСК)",
+    planAmount: 820_000,
+    factAmount: 892_400,
+    percentOfPlan: 108.8,
+    meetsPlan: true,
+    deltaLabel: "+8% к плану",
+    trend: "up",
+    planFromDb: true,
+  },
   margin: mockMargin,
   inventoryAlerts: mockInventoryAlerts,
   alerts: mockCriticalAlerts,

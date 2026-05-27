@@ -7,6 +7,7 @@
  */
 import { addDays, startOfDay, startOfMonth } from "@/lib/date-utils";
 import { prisma } from "@/lib/db";
+import { getWeekPlanFact } from "@/modules/finance/services/get-week-plan-fact";
 import type {
   CriticalAlert,
   DashboardResult,
@@ -632,20 +633,30 @@ export async function getDashboardData(): Promise<DashboardResult> {
 
     const margin = await buildMarginSummary(today);
 
-    const [hallLoads, revenuePeriods, inventoryAlerts, alerts, operations, shiftChecklists, wamz] =
-      await Promise.all([
-        buildHallLoads(today),
-        buildRevenuePeriods(today),
-        countInventoryAlerts(),
-        buildCriticalAlerts(today, margin.byService),
-        buildTodayOperations(today),
-        buildShiftChecklists(today),
-        buildWamzSummary(today),
-      ]);
+    const [
+      hallLoads,
+      revenuePeriods,
+      weekPlanFact,
+      inventoryAlerts,
+      alerts,
+      operations,
+      shiftChecklists,
+      wamz,
+    ] = await Promise.all([
+      buildHallLoads(today),
+      buildRevenuePeriods(today),
+      getWeekPlanFact(today),
+      countInventoryAlerts(),
+      buildCriticalAlerts(today, margin.byService),
+      buildTodayOperations(today),
+      buildShiftChecklists(today),
+      buildWamzSummary(today),
+    ]);
 
     return {
       hallLoads,
       revenuePeriods,
+      weekPlanFact,
       margin,
       inventoryAlerts,
       alerts,

@@ -16,6 +16,7 @@ import {
   atBusinessTime,
   startOfDay,
   startOfMonth,
+  startOfWeek,
 } from "../lib/date-utils";
 
 /** Время внутри бизнес-дня (Москва) — alias для читаемости seed. */
@@ -57,6 +58,7 @@ async function clearDemoData(prisma: PrismaClient) {
   await prisma.user.deleteMany();
   await prisma.stockMovement.deleteMany();
   await prisma.costLine.deleteMany();
+  await prisma.revenueWeekPlan.deleteMany();
   await prisma.revenueLine.deleteMany();
   await prisma.kitchenSlot.deleteMany();
   await prisma.programTiming.deleteMany();
@@ -975,6 +977,45 @@ async function main() {
 
   await Promise.all(historicalRevenue);
 
+  // ─── План выручки на календарную неделю (T-019) ─────────────────────────
+  const weekStart = startOfWeek(today);
+  const tomorrow = addDays(today, 1);
+  const currentWeekFact = await prisma.revenueLine.aggregate({
+    where: { businessDate: { gte: weekStart, lt: tomorrow } },
+    _sum: { amount: true },
+  });
+  const weekFactAmount = Number(currentWeekFact._sum.amount ?? 0);
+  await prisma.revenueWeekPlan.upsert({
+    where: { weekStart },
+    update: {
+      amount: Math.round(weekFactAmount * 0.94),
+      notes: "План недели (демо): ~94% от накопленного факта",
+    },
+    create: {
+      weekStart,
+      amount: Math.round(weekFactAmount * 0.94),
+      notes: "План недели (демо): ~94% от накопленного факта",
+    },
+  });
+
+  const prevWeekStart = addDays(weekStart, -7);
+  const prevWeekFact = await prisma.revenueLine.aggregate({
+    where: { businessDate: { gte: prevWeekStart, lt: weekStart } },
+    _sum: { amount: true },
+  });
+  await prisma.revenueWeekPlan.upsert({
+    where: { weekStart: prevWeekStart },
+    update: {
+      amount: Math.round(Number(prevWeekFact._sum.amount ?? 0) * 0.96),
+      notes: "Прошлая неделя — архив плана",
+    },
+    create: {
+      weekStart: prevWeekStart,
+      amount: Math.round(Number(prevWeekFact._sum.amount ?? 0) * 0.96),
+      notes: "Прошлая неделя — архив плана",
+    },
+  });
+
   // COGS прошлого месяца (не влияет на delta выручки, но для полноты демо)
   const historicalCosts: ReturnType<typeof prisma.costLine.create>[] = [];
   for (let d = prevMonthStart; d < prevMonthEnd; d = addDays(d, 5)) {
@@ -1046,7 +1087,7 @@ async function main() {
     await seedStaffUsers(prisma);
 
     console.info(
-      "Seed OK: 4 зала, 6 гостей, брони (~50% загрузка залов сегодня), spa/kitchen, FIFO, finance, checklists, staff users."
+      "Seed OK: 4 зала, finance + week plan/fact, checklists, staff users."
     );
   } finally {
     await prisma.$disconnect();
