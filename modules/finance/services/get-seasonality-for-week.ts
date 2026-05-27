@@ -2,7 +2,7 @@
  * Сезонные поправки к недельному плану (T-022): записи календаря × доля дня в плане.
  */
 import { SeasonKind } from "@prisma/client";
-import { addDays } from "@/lib/date-utils";
+import { addDays, startOfDay } from "@/lib/date-utils";
 import { prisma } from "@/lib/db";
 
 export type SeasonalityDayChip = {
@@ -70,9 +70,11 @@ export async function getSeasonalityForWeek(
       orderBy: { calendarDate: "asc" },
     });
 
+    /** Prisma @db.Date приходит как UTC-полночь — нормализуем к бизнес-дню МСК. */
+    const dayKey = (d: Date) => startOfDay(d).getTime();
     const multiplierByDay = new Map<number, (typeof entries)[0]>();
     for (const e of entries) {
-      multiplierByDay.set(e.calendarDate.getTime(), e);
+      multiplierByDay.set(dayKey(e.calendarDate), e);
     }
 
     const dailyBase = basePlanAmount / 7;
@@ -85,7 +87,7 @@ export async function getSeasonalityForWeek(
 
     for (let i = 0; i < 7; i++) {
       const day = addDays(weekStart, i);
-      const entry = multiplierByDay.get(day.getTime());
+      const entry = multiplierByDay.get(dayKey(day));
       const mult = entry ? Number(entry.planMultiplier) : 1;
       rawWeek += dailyBase;
       adjustedWeek += dailyBase * mult;
@@ -116,7 +118,7 @@ export async function getSeasonalityForWeek(
         ? Math.round(((adjustedToDate - rawToDate) / rawToDate) * 1000) / 10
         : 0;
 
-    const todayEntry = multiplierByDay.get(referenceDate.getTime());
+    const todayEntry = multiplierByDay.get(dayKey(referenceDate));
     const sign =
       weekDeltaPercent >= 0 ? `+${weekDeltaPercent}` : `${weekDeltaPercent}`;
     const chipKinds = [...new Set(chips.map((c) => KIND_LABEL[c.kind]))];
