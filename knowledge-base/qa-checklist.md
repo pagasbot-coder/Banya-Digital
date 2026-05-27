@@ -32,6 +32,26 @@ _Ведёт QA (@role-qa). Обновлено: T-005 foundation pass (2026-05-24
 - [x] KPI из БД (не mock) — T-006: `db:seed` + `DATABASE_URL`, см. README
 - [ ] Нет `console.error` на happy path в production build _(dev: hydration warning от Cursor browser refs — не блокер приложения)_
 
+## Prod smoke 2026-05-27 (pilot readiness)
+
+**Среда:** `npm run build` exit 0 (Next.js 16.2.6, routes compiled).  
+**Prod base:** https://banya-digital.vercel.app · `DEMO_SKIP_AUTH` не менялся (default skip login).
+
+| Маршрут / фича | Build compile | Prod manual (Human) |
+|----------------|---------------|---------------------|
+| `/dashboard` — KPI, WAMZ, алерты, чеклисты | [x] | [ ] |
+| `/finance` — формы, план/факт, розница | [x] | [ ] |
+| `/crm` — гости, брони | [x] | [ ] |
+| `/operations` — конфликты, audit | [x] | [ ] |
+| `/operations/inventory` — FIFO | [x] | [ ] |
+| CSV export `GET /api/finance/export` + кнопка `/finance` | [x] | [ ] |
+| Seasonality chips (T-022) dashboard + `/finance` | [x] | [ ] |
+| Retail card dashboard + блок `/finance` (T-021) | [x] | [ ] |
+
+**Lint:** `npm run lint` — запускать перед релизом; при зависании ESLint на Windows — повторить или `npx eslint app components modules lib --max-warnings 0`.
+
+**Sign-off:** T-027 — после prod manual чекбоксов выше.
+
 ## Команды проверки
 
 ```bash
@@ -42,5 +62,6 @@ npm run db:generate
 docker compose up -d
 npm run db:push && npm run db:seed
 # smoke (dev или start на :3000):
-# /, /dashboard, /finance, /crm, /operations
+# /, /dashboard, /finance, /crm, /operations, /operations/inventory
+# prod: https://banya-digital.vercel.app/dashboard
 ```

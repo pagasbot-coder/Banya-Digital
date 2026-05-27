@@ -5,7 +5,7 @@
 
 **Проект:** Banya-Digital ERP  
 **Архитектор (Human):** _ваше имя_  
-**Последнее обновление:** 2026-05-27 (T-023 MVP DONE: CSV export + white-label env)
+**Последнее обновление:** 2026-05-27 (pilot readiness wave: T-027 QA smoke, pilot-start.md)
 
 ---
 
@@ -65,6 +65,8 @@
 | T-023 | Export CSV / 1С | Developer | DONE | P2 | ADR-002 | `@knowledge-base/architecture-decisions.md` | MVP: `GET /api/finance/export`, кнопка `/finance`; white-label `NEXT_PUBLIC_BRAND_*`; 1С — backlog |
 | T-024 | YCLIENTS import | Developer | BLOCKED | P2 | T-010, T-009 | — | |
 | T-025 | Обновить ICP в brief post-SME | PM / CMO | DONE | P1 | T-017 | `@knowledge-base/marketing-brief.md` | ICP премиум-баня, 3 B2B канала 90д, AARRR, LTV:CAC, PostHog events; product-brief WAMZ сверен |
+| T-026 | Pilot UX: demo banner на dashboard | Developer / QA | DONE | P1 | T-023 | `@docs/pilot-start.md` | Баннер «Режим демо · Пилот…»; `DEMO_SKIP_AUTH` без изменений |
+| T-027 | QA: prod smoke sign-off | QA | READY | P0 | T-026 | `@knowledge-base/qa-checklist.md` § Prod smoke 2026-05-27 | Build OK; prod manual чекбоксы — Human ops |
 
 ---
 
@@ -262,6 +264,21 @@
 
 ---
 
+### T-027 — QA prod smoke sign-off
+
+**Роль:** QA | **Статус:** READY
+
+**Acceptance criteria:**
+- [x] `npm run build` exit 0 (все маршруты в build output)
+- [x] `knowledge-base/qa-checklist.md` — секция «Prod smoke 2026-05-27»
+- [x] `docs/pilot-start.md` — неделя 1, 7 дней, WAMZ 3/4
+- [ ] Human: prod manual — все чекбоксы в таблице prod smoke (dashboard…retail)
+- [ ] Статус → DONE после prod UAT
+
+**Notes:** T-024 YCLIENTS не трогать. `DEMO_SKIP_AUTH` не менять.
+
+---
+
 ### T-014 — Pilot reglement (8 недель)
 
 **Роль:** PM | **Deliverable:** `docs/pilot-reglement.md` (новый) + ссылки из `management-overview.md`
@@ -305,6 +322,8 @@
 | 2026-05-27 | Developer | T-021 DONE: `RetailProduct`/`RetailSale` schema; seed бар/магазин (веники, скраб, чай, мерч); `/finance` «Розница» день/неделя; `/dashboard` карточка «Розница за день»; Neon push+seed; build+vercel OK |
 | 2026-05-27 | Developer | T-022 DONE: `SeasonCalendarEntry` (выходные, праздники, НГ-пик, летний спад); план/факт с сезонной поправкой на dashboard + `/finance`; seed ±6 мес МСК |
 | 2026-05-27 | Developer | T-023 MVP DONE: CSV export `/api/finance/export`, ADR-002; `NEXT_PUBLIC_BRAND_NAME`/`TAGLINE` в sidebar |
+| 2026-05-27 | QA | Pilot readiness: `npm run build` OK; `docs/pilot-start.md` неделя 1 (7 дней); qa-checklist § Prod smoke; T-026 DONE, T-027 READY |
+| 2026-05-27 | QA | Prod deploy target: https://banya-digital.vercel.app — commit+`vercel --prod` после sign-off diff |
 
 ### D.3 — владение задачами (после SPA team review)
 

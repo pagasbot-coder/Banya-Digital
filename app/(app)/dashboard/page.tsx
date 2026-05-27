@@ -1,4 +1,5 @@
 import { CriticalAlertsSection } from "@/components/dashboard/critical-alerts-section";
+import { PilotDemoBanner } from "@/components/dashboard/pilot-demo-banner";
 import { HallLoadSection } from "@/components/dashboard/hall-load-section";
 import { InventoryAlertsCard } from "@/components/dashboard/inventory-alerts-card";
 import { PlanFactWeekCard } from "@/components/dashboard/plan-fact-week-card";
@@ -20,6 +21,7 @@ export default async function DashboardPage() {
   if (isDashboardEmpty(data)) {
     return (
       <div className="flex flex-1 flex-col gap-8 p-6 md:p-8">
+        <PilotDemoBanner />
         <header>
           <p className="text-xs font-medium uppercase tracking-widest text-accent">
             Операционный зал
@@ -43,6 +45,7 @@ export default async function DashboardPage() {
 
   return (
     <div className="flex flex-1 flex-col gap-8 p-6 md:p-8">
+      <PilotDemoBanner />
       <header className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
           <p className="text-xs font-medium uppercase tracking-widest text-accent">
