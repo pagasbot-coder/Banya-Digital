@@ -5,7 +5,7 @@
 
 **Проект:** Banya-Digital ERP  
 **Архитектор (Human):** _ваше имя_  
-**Последнее обновление:** 2026-05-27 (T-018 DONE; T-025 marketing-brief; pilot-start checklist)
+**Последнее обновление:** 2026-05-27 (T-021 DONE: retail COGS + finance/dashboard блок)
 
 ---
 
@@ -60,7 +60,7 @@
 | T-018 | Resolve kitchen↔SPA conflict + audit log | Developer | DONE | P1 | T-006, T-011…013 | `@knowledge-base/SPA-SEGMENT-TEAM-REVIEW.md` D.2 | `/operations`: конфликты + «Разобрано», audit log; `resolvedAt`/`resolvedBy`; dashboard revalidate |
 | T-019 | Plan/fact неделя на dashboard | Developer | DONE | P1 | T-011 | `@knowledge-base/product-brief.md` | `RevenueWeekPlan`, `getWeekPlanFact`, карточка dashboard + блок `/finance`; seed ~94% плана; build OK |
 | T-020 | Hall zone types + seed urban SPA | Developer | DONE | P2 | T-006 | `@knowledge-base/segment-spa-banya-analysis.md` | `HallZoneType` + tags; seed `SEED_PRESET=urban-spa`; badge типа на dashboard hall load; Neon push+seed; build OK |
-| T-021 | Retail COGS PRODUCT line | Developer | IN_PROGRESS (muster-developer) | P2 | T-012 | `@knowledge-base/product-brief.md` | implementing retail products + sales + finance block |
+| T-021 | Retail COGS PRODUCT line | Developer | DONE | P2 | T-012 | `@knowledge-base/product-brief.md` | `RetailProduct`/`RetailSale` в schema; seed 4 продукта (бар/магазин); `/finance` блок «Розница» день/неделя; `/dashboard` карточка «Розница за день»; build+push+vercel --prod OK |
 | T-022 | Seasonality calendar | PM | BACKLOG | P2 | T-019 | — | |
 | T-023 | Export CSV / 1С | Developer | BLOCKED | P2 | Architect ADR | — | |
 | T-024 | YCLIENTS import | Developer | BLOCKED | P2 | T-010, T-009 | — | |
@@ -302,6 +302,7 @@
 | 2026-05-27 | PM | Pilot prep: `pilot-reglement` §5 WAMZ + TBD object/date; `docs/pilot-start.md` |
 | 2026-05-27 | Developer | T-019 DONE: план/факт недели (календарная неделя МСК), dashboard + finance, `RevenueWeekPlan` |
 | 2026-05-27 | Developer | T-020 DONE: `Hall.zoneType`/`tags`, urban SPA seed preset, dashboard zone badges |
+| 2026-05-27 | Developer | T-021 DONE: `RetailProduct`/`RetailSale` schema; seed бар/магазин (веники, скраб, чай, мерч); `/finance` «Розница» день/неделя; `/dashboard` карточка «Розница за день»; Neon push+seed; build+vercel OK |
 
 ### D.3 — владение задачами (после SPA team review)
 
