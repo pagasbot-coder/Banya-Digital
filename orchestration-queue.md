@@ -285,7 +285,7 @@
 **Роль:** Human / Ops | **Статус:** IN_PROGRESS | **Зависимости:** T-027
 
 **Acceptance criteria (Week 1):**
-- [ ] **Object name** зафиксирован в `docs/pilot-start.md` и `docs/pilot-reglement.md` (§5) (заменить `TBD (премиум-баня)`).
+- [x] **Object name** зафиксирован: **Дегтярные Бани** (Санкт-Петербург) — `docs/pilot-start.md`, `docs/pilot-reglement.md` §5.
 - [ ] День 1: команда открыла `/dashboard`, понятны KPI и WAMZ; назначен ответственный за ежедневную сводку.
 - [ ] Дни 2–5: по зонам внесены активности (finance/checklist/booking) для роста WAMZ.
 - [ ] День 7: выгрузка CSV сделана; ретро 30 мин; зафиксирован **WAMZ X/4** недели 1.
@@ -344,6 +344,7 @@
 | 2026-05-27 | QA | Pilot readiness: `npm run build` OK; `docs/pilot-start.md` неделя 1 (7 дней); qa-checklist § Prod smoke; T-026 DONE, T-027 READY |
 | 2026-05-27 | QA | Prod deploy target: https://banya-digital.vercel.app — commit+`vercel --prod` после sign-off diff |
 | 2026-05-27 | PM | Pilot STARTED: `docs/pilot-start.md` статус STARTED, day-1 checklist с prod URLs; week-1 one-pager в `docs/pilot-reglement.md`; T-028 создан |
+| 2026-05-27 | PM | T-028: объект пилота **Дегтярные Бани** (Санкт-Петербург) — `pilot-start.md`, `pilot-reglement.md` §5; совпадает с demo brand (`lib/brand.ts`) |
 
 ### D.3 — владение задачами (после SPA team review)
 

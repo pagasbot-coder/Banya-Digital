@@ -98,13 +98,13 @@
 
 ## 5. Чеклист «до старта пилота»
 
-**Объект пилота:** **TBD by Human** _(название комплекса — заполняет Architect/владелец)_  
-**Дата старта:** **TBD by Human** _(календарный день, TZ Europe/Moscow)_  
+**Объект пилота:** **Дегтярные Бани** (Санкт-Петербург)  
+**Дата старта:** **2026-05-27** (Europe/Moscow)  
 **Краткая версия:** `@docs/pilot-start.md`
 
 - [x] Human: ICP (премиум-баня) и North Star (**WAMZ**) в `SPA-SEGMENT-TEAM-REVIEW.md` часть C — **2026-05-25**
 - [x] P0 модули: finance (T-011), inventory FIFO (T-012), чеклисты (T-013), разбор kitchen↔SPA (T-018)
-- [ ] **Human:** зафиксировать **название объекта** и **дату старта** в `pilot-start.md` и здесь (§5)
+- [x] **Human/PM:** **название объекта** и **дата старта** зафиксированы в `pilot-start.md` и здесь (§5) — **2026-05-27**
 - [ ] База: Neon или Docker PostgreSQL, `DATABASE_URL`, `npm run db:push && npm run db:seed` _(только staging/demo)_
 - [ ] Деплой production URL согласован (Vercel+Neon или VPS — см. Architect)
 - [ ] Обучение команды объекта **30 мин**: сводка, финансы, **конфликты на `/operations`**, чеклисты, склад
