@@ -52,6 +52,20 @@ _Ведёт QA (@role-qa). Обновлено: T-005 foundation pass (2026-05-24
 
 **Sign-off:** T-027 **DONE** (QA agent prod smoke). Визуальный UAT пилота — Human ops, T-028 Week 1.
 
+## E2E формы (post hotfix T-029 / T-030) — Human retest
+
+| Модуль | URL | Действие | Ожидание |
+|--------|-----|----------|----------|
+| Finance | https://banya-digital.vercel.app/finance | Выручка: зал + услуга + сумма | Сообщение «Выручка сохранена», без server error |
+| Inventory | https://banya-digital.vercel.app/operations/inventory | FIFO OUT на позиции с остатком | Сообщение об успешном списании, без 500 |
+| CRM guest | https://banya-digital.vercel.app/crm/guests/new | Имя (≥2 символа) + телефон, «Добавить гостя» | «Гость … сохранён», без server error |
+| CRM booking | https://banya-digital.vercel.app/crm | Новая бронь: гость, зал, дата/время | «Бронь создана» или RU-ошибка конфликта слота |
+
+- [ ] Finance revenue (T-029)
+- [ ] Inventory FIFO OUT (T-029)
+- [ ] CRM новый гость (T-030)
+- [ ] CRM новая бронь (T-030)
+
 ## Команды проверки
 
 ```bash

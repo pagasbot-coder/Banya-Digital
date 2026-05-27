@@ -5,7 +5,7 @@
 
 **Проект:** Banya-Digital ERP  
 **Архитектор (Human):** _ваше имя_  
-**Последнее обновление:** 2026-05-27 (T-029 hotfix: finance revenue + FIFO OUT prod 500)
+**Последнее обновление:** 2026-05-27 (T-030 hotfix: CRM guest/booking prod 500)
 
 ---
 
@@ -69,6 +69,7 @@
 | T-027 | QA: prod smoke sign-off | QA | DONE | P0 | T-026 | `@knowledge-base/qa-checklist.md` § Prod smoke 2026-05-27 | Build+lint OK; prod GET smoke 6/6×200; CSV OK; отчёт `qa-report-pilot-week1.md` |
 | T-028 | Pilot Week 1 execution | Human / Ops | IN_PROGRESS | P0 | T-027 | `@docs/pilot-start.md`, `@docs/pilot-reglement.md` | День 1–7 выполнены; daily отметки; WAMZ tracking |
 | T-029 | Hotfix: prod 500 на выручке и FIFO OUT | Developer | DONE | P0 | T-011, T-012 | `modules/finance/actions/create-finance-lines.ts`, `modules/operations/inventory/` | try/catch + safe revalidate; Prisma.Decimal; interactive $transaction; build+vercel --prod |
+| T-030 | Hotfix: prod 500 CRM гость / бронь | Developer | DONE | P0 | T-010, T-029 | `modules/crm/actions/crm-actions.ts` | safeRevalidatePaths; try/catch всех actions; parseBusinessDateInput; валидация guest/hall/spaProgram; build+vercel --prod |
 
 ---
 

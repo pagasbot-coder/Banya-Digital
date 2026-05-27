@@ -36,9 +36,24 @@
 | https://banya-digital.vercel.app/finance | Добавить выручку: зал + услуга + сумма |
 | https://banya-digital.vercel.app/operations/inventory | «Списать по FIFO» на позиции с остатком |
 
+## Hotfix T-030 (2026-05-27)
+
+**Симптом:** при создании гостя на `/crm/guests/new` (и брони на `/crm`) — тот же server error, что до T-029 на finance/inventory.
+
+**Причина:** `revalidatePath` без обёртки мог ронять server action после успешного `prisma.guest.create`; у `createBooking` проверка конфликта и запросы Prisma были вне единого `try/catch`; дата брони парсилась иначе, чем business day в finance.
+
+**Исправление:** `safeRevalidatePaths` для `/crm`, `/dashboard`, `/crm/guests/[id]`; все CRM actions в `try/catch` с RU-сообщениями; `parseBusinessDateInput` для даты брони; валидация guest / hall / spaProgram до записи.
+
+**Повторная проверка (Human):**
+
+| URL | Действие |
+|-----|----------|
+| https://banya-digital.vercel.app/crm/guests/new | Новый гость: имя + телефон |
+| https://banya-digital.vercel.app/crm | Новая бронь: гость, зал, дата/время |
+
 ## Блокеры
 
-Нет (после деплоя T-029).
+Нет (после деплоя T-029 / T-030).
 
 ## Ручная проверка UI (Human / пилот)
 

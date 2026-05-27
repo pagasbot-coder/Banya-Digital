@@ -1,9 +1,12 @@
 "use server";
 
-import { BookingStatus } from "@prisma/client";
-import { revalidatePath } from "next/cache";
-import { atBusinessTime, startOfDay } from "@/lib/date-utils";
+import { BookingStatus, Prisma } from "@prisma/client";
+import {
+  atBusinessTime,
+  parseBusinessDateInput,
+} from "@/lib/date-utils";
 import { prisma } from "@/lib/db";
+import { safeRevalidatePaths } from "@/lib/safe-revalidate";
 import { GUEST_SEGMENTS } from "@/modules/crm/constants";
 import { findHallBookingConflict } from "@/modules/crm/services/booking-conflict";
 
@@ -14,13 +17,14 @@ export type CrmActionState = {
 
 const OK: CrmActionState = { ok: true, message: "" };
 
+const REVALIDATE_PATHS = ["/crm", "/dashboard"] as const;
+
 function fail(message: string): CrmActionState {
   return { ok: false, message };
 }
 
-async function revalidateCrmViews() {
-  revalidatePath("/crm");
-  revalidatePath("/dashboard");
+function revalidateCrmViews(extraPaths: string[] = []) {
+  safeRevalidatePaths([...REVALIDATE_PATHS, ...extraPaths]);
 }
 
 function parseGuestNotes(
@@ -37,16 +41,14 @@ function parseGuestNotes(
 function parseBookingTimes(
   formData: FormData
 ): { startsAt: Date; endsAt: Date } | null {
-  const dateRaw = String(formData.get("bookingDate") ?? "").slice(0, 10);
   const startRaw = String(formData.get("startTime") ?? "10:00");
   const durationRaw = Number(formData.get("durationMinutes") ?? 120);
 
-  const [y, m, d] = dateRaw.split("-").map(Number);
   const [hh, mm] = startRaw.split(":").map(Number);
-  if (!y || !m || !d || Number.isNaN(hh) || Number.isNaN(mm)) return null;
+  if (Number.isNaN(hh) || Number.isNaN(mm)) return null;
   if (!Number.isFinite(durationRaw) || durationRaw < 15) return null;
 
-  const base = startOfDay(new Date(Date.UTC(y, m - 1, d)));
+  const base = parseBusinessDateInput(formData.get("bookingDate"));
   const startsAt = atBusinessTime(base, hh, mm);
   const endsAt = new Date(startsAt.getTime() + durationRaw * 60_000);
   return { startsAt, endsAt };
@@ -55,6 +57,21 @@ function parseBookingTimes(
 function parseBookingStatus(raw: string): BookingStatus | null {
   if (raw in BookingStatus) return raw as BookingStatus;
   return null;
+}
+
+function prismaUserMessage(error: unknown, fallback: string): string {
+  if (error instanceof Prisma.PrismaClientKnownRequestError) {
+    if (error.code === "P2002") {
+      return "Запись с такими данными уже существует.";
+    }
+    if (error.code === "P2025") {
+      return "Запись не найдена — обновите страницу.";
+    }
+    if (error.code === "P2003") {
+      return "Связанная запись не найдена (гость, зал или программа).";
+    }
+  }
+  return fallback;
 }
 
 /** Создаёт гостя (имя, телефон, email, сегмент в notes). */
@@ -84,11 +101,13 @@ export async function createGuest(
       },
     });
 
-    await revalidateCrmViews();
+    revalidateCrmViews([`/crm/guests/${guest.id}`]);
     return { ok: true, message: `Гость «${guest.fullName}» сохранён.` };
   } catch (error) {
     console.error("[crm] createGuest:", error);
-    return fail("Не удалось сохранить гостя.");
+    return fail(
+      prismaUserMessage(error, "Не удалось сохранить гостя. Проверьте подключение к БД.")
+    );
   }
 }
 
@@ -112,6 +131,12 @@ export async function updateGuest(
   if (fullName.length < 2) return fail("Укажите имя гостя (минимум 2 символа).");
 
   try {
+    const existing = await prisma.guest.findUnique({
+      where: { id },
+      select: { id: true },
+    });
+    if (!existing) return fail("Гость не найден — обновите страницу.");
+
     await prisma.guest.update({
       where: { id },
       data: {
@@ -122,12 +147,13 @@ export async function updateGuest(
       },
     });
 
-    await revalidateCrmViews();
-    revalidatePath(`/crm/guests/${id}`);
+    revalidateCrmViews([`/crm/guests/${id}`]);
     return { ok: true, message: "Контакты обновлены." };
   } catch (error) {
     console.error("[crm] updateGuest:", error);
-    return fail("Не удалось обновить гостя.");
+    return fail(
+      prismaUserMessage(error, "Не удалось обновить гостя. Проверьте подключение к БД.")
+    );
   }
 }
 
@@ -156,16 +182,32 @@ export async function createBooking(
   }
 
   const { startsAt, endsAt } = times;
-  const conflict = await findHallBookingConflict(hallId, startsAt, endsAt);
-  if (conflict.conflict) {
-    return fail(
-      `Конфликт слота в зале «${conflict.hallName ?? "зал"}»: пересечение с другой бронью. Выберите другое время.`
-    );
-  }
 
   try {
+    const guest = await prisma.guest.findUnique({
+      where: { id: guestId },
+      select: { id: true },
+    });
+    if (!guest) return fail("Гость не найден — выберите другого или добавьте нового.");
+
     const hall = await prisma.hall.findUnique({ where: { id: hallId } });
     if (!hall) return fail("Зал не найден.");
+
+    if (spaProgramId) {
+      const program = await prisma.spaProgram.findUnique({
+        where: { id: spaProgramId },
+        select: { id: true, isActive: true },
+      });
+      if (!program) return fail("Spa-программа не найдена.");
+      if (!program.isActive) return fail("Spa-программа неактивна — выберите другую.");
+    }
+
+    const conflict = await findHallBookingConflict(hallId, startsAt, endsAt);
+    if (conflict.conflict) {
+      return fail(
+        `Конфликт слота в зале «${conflict.hallName ?? "зал"}»: пересечение с другой бронью. Выберите другое время.`
+      );
+    }
 
     const service = await prisma.service.findFirst({
       where: { hallId, isActive: true },
@@ -181,15 +223,17 @@ export async function createBooking(
         status,
         startsAt,
         endsAt,
-        partySize,
+        partySize: Math.round(partySize),
       },
     });
 
-    await revalidateCrmViews();
+    revalidateCrmViews();
     return { ok: true, message: "Бронь создана." };
   } catch (error) {
     console.error("[crm] createBooking:", error);
-    return fail("Не удалось сохранить бронь.");
+    return fail(
+      prismaUserMessage(error, "Не удалось сохранить бронь. Проверьте подключение к БД.")
+    );
   }
 }
 
@@ -218,19 +262,38 @@ export async function updateBooking(
   }
 
   const { startsAt, endsAt } = times;
-  const conflict = await findHallBookingConflict(
-    hallId,
-    startsAt,
-    endsAt,
-    bookingId
-  );
-  if (conflict.conflict) {
-    return fail(
-      `Конфликт слота в зале «${conflict.hallName ?? "зал"}»: пересечение с другой бронью.`
-    );
-  }
 
   try {
+    const booking = await prisma.booking.findUnique({
+      where: { id: bookingId },
+      select: { id: true },
+    });
+    if (!booking) return fail("Бронь не найдена — обновите страницу.");
+
+    const hall = await prisma.hall.findUnique({ where: { id: hallId } });
+    if (!hall) return fail("Зал не найден.");
+
+    if (spaProgramId) {
+      const program = await prisma.spaProgram.findUnique({
+        where: { id: spaProgramId },
+        select: { id: true, isActive: true },
+      });
+      if (!program) return fail("Spa-программа не найдена.");
+      if (!program.isActive) return fail("Spa-программа неактивна.");
+    }
+
+    const conflict = await findHallBookingConflict(
+      hallId,
+      startsAt,
+      endsAt,
+      bookingId
+    );
+    if (conflict.conflict) {
+      return fail(
+        `Конфликт слота в зале «${conflict.hallName ?? "зал"}»: пересечение с другой бронью.`
+      );
+    }
+
     await prisma.booking.update({
       where: { id: bookingId },
       data: {
@@ -239,15 +302,17 @@ export async function updateBooking(
         status,
         startsAt,
         endsAt,
-        partySize,
+        partySize: Math.round(partySize),
       },
     });
 
-    await revalidateCrmViews();
+    revalidateCrmViews();
     return { ok: true, message: "Бронь обновлена." };
   } catch (error) {
     console.error("[crm] updateBooking:", error);
-    return fail("Не удалось обновить бронь.");
+    return fail(
+      prismaUserMessage(error, "Не удалось обновить бронь. Проверьте подключение к БД.")
+    );
   }
 }
 
@@ -264,15 +329,23 @@ export async function updateBookingStatus(
   if (!status) return fail("Некорректный статус.");
 
   try {
+    const booking = await prisma.booking.findUnique({
+      where: { id: bookingId },
+      select: { id: true },
+    });
+    if (!booking) return fail("Бронь не найдена.");
+
     await prisma.booking.update({
       where: { id: bookingId },
       data: { status },
     });
-    await revalidateCrmViews();
+    revalidateCrmViews();
     return OK;
   } catch (error) {
     console.error("[crm] updateBookingStatus:", error);
-    return fail("Не удалось обновить статус.");
+    return fail(
+      prismaUserMessage(error, "Не удалось обновить статус.")
+    );
   }
 }
 
