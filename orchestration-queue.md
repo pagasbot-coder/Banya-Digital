@@ -74,6 +74,7 @@
 | T-032 | Hotfix: prod 500 на /finance при вводе выручки | Developer | DONE | P0 | T-031 | `modules/finance/`, `app/(app)/finance/` | root: empty-state скрывал формы + RSC crash при retail/plan fetch; Promise.allSettled, error.tsx, db:seed; commit 27c5101; vercel --prod |
 | T-033 | Hotfix: error boundary /finance после submit выручки | Developer | DONE | P0 | T-032 | `get-finance-data.ts`, `finance/page.tsx`, `create-finance-lines.ts` | revalidate /finance убран → router.refresh; withDbTimeout+allSettled; normalizeFinanceResult; businessDate eq; commit 8fd9a38; vercel --prod; db:seed OK |
 | T-034 | Hotfix: finance submit 500 (use server export) | Developer | DONE | P0 | T-033 | `finance-action-state.ts`, `create-finance-lines.ts`, `revenue-cost-forms.tsx` | root: `initialFinanceActionState` в "use server" → Next.js 16 invalid-use-server-value; вынесено в отдельный модуль; prod+local submit PASS (hall+amount, hall+service+amount) |
+| T-035 | Hotfix: CRM + FIFO submit 500 (use server export) | Developer | DONE | P0 | T-034 | `crm-action-state.ts`, `fifo-action-state.ts`, forms, `test-crm-fifo-actions.mjs` | `initialCrmActionState` / `initialFifoActionState` вынесены из "use server"; build+lint OK; action smoke createGuest+performFifoOut PASS |
 
 ---
 
@@ -353,6 +354,7 @@
 | 2026-05-27 | PM | T-028: объект пилота **Дегтярные Бани** (Санкт-Петербург) — `pilot-start.md`, `pilot-reglement.md` §5; совпадает с demo brand (`lib/brand.ts`) |
 | 2026-05-27 | QA | T-027 DONE: prod smoke 6/6×200, CSV OK; `qa-report-pilot-week1.md`; build+lint OK |
 | 2026-05-30 | Developer | T-034 DONE: finance submit — `initialFinanceActionState` вынесен из "use server"; form submit QA PASS (2 сценария); pilot Day 2 unblocked |
+| 2026-05-30 | Developer | T-035 DONE: CRM + FIFO — state modules; action smoke PASS; prod retest `/crm`, `/operations/inventory` |
 
 ### D.3 — владение задачами (после SPA team review)
 

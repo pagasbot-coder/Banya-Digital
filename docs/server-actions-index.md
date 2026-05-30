@@ -1,8 +1,18 @@
 # Server Actions — реестр точек мутации
 
-_Для QA и регрессии. Обновлено: T-031 (2026-05-30)._
+_Для QA и регрессии. Обновлено: T-035 (2026-05-30)._
 
 Все actions возвращают `{ ok: boolean; message: string }` (RU) и используют `safeRevalidatePaths` из `lib/safe-revalidate.ts`.
+
+**Next.js 16:** файлы с `"use server"` экспортируют **только async functions**. Начальное состояние `useActionState` — в отдельных модулях: `finance-action-state.ts`, `crm-action-state.ts`, `fifo-action-state.ts`.
+
+## Состояние форм (не "use server")
+
+| Модуль | Файл |
+|--------|------|
+| Finance | `modules/finance/actions/finance-action-state.ts` |
+| CRM | `modules/crm/actions/crm-action-state.ts` |
+| FIFO OUT | `modules/operations/inventory/actions/fifo-action-state.ts` |
 
 ## Finance (`modules/finance/actions/create-finance-lines.ts`)
 

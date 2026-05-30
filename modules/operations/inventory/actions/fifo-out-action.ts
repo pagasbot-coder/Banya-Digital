@@ -2,16 +2,7 @@
 
 import { safeRevalidatePaths } from "@/lib/safe-revalidate";
 import { fifoStockOut } from "@/modules/operations/inventory/services/fifo-stock-out";
-
-export type FifoActionState = {
-  ok: boolean;
-  message: string;
-};
-
-export const initialFifoActionState: FifoActionState = {
-  ok: true,
-  message: "",
-};
+import type { FifoActionState } from "@/modules/operations/inventory/actions/fifo-action-state";
 
 const REVALIDATE_PATHS = [
   "/operations/inventory",

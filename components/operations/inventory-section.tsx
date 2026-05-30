@@ -1,10 +1,8 @@
 "use client";
 
 import { useActionState } from "react";
-import {
-  initialFifoActionState,
-  performFifoOut,
-} from "@/modules/operations/inventory/actions/fifo-out-action";
+import { performFifoOut } from "@/modules/operations/inventory/actions/fifo-out-action";
+import { initialFifoActionState } from "@/modules/operations/inventory/actions/fifo-action-state";
 import type { InventoryItemRow } from "@/modules/operations/inventory/services/get-inventory-data";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";

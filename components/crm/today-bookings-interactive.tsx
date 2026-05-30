@@ -2,11 +2,8 @@
 
 import { useState, useTransition } from "react";
 import Link from "next/link";
-import {
-  initialCrmActionState,
-  updateBooking,
-  updateBookingStatus,
-} from "@/modules/crm/actions/crm-actions";
+import { updateBooking, updateBookingStatus } from "@/modules/crm/actions/crm-actions";
+import { initialCrmActionState } from "@/modules/crm/actions/crm-action-state";
 import { BOOKING_STATUS_OPTIONS } from "@/modules/crm/constants";
 import type { CrmFormOptions } from "@/modules/crm/services/get-crm-form-options";
 import type { TodayBookingRow } from "@/modules/crm/types";

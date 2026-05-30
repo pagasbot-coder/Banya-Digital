@@ -1,12 +1,11 @@
 "use client";
 
 import { useActionState } from "react";
+import { createGuest, updateGuest } from "@/modules/crm/actions/crm-actions";
 import {
-  createGuest,
   initialCrmActionState,
-  updateGuest,
   type CrmActionState,
-} from "@/modules/crm/actions/crm-actions";
+} from "@/modules/crm/actions/crm-action-state";
 import { GUEST_SEGMENTS } from "@/modules/crm/constants";
 import type { GuestDetail } from "@/modules/crm/services/get-guest-detail";
 import { Button } from "@/components/ui/button";

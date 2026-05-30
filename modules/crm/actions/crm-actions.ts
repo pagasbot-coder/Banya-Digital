@@ -9,13 +9,7 @@ import { prisma } from "@/lib/db";
 import { safeRevalidatePaths } from "@/lib/safe-revalidate";
 import { GUEST_SEGMENTS } from "@/modules/crm/constants";
 import { findHallBookingConflict } from "@/modules/crm/services/booking-conflict";
-
-export type CrmActionState = {
-  ok: boolean;
-  message: string;
-};
-
-const OK: CrmActionState = { ok: true, message: "" };
+import type { CrmActionState } from "@/modules/crm/actions/crm-action-state";
 
 const REVALIDATE_PATHS = ["/crm", "/dashboard"] as const;
 
@@ -348,5 +342,3 @@ export async function updateBookingStatus(
     );
   }
 }
-
-export const initialCrmActionState: CrmActionState = OK;

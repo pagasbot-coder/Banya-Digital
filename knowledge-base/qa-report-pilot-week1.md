@@ -74,9 +74,32 @@
 
 **Prod URL:** https://banya-digital.vercel.app/finance
 
+## Hotfix T-035 (2026-05-30)
+
+**Симптом:** POST submit на `/crm/guests/new`, `/crm` (бронь), `/operations/inventory` (FIFO OUT) — риск `invalid-use-server-value` (как T-034 на finance).
+
+**Причина:** `initialCrmActionState` и `initialFifoActionState` экспортировались из файлов с `"use server"`.
+
+**Исправление:** `crm-action-state.ts`, `fifo-action-state.ts`; server modules — только async actions; client imports из state-модулей. Аудит: `toggle-checklist-item`, `resolve-kitchen-conflict` — только `export type` + async (OK).
+
+**Action smoke (local + Neon, `scripts/test-crm-fifo-actions.mjs`):**
+
+| Action | Result |
+|--------|--------|
+| `createGuest` | **ok** — «Гость … сохранён.» |
+| `performFifoOut` | **ok** — «Списано из партии …» |
+
+**Prod retest (Human после deploy):**
+
+| URL | Действие |
+|-----|----------|
+| https://banya-digital.vercel.app/crm/guests/new | Новый гость |
+| https://banya-digital.vercel.app/crm | Новая бронь |
+| https://banya-digital.vercel.app/operations/inventory | FIFO OUT |
+
 ## Блокеры
 
-Нет (после деплоя T-034 на prod).
+Нет (после деплоя T-035 на prod — подтвердить CRM/FIFO submit).
 
 ## Ручная проверка UI (Human / пилот)
 
