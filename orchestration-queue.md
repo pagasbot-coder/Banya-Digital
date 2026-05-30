@@ -74,7 +74,7 @@
 | T-032 | Hotfix: prod 500 на /finance при вводе выручки | Developer | DONE | P0 | T-031 | `modules/finance/`, `app/(app)/finance/` | root: empty-state скрывал формы + RSC crash при retail/plan fetch; Promise.allSettled, error.tsx, db:seed; commit 27c5101; vercel --prod |
 | T-033 | Hotfix: error boundary /finance после submit выручки | Developer | DONE | P0 | T-032 | `get-finance-data.ts`, `finance/page.tsx`, `create-finance-lines.ts` | revalidate /finance убран → router.refresh; withDbTimeout+allSettled; normalizeFinanceResult; businessDate eq; commit 8fd9a38; vercel --prod; db:seed OK |
 | T-034 | Hotfix: finance submit 500 (use server export) | Developer | DONE | P0 | T-033 | `finance-action-state.ts`, `create-finance-lines.ts`, `revenue-cost-forms.tsx` | root: `initialFinanceActionState` в "use server" → Next.js 16 invalid-use-server-value; вынесено в отдельный модуль; prod+local submit PASS (hall+amount, hall+service+amount) |
-| T-035 | Hotfix: CRM + FIFO submit 500 (use server export) | Developer | DONE | P0 | T-034 | `crm-action-state.ts`, `fifo-action-state.ts`, forms, `test-crm-fifo-actions.mjs` | `initialCrmActionState` / `initialFifoActionState` вынесены из "use server"; build+lint OK; action smoke createGuest+performFifoOut PASS |
+| T-035 | Hotfix: CRM + FIFO submit 500 (use server export) | Developer | DONE | P0 | T-034 | `crm-action-state.ts`, `fifo-action-state.ts`, forms, `test-crm-fifo-actions.mjs` | commit 9557629; push+vercel --prod; build+lint OK; action smoke createGuest+performFifoOut PASS; prod retest `/crm`, `/operations/inventory` |
 
 ---
 
