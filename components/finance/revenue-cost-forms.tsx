@@ -2,12 +2,11 @@
 
 import { useRouter } from "next/navigation";
 import { useActionState, useEffect } from "react";
+import { createCostLine, createRevenueLine } from "@/modules/finance/actions/create-finance-lines";
 import {
-  createCostLine,
-  createRevenueLine,
   initialFinanceActionState,
   type FinanceActionState,
-} from "@/modules/finance/actions/create-finance-lines";
+} from "@/modules/finance/actions/finance-action-state";
 import type { FinanceFormOptions } from "@/modules/finance/services/get-finance-form-options";
 import { Button } from "@/components/ui/button";
 import {

@@ -1,8 +1,11 @@
 import { config } from "dotenv";
 config();
 
-const { createRevenueLine, initialFinanceActionState } = await import(
+const { createRevenueLine } = await import(
   "../modules/finance/actions/create-finance-lines.ts"
+);
+const { initialFinanceActionState } = await import(
+  "../modules/finance/actions/finance-action-state.ts"
 );
 const { getFinanceData } = await import(
   "../modules/finance/services/get-finance-data.ts"

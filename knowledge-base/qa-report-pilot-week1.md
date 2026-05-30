@@ -51,9 +51,26 @@
 | https://banya-digital.vercel.app/crm/guests/new | Новый гость: имя + телефон |
 | https://banya-digital.vercel.app/crm | Новая бронь: гость, зал, дата/время |
 
+## Hotfix T-034 (2026-05-30)
+
+**Симптом:** POST `/finance` после «Добавить выручку» → error boundary «Не удалось загрузить финансы» (prod и local).
+
+**Причина:** `initialFinanceActionState` экспортировался из файла с `"use server"`. Next.js 16 при submit: `invalid-use-server-value` — «A use server file can only export async functions, found object».
+
+**Исправление:** `modules/finance/actions/finance-action-state.ts` (тип + initial state); `create-finance-lines.ts` — только async actions; client import из state-модуля.
+
+**Form submit QA (2026-05-30, local + Neon DB):**
+
+| Сценарий | POST | UI после refresh | KPI |
+|----------|------|------------------|-----|
+| Зал «Парная» + 7 777 ₽ (без услуги) | **200** | «Выручка сохранена.», страница без crash | Факт недели +7 777 ₽ |
+| VIP + услуга «Император» + 12 000 ₽ | **200** | «Выручка сохранена.», страница без crash | Факт недели +12 000 ₽ |
+
+**Prod retest:** после `vercel --prod` — см. 3-step retest ниже.
+
 ## Блокеры
 
-Нет (после деплоя T-029 / T-030).
+Нет (после деплоя T-034 на prod).
 
 ## Ручная проверка UI (Human / пилот)
 

@@ -4,13 +4,7 @@ import { CostType, Prisma } from "@prisma/client";
 import { parseBusinessDateInput } from "@/lib/date-utils";
 import { prisma } from "@/lib/db";
 import { safeRevalidatePaths } from "@/lib/safe-revalidate";
-
-export type FinanceActionState = {
-  ok: boolean;
-  message: string;
-};
-
-const OK: FinanceActionState = { ok: true, message: "" };
+import type { FinanceActionState } from "@/modules/finance/actions/finance-action-state";
 
 /** Только dashboard — /finance обновляется через router.refresh() после submit (T-033). */
 const REVALIDATE_PATHS = ["/dashboard"] as const;
@@ -137,6 +131,3 @@ export async function createCostLine(
     return fail("Не удалось сохранить COGS. Проверьте подключение к БД.");
   }
 }
-
-/** Пустое начальное состояние для useActionState. */
-export const initialFinanceActionState: FinanceActionState = OK;
