@@ -1,7 +1,7 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/db";
+import { safeRevalidatePaths } from "@/lib/safe-revalidate";
 
 const DEMO_RESOLVER = "demo-user";
 
@@ -41,8 +41,7 @@ export async function resolveKitchenConflict(
       },
     });
 
-    revalidatePath("/operations");
-    revalidatePath("/dashboard");
+    safeRevalidatePaths(["/operations", "/dashboard"]);
     return { ok: true };
   } catch (error) {
     console.error("[operations] resolveKitchenConflict:", error);

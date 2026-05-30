@@ -1,7 +1,7 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/db";
+import { safeRevalidatePaths } from "@/lib/safe-revalidate";
 
 export type ToggleChecklistResult = {
   ok: boolean;
@@ -30,8 +30,7 @@ export async function toggleChecklistItem(
         : { completedAt: new Date(), completedBy: "demo-user" },
     });
 
-    revalidatePath("/dashboard");
-    revalidatePath("/operations");
+    safeRevalidatePaths(["/dashboard", "/operations"]);
     return { ok: true };
   } catch (error) {
     console.error("[operations] toggleChecklistItem:", error);
