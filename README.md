@@ -2,6 +2,8 @@
 
 ERP/CRM для премиальных банных комплексов: unit economics, yield management, spa/kitchen sync, FIFO-склад органики.
 
+> **Статус (2026-05-30):** проект **ON HOLD**. Prod demo: https://banya-digital.vercel.app · Resume: [`docs/hold-status.md`](docs/hold-status.md)
+
 ## Быстрый старт
 
 ```powershell

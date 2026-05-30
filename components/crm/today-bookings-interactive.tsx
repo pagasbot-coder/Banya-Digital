@@ -28,13 +28,6 @@ import { cn } from "@/lib/utils";
 const fieldClass =
   "min-h-9 rounded-md border border-input bg-background px-2 py-1 text-sm";
 
-function statusVariant(code: string) {
-  if (code === "CONFIRMED" || code === "CHECKED_IN") return "secondary" as const;
-  if (code === "COMPLETED") return "outline" as const;
-  if (code === "CANCELLED" || code === "NO_SHOW") return "destructive" as const;
-  return "outline" as const;
-}
-
 function toDateInput(iso: string): string {
   return new Intl.DateTimeFormat("en-CA", {
     timeZone: "Europe/Moscow",

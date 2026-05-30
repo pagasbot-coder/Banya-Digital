@@ -5,7 +5,29 @@
 
 **Проект:** Banya-Digital ERP  
 **Архитектор (Human):** _ваше имя_  
-**Последнее обновление:** 2026-05-30 (T-034 finance submit use-server fix)
+**Последнее обновление:** 2026-05-30 (PROJECT HOLD — wrap-up + code review)
+
+---
+
+## PROJECT HOLD (2026-05-30)
+
+| Поле | Значение |
+|------|----------|
+| **Статус** | **ON HOLD** — разработка и пилот приостановлены по решению Human Architect |
+| **Причина** | Wrap-up MVP; пилот Week 1 не завершён (Day 1 ✅, Days 2–7 не пройдены); пауза до следующего этапа |
+| **Prod** | https://banya-digital.vercel.app (`DEMO_SKIP_AUTH=true`) |
+| **Code review** | `docs/code-review-hold-2026-05.md` |
+| **Resume runbook** | `docs/hold-status.md` · `knowledge-base/project-hold-summary.md` (RU) |
+
+**Resume checklist (кратко):**
+
+1. Прочитать `docs/hold-status.md` и секцию HOLD здесь.
+2. `npm run build` + `npm run lint` локально.
+3. Human ops: продолжить **День 2** в `docs/pilot-start.md` (не отмечать дни 2–7 выполненными без факта).
+4. Перед prod без демо: `DEMO_SKIP_AUTH=false` + smoke auth/CSV.
+5. PM: приоритет — закрыть Week 1 WAMZ, RBAC backlog; Architect — unblock T-024 YCLIENTS когда нужно.
+
+**Не делать на hold:** YCLIENTS (T-024), prod auth без Human, новые фичи Phase 2+.
 
 ---
 
@@ -67,7 +89,7 @@
 | T-025 | Обновить ICP в brief post-SME | PM / CMO | DONE | P1 | T-017 | `@knowledge-base/marketing-brief.md` | ICP премиум-баня, 3 B2B канала 90д, AARRR, LTV:CAC, PostHog events; product-brief WAMZ сверен |
 | T-026 | Pilot UX: demo banner на dashboard | Developer / QA | DONE | P1 | T-023 | `@docs/pilot-start.md` | Баннер «Режим демо · Пилот…»; `DEMO_SKIP_AUTH` без изменений |
 | T-027 | QA: prod smoke sign-off | QA | DONE | P0 | T-026 | `@knowledge-base/qa-checklist.md` § Prod smoke 2026-05-27 | Build+lint OK; prod GET smoke 6/6×200; CSV OK; отчёт `qa-report-pilot-week1.md` |
-| T-028 | Pilot Week 1 execution | Human / Ops | IN_PROGRESS | P0 | T-027 | `@docs/pilot-start.md`, `@docs/pilot-reglement.md` | День 1–7 выполнены; daily отметки; WAMZ tracking |
+| T-028 | Pilot Week 1 execution | Human / Ops | **ON HOLD** | P0 | T-027 | `@docs/pilot-start.md`, `@docs/hold-status.md` | Day 1 ✅ (2026-05-27); Days 2–7 **не завершены** — пауза 2026-05-30; WAMZ week 1 не закрыт |
 | T-029 | Hotfix: prod 500 на выручке и FIFO OUT | Developer | DONE | P0 | T-011, T-012 | `modules/finance/actions/create-finance-lines.ts`, `modules/operations/inventory/` | try/catch + safe revalidate; Prisma.Decimal; interactive $transaction; build+vercel --prod |
 | T-030 | Hotfix: prod 500 CRM гость / бронь | Developer | DONE | P0 | T-010, T-029 | `modules/crm/actions/crm-actions.ts` | safeRevalidatePaths; try/catch всех actions; parseBusinessDateInput; валидация guest/hall/spaProgram; build+vercel --prod |
 | T-031 | Hotfix sweep: все server actions (finance/crm/ops) | Developer | DONE | P0 | T-029, T-030 | `docs/server-actions-index.md`, `knowledge-base/qa-checklist.md` | аудит 10 actions; hall validate COGS; RU messages ops; E2E checklist 7 submit-тестов; pilot Day 2; build+push+vercel --prod |
@@ -289,7 +311,7 @@
 
 ### T-028 — Pilot Week 1 execution
 
-**Роль:** Human / Ops | **Статус:** IN_PROGRESS | **Зависимости:** T-027
+**Роль:** Human / Ops | **Статус:** **ON HOLD** (2026-05-30) | **Зависимости:** T-027
 
 **Acceptance criteria (Week 1):**
 - [x] **Object name** зафиксирован: **Дегтярные Бани** (Санкт-Петербург) — `docs/pilot-start.md`, `docs/pilot-reglement.md` §5.
@@ -355,6 +377,7 @@
 | 2026-05-27 | QA | T-027 DONE: prod smoke 6/6×200, CSV OK; `qa-report-pilot-week1.md`; build+lint OK |
 | 2026-05-30 | Developer | T-034 DONE: finance submit — `initialFinanceActionState` вынесен из "use server"; form submit QA PASS (2 сценария); pilot Day 2 unblocked |
 | 2026-05-30 | Developer | T-035 DONE: CRM + FIFO — state modules; action smoke PASS; prod retest `/crm`, `/operations/inventory` |
+| 2026-05-30 | Developer | **PROJECT HOLD:** code review `docs/code-review-hold-2026-05.md`; T-028 ON HOLD; `docs/hold-status.md`; lint fix; push master |
 
 ### D.3 — владение задачами (после SPA team review)
 
