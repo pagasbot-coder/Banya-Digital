@@ -98,6 +98,11 @@ export async function createCostLine(
   if (amount === null) return fail("Укажите сумму больше нуля.");
 
   try {
+    if (hallId) {
+      const hall = await prisma.hall.findUnique({ where: { id: hallId } });
+      if (!hall) return fail("Зал не найден.");
+    }
+
     if (lotId) {
       const lot = await prisma.inventoryLot.findUnique({ where: { id: lotId } });
       if (!lot) return fail("Партия склада не найдена.");

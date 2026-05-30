@@ -340,7 +340,7 @@ export async function updateBookingStatus(
       data: { status },
     });
     revalidateCrmViews();
-    return OK;
+    return { ok: true, message: "Статус брони обновлён." };
   } catch (error) {
     console.error("[crm] updateBookingStatus:", error);
     return fail(

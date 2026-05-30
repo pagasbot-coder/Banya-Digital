@@ -52,19 +52,31 @@ _Ведёт QA (@role-qa). Обновлено: T-005 foundation pass (2026-05-24
 
 **Sign-off:** T-027 **DONE** (QA agent prod smoke). Визуальный UAT пилота — Human ops, T-028 Week 1.
 
-## E2E формы (post hotfix T-029 / T-030) — Human retest
+## E2E формы (post hotfix T-029 / T-030 / T-031) — **обязательный submit-тест**
 
-| Модуль | URL | Действие | Ожидание |
-|--------|-----|----------|----------|
-| Finance | https://banya-digital.vercel.app/finance | Выручка: зал + услуга + сумма | Сообщение «Выручка сохранена», без server error |
-| Inventory | https://banya-digital.vercel.app/operations/inventory | FIFO OUT на позиции с остатком | Сообщение об успешном списании, без 500 |
-| CRM guest | https://banya-digital.vercel.app/crm/guests/new | Имя (≥2 символа) + телефон, «Добавить гостя» | «Гость … сохранён», без server error |
-| CRM booking | https://banya-digital.vercel.app/crm | Новая бронь: гость, зал, дата/время | «Бронь создана» или RU-ошибка конфликта слота |
+> GET 200 недостаточно. Каждый сценарий — **отправка формы / клик действия** на prod и проверка `{ ok, message }` без server error 500.
 
-- [ ] Finance revenue (T-029)
-- [ ] Inventory FIFO OUT (T-029)
-- [ ] CRM новый гость (T-030)
-- [ ] CRM новая бронь (T-030)
+| # | Модуль | URL | Действие | Ожидание |
+|---|--------|-----|----------|----------|
+| 1 | Finance revenue | https://banya-digital.vercel.app/finance | Выручка: зал + сумма (≥0,01 ₽), «Добавить выручку» | «Выручка сохранена»; KPI на `/dashboard` обновляются после refresh |
+| 2 | Finance COGS | https://banya-digital.vercel.app/finance | COGS: сумма + опционально зал/партия, «Добавить COGS» | «COGS сохранён»; без server error |
+| 3 | Inventory FIFO | https://banya-digital.vercel.app/operations/inventory | FIFO OUT на позиции с остатком (qty > 0) | Сообщение «Списано из партии …»; остаток уменьшился |
+| 4 | CRM guest | https://banya-digital.vercel.app/crm/guests/new | Имя (≥2 символа) + телефон, «Добавить гостя» | «Гость … сохранён»; карточка гостя открывается |
+| 5 | CRM booking | https://banya-digital.vercel.app/crm | Новая бронь: гость, зал, дата/время без конфликта | «Бронь создана» или RU-ошибка конфликта слота |
+| 6 | Checklist toggle | https://banya-digital.vercel.app/dashboard | Клик по пункту чеклиста смены (N/M) | N/M +1; повторный клик −1; без 500 |
+| 7 | Kitchen resolve | https://banya-digital.vercel.app/operations | «Разобрано» на seed-конфликте (если есть) | Конфликт исчез; алерт kitchen на dashboard снят; повтор — «Конфликт уже разобран» |
+
+**Чеклист Human retest (prod):**
+
+- [ ] 1. Finance revenue (T-029)
+- [ ] 2. Finance COGS (T-031)
+- [ ] 3. Inventory FIFO OUT (T-029)
+- [ ] 4. CRM новый гость (T-030)
+- [ ] 5. CRM новая бронь (T-030)
+- [ ] 6. Checklist toggle dashboard (T-031)
+- [ ] 7. Kitchen resolve `/operations` (T-031)
+
+**Реестр server actions:** `docs/server-actions-index.md`
 
 ## Команды проверки
 

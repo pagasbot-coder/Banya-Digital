@@ -7,27 +7,35 @@ const DEMO_RESOLVER = "demo-user";
 
 export type ResolveKitchenConflictResult = {
   ok: boolean;
-  message?: string;
+  message: string;
 };
+
+function fail(message: string): ResolveKitchenConflictResult {
+  return { ok: false, message };
+}
 
 /** Закрывает конфликт kitchen↔SPA: статус DONE + audit (T-018). */
 export async function resolveKitchenConflict(
   slotId: string
 ): Promise<ResolveKitchenConflictResult> {
   if (!process.env.DATABASE_URL) {
-    return { ok: false, message: "База недоступна" };
+    return fail("DATABASE_URL не задан — сохранение недоступно.");
+  }
+
+  if (!slotId.trim()) {
+    return fail("Слот не указан.");
   }
 
   try {
     const slot = await prisma.kitchenSlot.findUnique({
       where: { id: slotId },
     });
-    if (!slot) return { ok: false, message: "Слот не найден" };
+    if (!slot) return fail("Слот не найден — обновите страницу.");
     if (slot.syncStatus !== "CONFLICT") {
-      return { ok: false, message: "Слот не в статусе конфликта" };
+      return fail("Слот не в статусе конфликта.");
     }
     if (slot.resolvedAt) {
-      return { ok: false, message: "Конфликт уже разобран" };
+      return fail("Конфликт уже разобран.");
     }
 
     const now = new Date();
@@ -42,9 +50,9 @@ export async function resolveKitchenConflict(
     });
 
     safeRevalidatePaths(["/operations", "/dashboard"]);
-    return { ok: true };
+    return { ok: true, message: "Конфликт разобран." };
   } catch (error) {
     console.error("[operations] resolveKitchenConflict:", error);
-    return { ok: false, message: "Ошибка сохранения" };
+    return fail("Не удалось сохранить разбор. Проверьте подключение к БД.");
   }
 }
