@@ -14,6 +14,7 @@ import { BUSINESS_TIMEZONE, startOfDay } from "@/lib/date-utils";
 import { formatRubles } from "@/lib/format-money";
 import { getFinanceData, isFinanceEmpty } from "@/modules/finance";
 import { getFinanceFormOptions } from "@/modules/finance/services/get-finance-form-options";
+import { normalizeFinanceResult } from "@/modules/finance/services/finance-safe-defaults";
 import { getWeekPlanFact } from "@/modules/finance/services/get-week-plan-fact";
 import type { FinanceFormOptions } from "@/modules/finance/services/get-finance-form-options";
 import type { FinanceResult } from "@/modules/finance/types";
@@ -29,7 +30,7 @@ function todayInputValue(): string {
 
 /** Безопасная загрузка данных страницы — ни один reject не роняет RSC. */
 async function loadFinancePageData(): Promise<{
-  data: FinanceResult;
+  rawData: FinanceResult;
   formOptions: FinanceFormOptions;
   weekPlanFact: WeekPlanFactSummary | null;
 }> {
@@ -39,17 +40,17 @@ async function loadFinancePageData(): Promise<{
     getWeekPlanFact(),
   ]);
 
-  const data =
-    dataResult.status === "fulfilled"
+  const rawData: FinanceResult =
+    dataResult.status === "fulfilled" && dataResult.value
       ? dataResult.value
-      : ({
-          kind: "empty" as const,
+      : {
+          kind: "empty",
           message:
             "Не удалось загрузить финансы. Проверьте DATABASE_URL и npm run db:push.",
-        } satisfies FinanceResult);
+        };
 
   const formOptions =
-    formResult.status === "fulfilled"
+    formResult.status === "fulfilled" && formResult.value
       ? formResult.value
       : { halls: [], services: [], lots: [] };
 
@@ -66,15 +67,18 @@ async function loadFinancePageData(): Promise<{
     console.error("[finance] page week plan/fact rejected:", weekResult.reason);
   }
 
-  return { data, formOptions, weekPlanFact };
+  return { rawData, formOptions, weekPlanFact };
 }
 
 export default async function FinancePage() {
-  const { data, formOptions, weekPlanFact } = await loadFinancePageData();
+  const { rawData, formOptions, weekPlanFact } = await loadFinancePageData();
+  const { finance: data, warning: dataWarning } = normalizeFinanceResult(rawData);
   const defaultBusinessDate = todayInputValue();
-  const dbUnavailable = isFinanceEmpty(data);
 
-  if (dbUnavailable) {
+  const noCatalog =
+    formOptions.halls.length === 0 && isFinanceEmpty(rawData);
+
+  if (noCatalog) {
     return (
       <div className="flex flex-1 flex-col gap-6 p-6 md:p-8">
         <header>
@@ -89,7 +93,9 @@ export default async function FinancePage() {
           role="status"
           className="rounded-lg border border-dashed border-border/80 bg-muted/30 px-6 py-10 text-center"
         >
-          <p className="text-sm text-muted-foreground">{data.message}</p>
+          <p className="text-sm text-muted-foreground">
+            {isFinanceEmpty(rawData) ? rawData.message : "Справочники пусты."}
+          </p>
           <p className="mt-2 font-mono text-xs text-muted-foreground">
             npm run db:push && npm run db:seed
           </p>
@@ -100,6 +106,9 @@ export default async function FinancePage() {
 
   const hasTodayLines =
     data.rows.length > 0 || data.retail.rows.length > 0;
+  const marginPct = Number.isFinite(data.overallTotals.marginPercent)
+    ? data.overallTotals.marginPercent
+    : 0;
 
   return (
     <div className="flex flex-1 flex-col gap-8 p-6 md:p-8">
@@ -117,6 +126,15 @@ export default async function FinancePage() {
         </div>
         <FinanceExportLink />
       </header>
+
+      {dataWarning ? (
+        <div
+          role="status"
+          className="rounded-lg border border-amber-500/40 bg-amber-500/10 px-4 py-3 text-sm text-amber-950 dark:text-amber-100"
+        >
+          {dataWarning} Формы ввода доступны — данные могут обновиться после сохранения.
+        </div>
+      ) : null}
 
       {weekPlanFact ? <WeekPlanFactSection summary={weekPlanFact} /> : null}
 
@@ -150,7 +168,7 @@ export default async function FinancePage() {
           <CardHeader className="pb-2">
             <CardDescription>Валовая маржа</CardDescription>
             <CardTitle className="font-heading text-2xl tabular-nums">
-              {data.overallTotals.marginPercent.toFixed(1).replace(".", ",")}%
+              {marginPct.toFixed(1).replace(".", ",")}%
             </CardTitle>
           </CardHeader>
           <CardContent className="pt-0">

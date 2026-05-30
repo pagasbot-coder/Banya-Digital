@@ -8,6 +8,7 @@ import {
   startOfDay,
   startOfWeek,
 } from "@/lib/date-utils";
+import { withDbTimeout } from "@/lib/db-timeout";
 import { prisma } from "@/lib/db";
 import type { KpiTrend } from "@/modules/dashboard/types";
 import {
@@ -91,18 +92,21 @@ export async function getWeekPlanFact(
   if (!process.env.DATABASE_URL) return null;
 
   try {
-    const hallCount = await prisma.hall.count();
+    const hallCount = await withDbTimeout(prisma.hall.count(), 0);
     if (hallCount === 0) return null;
 
     const weekStart = startOfWeek(referenceDate);
     const tomorrow = addDays(referenceDate, 1);
 
-    const factAgg = await prisma.revenueLine.aggregate({
-      where: {
-        businessDate: { gte: weekStart, lt: tomorrow },
-      },
-      _sum: { amount: true },
-    });
+    const factAgg = await withDbTimeout(
+      prisma.revenueLine.aggregate({
+        where: {
+          businessDate: { gte: weekStart, lt: tomorrow },
+        },
+        _sum: { amount: true },
+      }),
+      { _sum: { amount: null } }
+    );
 
     const factAmount = Number(factAgg._sum.amount ?? 0);
 

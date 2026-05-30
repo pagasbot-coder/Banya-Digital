@@ -69,7 +69,13 @@ export function HallEconomicsSection({
                       row.marginPercent < 40 && "text-destructive"
                     )}
                   >
-                    {row.marginPercent.toFixed(1).replace(".", ",")}%
+                    {(Number.isFinite(row.marginPercent)
+                      ? row.marginPercent
+                      : 0
+                    )
+                      .toFixed(1)
+                      .replace(".", ",")}
+                    %
                   </TableCell>
                 </TableRow>
               ))}
@@ -82,7 +88,13 @@ export function HallEconomicsSection({
                   {formatRubles(totals.cogs)}
                 </TableCell>
                 <TableCell className="text-right font-heading tabular-nums">
-                  {totals.marginPercent.toFixed(1).replace(".", ",")}%
+                  {(Number.isFinite(totals.marginPercent)
+                    ? totals.marginPercent
+                    : 0
+                  )
+                    .toFixed(1)
+                    .replace(".", ",")}
+                  %
                 </TableCell>
               </TableRow>
             </TableBody>

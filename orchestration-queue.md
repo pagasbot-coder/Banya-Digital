@@ -5,7 +5,7 @@
 
 **Проект:** Banya-Digital ERP  
 **Архитектор (Human):** _ваше имя_  
-**Последнее обновление:** 2026-05-30 (T-031 hotfix sweep: все server actions)
+**Последнее обновление:** 2026-05-30 (T-033 finance regression hotfix)
 
 ---
 
@@ -72,6 +72,7 @@
 | T-030 | Hotfix: prod 500 CRM гость / бронь | Developer | DONE | P0 | T-010, T-029 | `modules/crm/actions/crm-actions.ts` | safeRevalidatePaths; try/catch всех actions; parseBusinessDateInput; валидация guest/hall/spaProgram; build+vercel --prod |
 | T-031 | Hotfix sweep: все server actions (finance/crm/ops) | Developer | DONE | P0 | T-029, T-030 | `docs/server-actions-index.md`, `knowledge-base/qa-checklist.md` | аудит 10 actions; hall validate COGS; RU messages ops; E2E checklist 7 submit-тестов; pilot Day 2; build+push+vercel --prod |
 | T-032 | Hotfix: prod 500 на /finance при вводе выручки | Developer | DONE | P0 | T-031 | `modules/finance/`, `app/(app)/finance/` | root: empty-state скрывал формы + RSC crash при retail/plan fetch; Promise.allSettled, error.tsx, db:seed; commit 27c5101; vercel --prod |
+| T-033 | Hotfix: error boundary /finance после submit выручки | Developer | IN_PROGRESS | P0 | T-032 | `get-finance-data.ts`, `finance/page.tsx`, `create-finance-lines.ts` | — |
 
 ---
 

@@ -1,6 +1,7 @@
 "use client";
 
-import { useActionState } from "react";
+import { useRouter } from "next/navigation";
+import { useActionState, useEffect } from "react";
 import {
   createCostLine,
   createRevenueLine,
@@ -46,6 +47,7 @@ export function RevenueCostForms({
   options,
   defaultBusinessDate,
 }: RevenueCostFormsProps) {
+  const router = useRouter();
   const [revenueState, revenueAction, revenuePending] = useActionState(
     createRevenueLine,
     initialFinanceActionState
@@ -54,6 +56,18 @@ export function RevenueCostForms({
     createCostLine,
     initialFinanceActionState
   );
+
+  useEffect(() => {
+    if (revenueState.ok && revenueState.message) {
+      router.refresh();
+    }
+  }, [revenueState.ok, revenueState.message, router]);
+
+  useEffect(() => {
+    if (costState.ok && costState.message) {
+      router.refresh();
+    }
+  }, [costState.ok, costState.message, router]);
 
   if (options.halls.length === 0) {
     return (

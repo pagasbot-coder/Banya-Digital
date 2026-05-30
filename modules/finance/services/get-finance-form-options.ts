@@ -1,6 +1,7 @@
 /**
  * Справочники для форм ввода RevenueLine / CostLine (T-011).
  */
+import { withDbTimeout } from "@/lib/db-timeout";
 import { prisma } from "@/lib/db";
 
 export type FinanceFormOptions = {
@@ -17,20 +18,29 @@ export async function getFinanceFormOptions(): Promise<FinanceFormOptions> {
 
   try {
     const [halls, services, lots] = await Promise.all([
-      prisma.hall.findMany({
-        where: { isActive: true },
-        orderBy: { name: "asc" },
-        select: { id: true, name: true },
-      }),
-      prisma.service.findMany({
-        orderBy: { name: "asc" },
-        select: { id: true, name: true, hallId: true },
-      }),
-      prisma.inventoryLot.findMany({
-        where: { quantityLeft: { gt: 0 } },
-        include: { item: true },
-        orderBy: { receivedAt: "asc" },
-      }),
+      withDbTimeout(
+        prisma.hall.findMany({
+          where: { isActive: true },
+          orderBy: { name: "asc" },
+          select: { id: true, name: true },
+        }),
+        []
+      ),
+      withDbTimeout(
+        prisma.service.findMany({
+          orderBy: { name: "asc" },
+          select: { id: true, name: true, hallId: true },
+        }),
+        []
+      ),
+      withDbTimeout(
+        prisma.inventoryLot.findMany({
+          where: { quantityLeft: { gt: 0 } },
+          include: { item: true },
+          orderBy: { receivedAt: "asc" },
+        }),
+        []
+      ),
     ]);
 
     return {

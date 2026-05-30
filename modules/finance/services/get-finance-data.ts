@@ -1,9 +1,16 @@
 /**
  * Unit economics за сегодня: выручка, COGS и маржа по залам.
+ * Не бросает исключений — при сбое возвращает kind:"data" с нулями или kind:"empty".
  */
-import { addDays, BUSINESS_TIMEZONE, startOfDay } from "@/lib/date-utils";
+import { addDays, businessDateForDb, startOfDay } from "@/lib/date-utils";
+import { withDbTimeout } from "@/lib/db-timeout";
 import { marginPercent } from "@/lib/format-money";
 import { prisma } from "@/lib/db";
+import {
+  EMPTY_RETAIL,
+  emptyFinanceData,
+  financeDateLabel,
+} from "@/modules/finance/services/finance-safe-defaults";
 import type {
   FinanceResult,
   HallEconomicsRow,
@@ -14,18 +21,6 @@ import type {
 const EMPTY_MESSAGE =
   "База пуста — выполните: npm run db:push && npm run db:seed";
 
-const EMPTY_RETAIL: RetailSummary = {
-  dayRevenue: 0,
-  dayCogs: 0,
-  dayMarginRub: 0,
-  dayMarginPercent: 0,
-  weekRevenue: 0,
-  weekCogs: 0,
-  weekMarginRub: 0,
-  weekMarginPercent: 0,
-  rows: [],
-};
-
 /** Розница — отдельный try/catch: отсутствие T-021 таблиц не должно ронять /finance. */
 async function loadRetailSummary(
   today: Date,
@@ -34,20 +29,26 @@ async function loadRetailSummary(
 ): Promise<RetailSummary> {
   try {
     const [retailProducts, retailDayAgg, retailWeekAgg] = await Promise.all([
-      prisma.retailProduct.findMany({
+      withDbTimeout(prisma.retailProduct.findMany({
         where: { isActive: true },
         orderBy: [{ category: "asc" }, { name: "asc" }],
-      }),
-      prisma.retailSale.groupBy({
-        by: ["productId"],
-        where: { soldAt: { gte: today, lt: tomorrow } },
-        _sum: { quantity: true },
-      }),
-      prisma.retailSale.groupBy({
-        by: ["productId"],
-        where: { soldAt: { gte: weekStart, lt: tomorrow } },
-        _sum: { quantity: true },
-      }),
+      }), []),
+      withDbTimeout(
+        prisma.retailSale.groupBy({
+          by: ["productId"],
+          where: { soldAt: { gte: today, lt: tomorrow } },
+          _sum: { quantity: true },
+        }),
+        []
+      ),
+      withDbTimeout(
+        prisma.retailSale.groupBy({
+          by: ["productId"],
+          where: { soldAt: { gte: weekStart, lt: tomorrow } },
+          _sum: { quantity: true },
+        }),
+        []
+      ),
     ]);
 
     const productsById = new Map(
@@ -145,6 +146,64 @@ function buildRetailSummary(
   };
 }
 
+async function loadHallRowsForToday(businessDay: Date): Promise<HallEconomicsRow[]> {
+  const halls = await withDbTimeout(
+    prisma.hall.findMany({
+      where: { isActive: true },
+      orderBy: { name: "asc" },
+    }),
+    []
+  );
+
+  const settled = await Promise.allSettled(
+    halls.map(async (hall) => {
+      const [revAgg, cogsAgg] = await Promise.all([
+        withDbTimeout(
+          prisma.revenueLine.aggregate({
+            where: { hallId: hall.id, businessDate: businessDay },
+            _sum: { amount: true },
+          }),
+          { _sum: { amount: null } }
+        ),
+        withDbTimeout(
+          prisma.costLine.aggregate({
+            where: {
+              hallId: hall.id,
+              costType: "COGS",
+              businessDate: businessDay,
+            },
+            _sum: { amount: true },
+          }),
+          { _sum: { amount: null } }
+        ),
+      ]);
+
+      const revenue = Number(revAgg._sum.amount ?? 0);
+      const cogs = Number(cogsAgg._sum.amount ?? 0);
+      if (revenue <= 0 && cogs <= 0) return null;
+
+      return {
+        hallId: hall.id,
+        hallName: hall.name,
+        revenue,
+        cogs,
+        marginPercent: marginPercent(revenue, cogs),
+      } satisfies HallEconomicsRow;
+    })
+  );
+
+  const rows: HallEconomicsRow[] = [];
+  for (const result of settled) {
+    if (result.status === "fulfilled" && result.value) {
+      rows.push(result.value);
+    } else if (result.status === "rejected") {
+      console.error("[finance] hall aggregate rejected:", result.reason);
+    }
+  }
+  return rows;
+}
+
+/** Агрегаты финансов за бизнес-день; reject/throw наружу не пробрасывает. */
 export async function getFinanceData(): Promise<FinanceResult> {
   if (!process.env.DATABASE_URL) {
     return {
@@ -154,55 +213,18 @@ export async function getFinanceData(): Promise<FinanceResult> {
     };
   }
 
+  const today = startOfDay();
+  const businessDay = businessDateForDb();
+  const tomorrow = addDays(today, 1);
+  const weekStart = addDays(today, -6);
+
   try {
-    const hallCount = await prisma.hall.count();
-    if (hallCount === 0) {
+    const hallCount = await withDbTimeout(prisma.hall.count(), -1);
+    if (hallCount <= 0) {
       return { kind: "empty", message: EMPTY_MESSAGE };
     }
 
-    const today = startOfDay();
-    const tomorrow = addDays(today, 1);
-    const weekStart = addDays(today, -6);
-
-    const halls = await prisma.hall.findMany({
-      where: { isActive: true },
-      orderBy: { name: "asc" },
-    });
-
-    const rows: HallEconomicsRow[] = [];
-
-    for (const hall of halls) {
-      const [revAgg, cogsAgg] = await Promise.all([
-        prisma.revenueLine.aggregate({
-          where: {
-            hallId: hall.id,
-            businessDate: { gte: today, lt: tomorrow },
-          },
-          _sum: { amount: true },
-        }),
-        prisma.costLine.aggregate({
-          where: {
-            hallId: hall.id,
-            costType: "COGS",
-            businessDate: { gte: today, lt: tomorrow },
-          },
-          _sum: { amount: true },
-        }),
-      ]);
-
-      const revenue = Number(revAgg._sum.amount ?? 0);
-      const cogs = Number(cogsAgg._sum.amount ?? 0);
-      if (revenue <= 0 && cogs <= 0) continue;
-
-      rows.push({
-        hallId: hall.id,
-        hallName: hall.name,
-        revenue,
-        cogs,
-        marginPercent: marginPercent(revenue, cogs),
-      });
-    }
-
+    const rows = await loadHallRowsForToday(businessDay);
     const retail = await loadRetailSummary(today, tomorrow, weekStart);
 
     const hallRevenue = rows.reduce((s, r) => s + r.revenue, 0);
@@ -210,16 +232,9 @@ export async function getFinanceData(): Promise<FinanceResult> {
     const overallRevenue = hallRevenue + retail.dayRevenue;
     const overallCogs = hallCogs + retail.dayCogs;
 
-    const dateLabel = today.toLocaleDateString("ru-RU", {
-      timeZone: BUSINESS_TIMEZONE,
-      weekday: "long",
-      day: "numeric",
-      month: "long",
-    });
-
     return {
       kind: "data",
-      dateLabel,
+      dateLabel: financeDateLabel(today),
       rows,
       hallTotals: {
         revenue: hallRevenue,
@@ -234,7 +249,15 @@ export async function getFinanceData(): Promise<FinanceResult> {
       retail,
     };
   } catch (error) {
-    console.error("[finance] DB query failed:", error);
+    console.error("[finance] getFinanceData failed:", error);
+    try {
+      const hallCount = await withDbTimeout(prisma.hall.count(), 0);
+      if (hallCount > 0) {
+        return emptyFinanceData(today);
+      }
+    } catch {
+      /* ignore */
+    }
     return {
       kind: "empty",
       message:

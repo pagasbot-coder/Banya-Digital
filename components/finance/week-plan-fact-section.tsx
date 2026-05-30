@@ -16,7 +16,8 @@ type WeekPlanFactSectionProps = {
 
 /** Блок план/факт на странице финансов (T-019 + сезонность T-022). */
 export function WeekPlanFactSection({ summary }: WeekPlanFactSectionProps) {
-  const percentLabel = `${summary.percentOfPlan.toFixed(1).replace(".", ",")}%`;
+  const pct = Number.isFinite(summary.percentOfPlan) ? summary.percentOfPlan : 0;
+  const percentLabel = `${pct.toFixed(1).replace(".", ",")}%`;
   const season = summary.seasonality;
   const seasonalPlan =
     season && season.chips.length > 0 ? season.adjustedPlanToDate : null;

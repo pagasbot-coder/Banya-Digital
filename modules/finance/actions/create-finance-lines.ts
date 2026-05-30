@@ -12,7 +12,8 @@ export type FinanceActionState = {
 
 const OK: FinanceActionState = { ok: true, message: "" };
 
-const REVALIDATE_PATHS = ["/finance", "/dashboard"] as const;
+/** Только dashboard — /finance обновляется через router.refresh() после submit (T-033). */
+const REVALIDATE_PATHS = ["/dashboard"] as const;
 
 function fail(message: string): FinanceActionState {
   return { ok: false, message };
