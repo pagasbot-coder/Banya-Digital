@@ -71,6 +71,7 @@
 | T-029 | Hotfix: prod 500 на выручке и FIFO OUT | Developer | DONE | P0 | T-011, T-012 | `modules/finance/actions/create-finance-lines.ts`, `modules/operations/inventory/` | try/catch + safe revalidate; Prisma.Decimal; interactive $transaction; build+vercel --prod |
 | T-030 | Hotfix: prod 500 CRM гость / бронь | Developer | DONE | P0 | T-010, T-029 | `modules/crm/actions/crm-actions.ts` | safeRevalidatePaths; try/catch всех actions; parseBusinessDateInput; валидация guest/hall/spaProgram; build+vercel --prod |
 | T-031 | Hotfix sweep: все server actions (finance/crm/ops) | Developer | DONE | P0 | T-029, T-030 | `docs/server-actions-index.md`, `knowledge-base/qa-checklist.md` | аудит 10 actions; hall validate COGS; RU messages ops; E2E checklist 7 submit-тестов; pilot Day 2; build+push+vercel --prod |
+| T-032 | Hotfix: prod 500 на /finance при вводе выручки | Developer | IN_PROGRESS | P0 | T-031 | `modules/finance/`, `app/(app)/finance/` | muster-developer |
 
 ---
 

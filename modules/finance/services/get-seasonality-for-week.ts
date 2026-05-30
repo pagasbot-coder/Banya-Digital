@@ -63,6 +63,10 @@ export async function getSeasonalityForWeek(
   const through = addDays(referenceDate, 1);
 
   try {
+    if (typeof prisma.seasonCalendarEntry?.findMany !== "function") {
+      return null;
+    }
+
     const entries = await prisma.seasonCalendarEntry.findMany({
       where: {
         calendarDate: { gte: weekStart, lt: weekEnd },

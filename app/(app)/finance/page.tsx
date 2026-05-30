@@ -15,6 +15,9 @@ import { formatRubles } from "@/lib/format-money";
 import { getFinanceData, isFinanceEmpty } from "@/modules/finance";
 import { getFinanceFormOptions } from "@/modules/finance/services/get-finance-form-options";
 import { getWeekPlanFact } from "@/modules/finance/services/get-week-plan-fact";
+import type { FinanceFormOptions } from "@/modules/finance/services/get-finance-form-options";
+import type { FinanceResult } from "@/modules/finance/types";
+import type { WeekPlanFactSummary } from "@/modules/finance/services/get-week-plan-fact";
 
 export const dynamic = "force-dynamic";
 
@@ -24,15 +27,54 @@ function todayInputValue(): string {
   });
 }
 
-export default async function FinancePage() {
-  const [data, formOptions, weekPlanFact] = await Promise.all([
+/** Безопасная загрузка данных страницы — ни один reject не роняет RSC. */
+async function loadFinancePageData(): Promise<{
+  data: FinanceResult;
+  formOptions: FinanceFormOptions;
+  weekPlanFact: WeekPlanFactSummary | null;
+}> {
+  const [dataResult, formResult, weekResult] = await Promise.allSettled([
     getFinanceData(),
     getFinanceFormOptions(),
     getWeekPlanFact(),
   ]);
-  const defaultBusinessDate = todayInputValue();
 
-  if (isFinanceEmpty(data)) {
+  const data =
+    dataResult.status === "fulfilled"
+      ? dataResult.value
+      : ({
+          kind: "empty" as const,
+          message:
+            "Не удалось загрузить финансы. Проверьте DATABASE_URL и npm run db:push.",
+        } satisfies FinanceResult);
+
+  const formOptions =
+    formResult.status === "fulfilled"
+      ? formResult.value
+      : { halls: [], services: [], lots: [] };
+
+  const weekPlanFact =
+    weekResult.status === "fulfilled" ? weekResult.value : null;
+
+  if (dataResult.status === "rejected") {
+    console.error("[finance] page getFinanceData rejected:", dataResult.reason);
+  }
+  if (formResult.status === "rejected") {
+    console.error("[finance] page form options rejected:", formResult.reason);
+  }
+  if (weekResult.status === "rejected") {
+    console.error("[finance] page week plan/fact rejected:", weekResult.reason);
+  }
+
+  return { data, formOptions, weekPlanFact };
+}
+
+export default async function FinancePage() {
+  const { data, formOptions, weekPlanFact } = await loadFinancePageData();
+  const defaultBusinessDate = todayInputValue();
+  const dbUnavailable = isFinanceEmpty(data);
+
+  if (dbUnavailable) {
     return (
       <div className="flex flex-1 flex-col gap-6 p-6 md:p-8">
         <header>
@@ -56,6 +98,9 @@ export default async function FinancePage() {
     );
   }
 
+  const hasTodayLines =
+    data.rows.length > 0 || data.retail.rows.length > 0;
+
   return (
     <div className="flex flex-1 flex-col gap-8 p-6 md:p-8">
       <header className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
@@ -74,6 +119,15 @@ export default async function FinancePage() {
       </header>
 
       {weekPlanFact ? <WeekPlanFactSection summary={weekPlanFact} /> : null}
+
+      {!hasTodayLines ? (
+        <div
+          role="status"
+          className="rounded-lg border border-dashed border-border/80 bg-muted/20 px-4 py-3 text-sm text-muted-foreground"
+        >
+          За сегодня ещё нет строк — добавьте выручку или COGS в форме ниже.
+        </div>
+      ) : null}
 
       <div className="grid gap-4 sm:grid-cols-3">
         <Card className="border-border/80 bg-card/95 shadow-sm">
@@ -118,13 +172,17 @@ export default async function FinancePage() {
         />
       </section>
 
-      <HallEconomicsSection
-        dateLabel={data.dateLabel}
-        rows={data.rows}
-        totals={data.hallTotals}
-      />
+      {hasTodayLines ? (
+        <>
+          <HallEconomicsSection
+            dateLabel={data.dateLabel}
+            rows={data.rows}
+            totals={data.hallTotals}
+          />
 
-      <RetailSection dateLabel={data.dateLabel} retail={data.retail} />
+          <RetailSection dateLabel={data.dateLabel} retail={data.retail} />
+        </>
+      ) : null}
     </div>
   );
 }

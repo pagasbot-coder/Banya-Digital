@@ -97,23 +97,28 @@ export async function getWeekPlanFact(
     const weekStart = startOfWeek(referenceDate);
     const tomorrow = addDays(referenceDate, 1);
 
-    const [factAgg, planRow] = await Promise.all([
-      prisma.revenueLine.aggregate({
-        where: {
-          businessDate: { gte: weekStart, lt: tomorrow },
-        },
-        _sum: { amount: true },
-      }),
-      prisma.revenueWeekPlan.findUnique({
-        where: { weekStart },
-      }),
-    ]);
+    const factAgg = await prisma.revenueLine.aggregate({
+      where: {
+        businessDate: { gte: weekStart, lt: tomorrow },
+      },
+      _sum: { amount: true },
+    });
 
     const factAmount = Number(factAgg._sum.amount ?? 0);
-    const planFromDb = planRow !== null;
-    const planAmount = planFromDb
-      ? Number(planRow.amount)
-      : Math.max(1, Math.round(factAmount * PLAN_FALLBACK_RATIO));
+
+    let planFromDb = false;
+    let planAmount = Math.max(1, Math.round(factAmount * PLAN_FALLBACK_RATIO));
+
+    // RevenueWeekPlan (T-019) может отсутствовать на старом prod — не роняем страницу.
+    if (typeof prisma.revenueWeekPlan?.findUnique === "function") {
+      const planRow = await prisma.revenueWeekPlan.findUnique({
+        where: { weekStart },
+      });
+      planFromDb = planRow !== null;
+      if (planFromDb) {
+        planAmount = Number(planRow!.amount);
+      }
+    }
 
     const percentOfPlan =
       planAmount > 0

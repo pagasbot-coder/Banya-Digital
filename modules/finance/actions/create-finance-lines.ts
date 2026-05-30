@@ -31,20 +31,20 @@ export async function createRevenueLine(
   _prev: FinanceActionState,
   formData: FormData
 ): Promise<FinanceActionState> {
-  if (!process.env.DATABASE_URL) {
-    return fail("DATABASE_URL не задан — ввод недоступен.");
-  }
-
-  const hallId = String(formData.get("hallId") ?? "").trim();
-  const serviceId = String(formData.get("serviceId") ?? "").trim() || null;
-  const amount = parseAmount(formData.get("amount"));
-  const description = String(formData.get("description") ?? "").trim() || null;
-  const businessDate = parseBusinessDateInput(formData.get("businessDate"));
-
-  if (!hallId) return fail("Выберите зал.");
-  if (amount === null) return fail("Укажите сумму больше нуля.");
-
   try {
+    if (!process.env.DATABASE_URL) {
+      return fail("DATABASE_URL не задан — ввод недоступен.");
+    }
+
+    const hallId = String(formData.get("hallId") ?? "").trim();
+    const serviceId = String(formData.get("serviceId") ?? "").trim() || null;
+    const amount = parseAmount(formData.get("amount"));
+    const description = String(formData.get("description") ?? "").trim() || null;
+    const businessDate = parseBusinessDateInput(formData.get("businessDate"));
+
+    if (!hallId) return fail("Выберите зал.");
+    if (amount === null) return fail("Укажите сумму больше нуля.");
+
     const hall = await prisma.hall.findUnique({ where: { id: hallId } });
     if (!hall) return fail("Зал не найден.");
 
@@ -81,23 +81,23 @@ export async function createCostLine(
   _prev: FinanceActionState,
   formData: FormData
 ): Promise<FinanceActionState> {
-  if (!process.env.DATABASE_URL) {
-    return fail("DATABASE_URL не задан — ввод недоступен.");
-  }
-
-  const hallId = String(formData.get("hallId") ?? "").trim() || null;
-  const serviceId = String(formData.get("serviceId") ?? "").trim() || null;
-  const lotId = String(formData.get("lotId") ?? "").trim() || null;
-  const amount = parseAmount(formData.get("amount"));
-  const description = String(formData.get("description") ?? "").trim() || null;
-  const businessDate = parseBusinessDateInput(formData.get("businessDate"));
-  const costTypeRaw = String(formData.get("costType") ?? "COGS");
-  const costType =
-    costTypeRaw in CostType ? (costTypeRaw as CostType) : CostType.COGS;
-
-  if (amount === null) return fail("Укажите сумму больше нуля.");
-
   try {
+    if (!process.env.DATABASE_URL) {
+      return fail("DATABASE_URL не задан — ввод недоступен.");
+    }
+
+    const hallId = String(formData.get("hallId") ?? "").trim() || null;
+    const serviceId = String(formData.get("serviceId") ?? "").trim() || null;
+    const lotId = String(formData.get("lotId") ?? "").trim() || null;
+    const amount = parseAmount(formData.get("amount"));
+    const description = String(formData.get("description") ?? "").trim() || null;
+    const businessDate = parseBusinessDateInput(formData.get("businessDate"));
+    const costTypeRaw = String(formData.get("costType") ?? "COGS");
+    const costType =
+      costTypeRaw in CostType ? (costTypeRaw as CostType) : CostType.COGS;
+
+    if (amount === null) return fail("Укажите сумму больше нуля.");
+
     if (hallId) {
       const hall = await prisma.hall.findUnique({ where: { id: hallId } });
       if (!hall) return fail("Зал не найден.");

@@ -14,6 +14,72 @@ import type {
 const EMPTY_MESSAGE =
   "База пуста — выполните: npm run db:push && npm run db:seed";
 
+const EMPTY_RETAIL: RetailSummary = {
+  dayRevenue: 0,
+  dayCogs: 0,
+  dayMarginRub: 0,
+  dayMarginPercent: 0,
+  weekRevenue: 0,
+  weekCogs: 0,
+  weekMarginRub: 0,
+  weekMarginPercent: 0,
+  rows: [],
+};
+
+/** Розница — отдельный try/catch: отсутствие T-021 таблиц не должно ронять /finance. */
+async function loadRetailSummary(
+  today: Date,
+  tomorrow: Date,
+  weekStart: Date
+): Promise<RetailSummary> {
+  try {
+    const [retailProducts, retailDayAgg, retailWeekAgg] = await Promise.all([
+      prisma.retailProduct.findMany({
+        where: { isActive: true },
+        orderBy: [{ category: "asc" }, { name: "asc" }],
+      }),
+      prisma.retailSale.groupBy({
+        by: ["productId"],
+        where: { soldAt: { gte: today, lt: tomorrow } },
+        _sum: { quantity: true },
+      }),
+      prisma.retailSale.groupBy({
+        by: ["productId"],
+        where: { soldAt: { gte: weekStart, lt: tomorrow } },
+        _sum: { quantity: true },
+      }),
+    ]);
+
+    const productsById = new Map(
+      retailProducts.map((p) => [
+        p.id,
+        {
+          name: p.name,
+          category: p.category,
+          unit: p.unit,
+          price: Number(p.price),
+          cogsPerUnit: Number(p.cogsPerUnit),
+        },
+      ])
+    );
+
+    const dayQty = new Map<string, number>();
+    for (const row of retailDayAgg) {
+      dayQty.set(row.productId, Number(row._sum.quantity ?? 0));
+    }
+
+    const weekQty = new Map<string, number>();
+    for (const row of retailWeekAgg) {
+      weekQty.set(row.productId, Number(row._sum.quantity ?? 0));
+    }
+
+    return buildRetailSummary(productsById, dayQty, weekQty);
+  } catch (error) {
+    console.error("[finance] retail aggregates failed:", error);
+    return EMPTY_RETAIL;
+  }
+}
+
 function buildRetailSummary(
   products: Map<
     string,
@@ -137,55 +203,7 @@ export async function getFinanceData(): Promise<FinanceResult> {
       });
     }
 
-    // Retail day/week → PRODUCT line
-    const [retailProducts, retailDayAgg, retailWeekAgg] = await Promise.all([
-      prisma.retailProduct.findMany({
-        where: { isActive: true },
-        orderBy: [{ category: "asc" }, { name: "asc" }],
-      }),
-      prisma.retailSale.groupBy({
-        by: ["productId"],
-        where: { soldAt: { gte: today, lt: tomorrow } },
-        _sum: { quantity: true },
-      }),
-      prisma.retailSale.groupBy({
-        by: ["productId"],
-        where: { soldAt: { gte: weekStart, lt: tomorrow } },
-        _sum: { quantity: true },
-      }),
-    ]);
-
-    const productsById = new Map(
-      retailProducts.map((p) => [
-        p.id,
-        {
-          name: p.name,
-          category: p.category,
-          unit: p.unit,
-          price: Number(p.price),
-          cogsPerUnit: Number(p.cogsPerUnit),
-        },
-      ])
-    );
-
-    const dayQty = new Map<string, number>();
-    for (const row of retailDayAgg) {
-      dayQty.set(row.productId, Number(row._sum.quantity ?? 0));
-    }
-
-    const weekQty = new Map<string, number>();
-    for (const row of retailWeekAgg) {
-      weekQty.set(row.productId, Number(row._sum.quantity ?? 0));
-    }
-
-    const retail = buildRetailSummary(productsById, dayQty, weekQty);
-
-    if (rows.length === 0 && retail.rows.length === 0) {
-      return {
-        kind: "empty",
-        message: "Нет финансовых строк за сегодня. Запустите npm run db:seed.",
-      };
-    }
+    const retail = await loadRetailSummary(today, tomorrow, weekStart);
 
     const hallRevenue = rows.reduce((s, r) => s + r.revenue, 0);
     const hallCogs = rows.reduce((s, r) => s + r.cogs, 0);
@@ -217,6 +235,10 @@ export async function getFinanceData(): Promise<FinanceResult> {
     };
   } catch (error) {
     console.error("[finance] DB query failed:", error);
-    return { kind: "empty", message: EMPTY_MESSAGE };
+    return {
+      kind: "empty",
+      message:
+        "Не удалось загрузить финансы. Проверьте DATABASE_URL и выполните npm run db:push && npm run db:seed.",
+    };
   }
 }
