@@ -41,6 +41,8 @@
 | QA | `muster-qa` | «Role: QA» | `@role-qa` |
 | Growth / CMO | `muster-growth-marketer` | «Role: CMO» / «Role: Growth» / «Роль: Директор по маркетингу» | `@role-growth-marketer` |
 | SME | `muster-sme` | «Role: SME» / «Role: Business Consultant» / «Роль: Прожжённый отраслевой бизнес-консультант» / «Role: Industry Expert» | `@role-sme` |
+| China Logistics / ВЭД | — (rule chat) | «Role: China Logistics» / «Role: ВЭД» / «Роль: Логистика Китай» | `@role-china-logistics` |
+| Brand Manager | — (rule chat) | «Role: Brand Manager» / «Роль: Бренд-менеджер» | `@role-brand-manager` |
 
 Контекст из `knowledge-base/` подключайте через **@** (например `@knowledge-base/product-brief.md`).
 
@@ -97,6 +99,9 @@
 | T-033 | Hotfix: error boundary /finance после submit выручки | Developer | DONE | P0 | T-032 | `get-finance-data.ts`, `finance/page.tsx`, `create-finance-lines.ts` | revalidate /finance убран → router.refresh; withDbTimeout+allSettled; normalizeFinanceResult; businessDate eq; commit 8fd9a38; vercel --prod; db:seed OK |
 | T-034 | Hotfix: finance submit 500 (use server export) | Developer | DONE | P0 | T-033 | `finance-action-state.ts`, `create-finance-lines.ts`, `revenue-cost-forms.tsx` | root: `initialFinanceActionState` в "use server" → Next.js 16 invalid-use-server-value; вынесено в отдельный модуль; prod+local submit PASS (hall+amount, hall+service+amount) |
 | T-035 | Hotfix: CRM + FIFO submit 500 (use server export) | Developer | DONE | P0 | T-034 | `crm-action-state.ts`, `fifo-action-state.ts`, forms, `test-crm-fifo-actions.mjs` | commit 9557629; push+vercel --prod; build+lint OK; action smoke createGuest+performFifoOut PASS; prod retest `/crm`, `/operations/inventory` |
+| T-036 | Роли China Logistics + Brand Manager + стартовые KB | Human / PM | DONE | P1 | — | `@role-china-logistics`, `@role-brand-manager`, `@knowledge-base/china-russia-logistics.md`, `@knowledge-base/brand-management-playbook.md` | Две роли Muster; базы логистики Китай→РФ и бренд-playbook («ДНК бренда» Зарьков/Завражнов) |
+| T-037 | Углубить KB «ДНК бренда» после загрузки книги Human | Brand Manager | BACKLOG | P2 | T-036 | `@knowledge-base/brand-management-playbook.md` | Ждём PDF/фото глав от Human |
+| T-038 | Расширить коридоры логистики (не только Китай) по запросу | China Logistics | BACKLOG | P2 | T-036 | `@knowledge-base/china-russia-logistics.md` | Turkey/EU/UAE — по мере надобности |
 
 ---
 
