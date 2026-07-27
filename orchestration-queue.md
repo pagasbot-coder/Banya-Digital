@@ -105,7 +105,8 @@
 | T-038 | Расширить коридоры логистики (не только Китай) по запросу | China Logistics | BACKLOG | P2 | T-036 | `@knowledge-base/china-russia-logistics.md` | Turkey/EU/UAE — по мере надобности |
 | T-039 | Доскональная тройная критика Natural v1.6 (Brand·Expert·PM) | Brand Manager + Copywriter | DONE | P0 | — | `@knowledge-base/brand-pult-critique-deep-v16.md`, primer v1.6, platform | Deep review + RF origin; Copywriter pass; вход в v1.7 по Go Human |
 | T-040 | Natural v1.7: закрыть P0 deep-критики в пульте + платформе | Brand Manager + Copywriter | DONE | P0 | T-039 | `@knowledge-base/brand-pult-primer-travelplus-natural.md`, `@knowledge-base/brand-platform-travelplus-natural.md` | Origin · метод % · DoD · сценарий 3–6 · поставка · docs завода; Copywriter pass |
-| T-041 | Epic: блокеры DoD этапа 2 Natural (технолог/ops) | Brand Manager | BACKLOG | P0 | T-040 | primer v1.7 DoD-таблица | Ждёт Human + технолог: % · origin · пакет · тест · этикетка · COGS · MOQ |
+| T-041 | Epic: блокеры DoD этапа 2 Natural (технолог/ops) | Brand Manager | BACKLOG | P0 | T-040 | primer DoD-таблица | Ждёт Human + технолог: % · origin · пакет · тест · этикетка · COGS · MOQ |
+| T-042 | StoryBrand SB7 в playbook, пульт, Natural v1.8 | Brand Manager + Copywriter | DONE | P1 | T-040 | playbook §3, platform BrandScript, primer v1.8 | Герой=клиент; питч переписан; роли Brand/Copy обновлены |
 
 ---
 
