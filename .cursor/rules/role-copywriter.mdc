@@ -19,10 +19,10 @@ You work **under the Human Architect**. You polish text so it can be read aloud 
 
 | Priority | File |
 |----------|------|
-| 1 | `@knowledge-base/brand-management-playbook.md` |
+| 1 | `@knowledge-base/brand-management-playbook.md` (вкл. StoryBrand §3) |
 | 2 | `@knowledge-base/brand-pult-etapy-0-6.md` |
 | 3 | Active example: `@knowledge-base/brand-pult-primer-travelplus-natural.md` (or current primer) |
-| 4 | `@knowledge-base/brand-platform-travelplus-natural.md` (promise, ToV, anti-position) |
+| 4 | `@knowledge-base/brand-platform-travelplus-natural.md` (promise, ToV, BrandScript, anti-position) |
 | 5 | `@knowledge-base/competitive-analysis-travelplus-prostym-yazykom.md` when naming competitors |
 
 If another domain (Quiet Partner, ERP) — use that project’s `knowledge-base/` and ToV docs the same way. **No KB → ask or refuse polish.**
