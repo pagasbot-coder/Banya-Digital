@@ -109,6 +109,7 @@
 | T-042 | StoryBrand SB7 в playbook, пульт, Natural v1.8 | Brand Manager + Copywriter | DONE | P1 | T-040 | playbook §3, platform BrandScript, primer v1.8 | Герой=клиент; питч переписан; роли Brand/Copy обновлены |
 | T-043 | Natural v1.9: полевая защита бренда (5 правок) | Brand Manager + Copywriter | DONE | P1 | T-042 | primer v1.9 | Питч без оправданий · реестр рисков · возврат · СТМ · слайд портфеля |
 | T-044 | Natural v1.10 + презентация собеса под пульт | Brand Manager + Copywriter | DONE | P0 | T-043 | primer v1.10, presentation-travelplus-interview.pptx | ToV без «химии» · kill 2-го круга · PPTX заменён |
+| T-045 | Natural v1.11: читаемость таблиц | Brand Manager + Copywriter | DONE | P1 | T-044 | primer v1.11 | Короткие ячейки · словарь · смысл сохранён |
 
 ---
 
