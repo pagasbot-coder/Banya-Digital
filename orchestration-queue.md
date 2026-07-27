@@ -103,6 +103,7 @@
 | T-036 | Роли China Logistics + Brand Manager + стартовые KB | Human / PM | DONE | P1 | — | `@role-china-logistics`, `@role-brand-manager`, `@knowledge-base/china-russia-logistics.md`, `@knowledge-base/brand-management-playbook.md` | Две роли Muster; базы логистики Китай→РФ и бренд-playbook («ДНК бренда» Зарьков/Завражнов) |
 | T-037 | Углубить KB «ДНК бренда» после загрузки книги Human | Brand Manager | BACKLOG | P2 | T-036 | `@knowledge-base/brand-management-playbook.md` | Ждём PDF/фото глав от Human |
 | T-038 | Расширить коридоры логистики (не только Китай) по запросу | China Logistics | BACKLOG | P2 | T-036 | `@knowledge-base/china-russia-logistics.md` | Turkey/EU/UAE — по мере надобности |
+| T-039 | Доскональная тройная критика Natural v1.6 (Brand·Expert·PM) | Brand Manager + Copywriter | DONE | P0 | — | `@knowledge-base/brand-pult-critique-deep-v16.md`, primer v1.6, platform | Deep review + RF origin; Copywriter pass; вход в v1.7 по Go Human |
 
 ---
 
