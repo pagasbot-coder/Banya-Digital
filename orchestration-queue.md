@@ -111,6 +111,8 @@
 | T-044 | Natural v1.10 + презентация собеса под пульт | Brand Manager + Copywriter | DONE | P0 | T-043 | primer v1.10, presentation-travelplus-interview.pptx | ToV без «химии» · kill 2-го круга · PPTX заменён |
 | T-045 | Natural v1.11: читаемость таблиц | Brand Manager + Copywriter | DONE | P1 | T-044 | primer v1.11 | Короткие ячейки · словарь · смысл сохранён |
 | T-046 | Natural v1.12: глоссарий+ · логистика Китай · без длинных тире | Brand + China Logistics + Copywriter | DONE | P0 | T-045 | primer раздел L, china-russia-logistics.md | Раздел L · Incoterms · себестоимость прихода · история версий убрана |
+| T-047 | Natural v1.13: расширить глоссарий логистики | China Logistics + Copywriter | DONE | P1 | T-046 | primer словарь ВЭД | Demurrage, ETA/ETD, пошлина, посредник, цена на складе и др. |
+| T-048 | Natural v1.14: ещё расширить глоссарий логистики | China Logistics + Copywriter | DONE | P1 | T-047 | primer + china-russia-logistics.md | Блоки: завод, Incoterms, перевозка, документы, таможня, приёмка, деньги |
 
 ---
 
