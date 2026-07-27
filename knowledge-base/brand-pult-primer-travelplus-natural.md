@@ -2,7 +2,8 @@
 
 **Документ 2** · версия **1.6** · 27 июля 2026  
 **Шаблон:** [`brand-pult-etapy-0-6.md`](./brand-pult-etapy-0-6.md)  
-**Копирайтер:** прогон после v1.5 · опора на playbook, платформу Natural, пульт этапов
+**Копирайтер:** прогон после v1.5 · опора на playbook, платформу Natural, пульт этапов  
+**Критика:** [`brand-pult-critique-triple-v16.md`](./brand-pult-critique-triple-v16.md) · досконально [`brand-pult-critique-deep-v16.md`](./brand-pult-critique-deep-v16.md)
 
 Полный прогон линейки по этапам 0–6.
 

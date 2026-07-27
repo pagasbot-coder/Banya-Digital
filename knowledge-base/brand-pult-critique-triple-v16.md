@@ -4,7 +4,8 @@
 **Дата:** 27 июля 2026  
 **Участники:** Brand Manager · отраслевой эксперт (HoReCa / amenities) · Product Manager  
 **Редакция:** Copywriter (прогон перед сдачей Human)  
-**Статус:** критика для доработки → затем v1.7 / дорога к v2.0
+**Статус:** критика для доработки → затем v1.7 / дорога к v2.0  
+**Углубление:** [`brand-pult-critique-deep-v16.md`](./brand-pult-critique-deep-v16.md) (доскональная проверка + RF-1 origin)
 
 ---
 

@@ -124,6 +124,7 @@
 | [`brand-pult-primer-travelplus-natural.md`](./brand-pult-primer-travelplus-natural.md) | Заполненный пример Travel+ Natural |
 | [`kruglyy-stol-brand-pult-qp.md`](./kruglyy-stol-brand-pult-qp.md) | Круглый стол: улучшения и внедрение в QP |
 | [`brand-pult-critique-triple-v16.md`](./brand-pult-critique-triple-v16.md) | Тройной разбор v1.6: бренд · отрасль · PM |
+| [`brand-pult-critique-deep-v16.md`](./brand-pult-critique-deep-v16.md) | Доскональная проверка v1.6 (углубление): ДНК · отрасль · PM · P0 |
 
 Радар Quiet Partner в этом треке не трогаем.
 
