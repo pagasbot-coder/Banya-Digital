@@ -115,6 +115,7 @@
 | T-048 | Natural v1.14: ещё расширить глоссарий логистики | China Logistics + Copywriter | DONE | P1 | T-047 | primer + china-russia-logistics.md | Блоки: завод, Incoterms, перевозка, документы, таможня, приёмка, деньги |
 | T-049 | Круглый стол v1.14 + презентация 16:9 горизонтальная | Brand + Copy + China + PM/Dev/UX/QA | DONE | P0 | T-048 | kruglyy-stol-natural-v114.md, presentation-travelplus-interview.pptx | Оценки агентов · внедрение `/brand` · 12 слайдов |
 | T-050 | Волна A: папка brand-pult markdown (dogfood) | Brand Manager + Copywriter | DONE | P0 | T-049 | `brand-pult/` | MVP реестры+шаблоны из Natural · README dogfood · ждём Human «волна A ок» |
+| T-051 | Handoff: код `/brand` + обсуждение → Quiet Partner | Human / PM | DONE | P0 | T-050 | `knowledge-base/handoff-brand-pult-to-quiet-partner.md` | Human: пилить в QP; ветка `cursor/brand-pult-mvp-0821`; Banya-Digital = KB-источник |
 
 ---
 

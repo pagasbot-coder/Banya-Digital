@@ -180,7 +180,10 @@
 | T-Brand-007 | QA smoke + dogfood guide | QA |
 | T-Brand-008 | Hub-ссылка «Пульт бренда» (мелко) | UI/UX + Human Go |
 
-**Сейчас в Banya-Digital / этой ветке:** держим KB + презентацию. Код `/brand` - только явным Go.
+**Сейчас в Banya-Digital / этой ветке:** KB + презентация + волна A (`brand-pult/`).  
+**Решение Human (27.07):** код `/brand` и обсуждение доработок — **в Quiet Partner**.  
+См. [`handoff-brand-pult-to-quiet-partner.md`](./handoff-brand-pult-to-quiet-partner.md).  
+Ветка QP (предложение): `cursor/brand-pult-mvp-0821`.
 
 ### 3.5 Связь с Natural (продукт Travel+)
 
@@ -226,7 +229,7 @@
 1. Human: Go/правки по §5.  
 2. Павел: прогнать презентацию вслух 1× (7-10 мин).  
 3. **Волна A собрана:** папка [`brand-pult/`](../brand-pult/README.md) - Human dogfood 30–60 мин → «волна A ок».  
-4. При Go - PM заводит T-Brand в очередь QP; Developer волна B.  
+4. **Код и доработки — в Quiet Partner** (не Banya-Digital). Handoff: [`handoff-brand-pult-to-quiet-partner.md`](./handoff-brand-pult-to-quiet-partner.md). Ветка: `cursor/brand-pult-mvp-0821`.  
 5. Параллельно: T-041 (технолог) → путь к v2.0.
 
 ---
