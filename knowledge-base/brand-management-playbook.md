@@ -116,4 +116,16 @@
 
 ---
 
+## 8. Пульт бренда (операционка)
+
+| Документ | Назначение |
+|----------|------------|
+| [`brand-pult-etapy-0-6.md`](./brand-pult-etapy-0-6.md) | Этапы 0–6, реестры, шаблоны (v1.1) |
+| [`brand-pult-primer-travelplus-natural.md`](./brand-pult-primer-travelplus-natural.md) | Заполненный пример Travel+ Natural |
+| [`kruglyy-stol-brand-pult-qp.md`](./kruglyy-stol-brand-pult-qp.md) | Круглый стол: улучшения и внедрение в QP |
+
+Радар Quiet Partner в этом треке не трогаем.
+
+---
+
 *База стартовая. Role: Brand Manager дополняет по запросам и по тексту книги, если Human пришлёт.*

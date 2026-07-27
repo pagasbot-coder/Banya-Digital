@@ -288,4 +288,10 @@ source: "brand-pult"
 
 ---
 
-*Круглый стол закрыт. Ждём Human: ОК док. 1 + выбор волны A/B.*
+## Статус после Human (2026-07-27)
+
+Human: **ок** по §7.  
+Сделано: док. 1 → **v1.1**; док. 2 → [`brand-pult-primer-travelplus-natural.md`](./brand-pult-primer-travelplus-natural.md).  
+Дальше: dogfood волны A (markdown) → при Go — код `/brand` в QP.
+
+*Круглый стол закрыт.*
