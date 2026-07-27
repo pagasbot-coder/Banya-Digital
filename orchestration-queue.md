@@ -43,6 +43,7 @@
 | SME | `muster-sme` | «Role: SME» / «Role: Business Consultant» / «Роль: Прожжённый отраслевой бизнес-консультант» / «Role: Industry Expert» | `@role-sme` |
 | China Logistics / ВЭД | — (rule chat) | «Role: China Logistics» / «Role: ВЭД» / «Роль: Логистика Китай» | `@role-china-logistics` |
 | Brand Manager | — (rule chat) | «Role: Brand Manager» / «Роль: Бренд-менеджер» | `@role-brand-manager` |
+| Copywriter | — (rule chat) | «Role: Copywriter» / «Роль: Копирайтер» | `@role-copywriter` |
 
 Контекст из `knowledge-base/` подключайте через **@** (например `@knowledge-base/product-brief.md`).
 
