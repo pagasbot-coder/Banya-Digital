@@ -172,7 +172,7 @@
 | Документ | Назначение |
 |----------|------------|
 | [`brand-pult-etapy-0-6.md`](./brand-pult-etapy-0-6.md) | Этапы 0–6, реестры, шаблоны |
-| [`brand-pult-primer-travelplus-natural.md`](./brand-pult-primer-travelplus-natural.md) | Заполненный пример Travel+ Natural (**v1.13**, глоссарий ВЭД расширен) |
+| [`brand-pult-primer-travelplus-natural.md`](./brand-pult-primer-travelplus-natural.md) | Заполненный пример Travel+ Natural (**v1.14**, глоссарий ВЭД по блокам) |
 | [`china-russia-logistics.md`](./china-russia-logistics.md) | База ВЭД Китай→РФ; раздел L в пульте Natural |
 | [`kruglyy-stol-brand-pult-qp.md`](./kruglyy-stol-brand-pult-qp.md) | Круглый стол: улучшения и внедрение в QP |
 | [`brand-pult-critique-triple-v16.md`](./brand-pult-critique-triple-v16.md) | Тройной разбор v1.6: бренд · отрасль · PM |
