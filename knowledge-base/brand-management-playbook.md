@@ -172,7 +172,7 @@
 | Документ | Назначение |
 |----------|------------|
 | [`brand-pult-etapy-0-6.md`](./brand-pult-etapy-0-6.md) | Этапы 0–6, реестры, шаблоны |
-| [`brand-pult-primer-travelplus-natural.md`](./brand-pult-primer-travelplus-natural.md) | Заполненный пример Travel+ Natural (**v1.9**, полевая защита) |
+| [`brand-pult-primer-travelplus-natural.md`](./brand-pult-primer-travelplus-natural.md) | Заполненный пример Travel+ Natural (**v1.10**, база для v2.0) |
 | [`kruglyy-stol-brand-pult-qp.md`](./kruglyy-stol-brand-pult-qp.md) | Круглый стол: улучшения и внедрение в QP |
 | [`brand-pult-critique-triple-v16.md`](./brand-pult-critique-triple-v16.md) | Тройной разбор v1.6: бренд · отрасль · PM |
 | [`brand-pult-critique-deep-v16.md`](./brand-pult-critique-deep-v16.md) | Доскональная проверка v1.6 → вход в **v1.7** (P0 закрыты) |
@@ -184,7 +184,8 @@
 **Контент (бренд / критик) → Копирайтер → Human.**  
 Не отдавать Human документ пульта / one-pager / скрипты / гостевые фразы без прохода **Role: Copywriter** (`@role-copywriter`).  
 Копирайтер **обязан** читать KB: playbook, пульт этапов, актуальный пример, платформу линейки, при необходимости конкурентный анализ.  
-Скрипты и питчи проверять по **StoryBrand**: герой = клиент.
+Скрипты и питчи проверять по **StoryBrand**: герой = клиент.  
+Гостевой ToV: акцент на **натуральности и мягкости**; не обещать «без химии».
 
 ---
 
