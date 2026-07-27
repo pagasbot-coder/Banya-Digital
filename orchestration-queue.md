@@ -113,6 +113,7 @@
 | T-046 | Natural v1.12: глоссарий+ · логистика Китай · без длинных тире | Brand + China Logistics + Copywriter | DONE | P0 | T-045 | primer раздел L, china-russia-logistics.md | Раздел L · Incoterms · себестоимость прихода · история версий убрана |
 | T-047 | Natural v1.13: расширить глоссарий логистики | China Logistics + Copywriter | DONE | P1 | T-046 | primer словарь ВЭД | Demurrage, ETA/ETD, пошлина, посредник, цена на складе и др. |
 | T-048 | Natural v1.14: ещё расширить глоссарий логистики | China Logistics + Copywriter | DONE | P1 | T-047 | primer + china-russia-logistics.md | Блоки: завод, Incoterms, перевозка, документы, таможня, приёмка, деньги |
+| T-049 | Круглый стол v1.14 + презентация 16:9 горизонтальная | Brand + Copy + China + PM/Dev/UX/QA | DONE | P0 | T-048 | kruglyy-stol-natural-v114.md, presentation-travelplus-interview.pptx | Оценки агентов · внедрение `/brand` · 12 слайдов |
 
 ---
 

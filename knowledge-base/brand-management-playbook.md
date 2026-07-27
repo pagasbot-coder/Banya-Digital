@@ -173,8 +173,9 @@
 |----------|------------|
 | [`brand-pult-etapy-0-6.md`](./brand-pult-etapy-0-6.md) | Этапы 0–6, реестры, шаблоны |
 | [`brand-pult-primer-travelplus-natural.md`](./brand-pult-primer-travelplus-natural.md) | Заполненный пример Travel+ Natural (**v1.14**, глоссарий ВЭД по блокам) |
-| [`china-russia-logistics.md`](./china-russia-logistics.md) | База ВЭД Китай→РФ; раздел L в пульте Natural |
-| [`kruglyy-stol-brand-pult-qp.md`](./kruglyy-stol-brand-pult-qp.md) | Круглый стол: улучшения и внедрение в QP |
+| [`kruglyy-stol-natural-v114.md`](./kruglyy-stol-natural-v114.md) | Круглый стол по док. 2 v1.14: оценки агентов + внедрение `/brand` |
+| [`kruglyy-stol-brand-pult-qp.md`](./kruglyy-stol-brand-pult-qp.md) | Круглый стол: улучшения и внедрение в QP (док. 1) |
+| [`interview-presentation-slides-content.md`](./interview-presentation-slides-content.md) | Скрипт собеса · презентация v1.14 · 16:9 горизонтальная |
 | [`brand-pult-critique-triple-v16.md`](./brand-pult-critique-triple-v16.md) | Тройной разбор v1.6: бренд · отрасль · PM |
 | [`brand-pult-critique-deep-v16.md`](./brand-pult-critique-deep-v16.md) | Доскональная проверка v1.6 → вход в **v1.7** (P0 закрыты) |
 
