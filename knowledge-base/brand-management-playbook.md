@@ -121,10 +121,10 @@
 | Документ | Назначение |
 |----------|------------|
 | [`brand-pult-etapy-0-6.md`](./brand-pult-etapy-0-6.md) | Этапы 0–6, реестры, шаблоны |
-| [`brand-pult-primer-travelplus-natural.md`](./brand-pult-primer-travelplus-natural.md) | Заполненный пример Travel+ Natural |
+| [`brand-pult-primer-travelplus-natural.md`](./brand-pult-primer-travelplus-natural.md) | Заполненный пример Travel+ Natural (**v1.7**) |
 | [`kruglyy-stol-brand-pult-qp.md`](./kruglyy-stol-brand-pult-qp.md) | Круглый стол: улучшения и внедрение в QP |
 | [`brand-pult-critique-triple-v16.md`](./brand-pult-critique-triple-v16.md) | Тройной разбор v1.6: бренд · отрасль · PM |
-| [`brand-pult-critique-deep-v16.md`](./brand-pult-critique-deep-v16.md) | Доскональная проверка v1.6 (углубление): ДНК · отрасль · PM · P0 |
+| [`brand-pult-critique-deep-v16.md`](./brand-pult-critique-deep-v16.md) | Доскональная проверка v1.6 → вход в **v1.7** (P0 закрыты) |
 
 Радар Quiet Partner в этом треке не трогаем.
 
