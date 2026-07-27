@@ -107,6 +107,7 @@
 | T-040 | Natural v1.7: закрыть P0 deep-критики в пульте + платформе | Brand Manager + Copywriter | DONE | P0 | T-039 | `@knowledge-base/brand-pult-primer-travelplus-natural.md`, `@knowledge-base/brand-platform-travelplus-natural.md` | Origin · метод % · DoD · сценарий 3–6 · поставка · docs завода; Copywriter pass |
 | T-041 | Epic: блокеры DoD этапа 2 Natural (технолог/ops) | Brand Manager | BACKLOG | P0 | T-040 | primer DoD-таблица | Ждёт Human + технолог: % · origin · пакет · тест · этикетка · COGS · MOQ |
 | T-042 | StoryBrand SB7 в playbook, пульт, Natural v1.8 | Brand Manager + Copywriter | DONE | P1 | T-040 | playbook §3, platform BrandScript, primer v1.8 | Герой=клиент; питч переписан; роли Brand/Copy обновлены |
+| T-043 | Natural v1.9: полевая защита бренда (5 правок) | Brand Manager + Copywriter | DONE | P1 | T-042 | primer v1.9 | Питч без оправданий · реестр рисков · возврат · СТМ · слайд портфеля |
 
 ---
 
