@@ -73,16 +73,26 @@
 
 ## 4. Статус волны A
 
-Папка `brand-pult/` собрана.  
-Ждём Human: прогон `DOGFOOD-CHEKLIST.md` → «волна A ок» (можно сделать уже в QP после копирования папки).
+**Закрыта 27.07:** ок (Human делегировал решение Auto).  
+Go волна B: **да** → Quiet Partner, `cursor/brand-pult-mvp-0821`.  
+Личный прогон чеклиста можно догнать в QP — не блокер.
 
 ---
 
 ## 5. Ограничение Cloud Agent
 
-Агент, который вёл Travel+/Natural в **Banya-Digital**, **не имеет доступа** к репо Quiet Partner из этой среды.  
-Код `/brand` пилить только агентом, запущенным **на Quiet Partner**.
+Агент в **Banya-Digital** не пишет код в Quiet Partner.  
+Открой Cloud Agent / Cursor **на репо Quiet Partner** и дай промпт:
+
+```
+Go волна B. По handoff из Banya-Digital (ветка cursor/copywriter-report-fmcg-pm-0821):
+1) создай ветку cursor/brand-pult-mvp-0821
+2) перенеси knowledge-base brand-pult* + brand-pult/ + роли
+3) заведи T-Brand-001…008 в orchestration-queue
+4) собери MVP /brand рядом с /stages (радар не трогай)
+Источник: knowledge-base/handoff-brand-pult-to-quiet-partner.md
+```
 
 ---
 
-*Handoff. Дальше — ветка и PR в Quiet Partner.*
+*Handoff. Волна A ок. Go B в Quiet Partner.*

@@ -114,8 +114,9 @@
 | T-047 | Natural v1.13: расширить глоссарий логистики | China Logistics + Copywriter | DONE | P1 | T-046 | primer словарь ВЭД | Demurrage, ETA/ETD, пошлина, посредник, цена на складе и др. |
 | T-048 | Natural v1.14: ещё расширить глоссарий логистики | China Logistics + Copywriter | DONE | P1 | T-047 | primer + china-russia-logistics.md | Блоки: завод, Incoterms, перевозка, документы, таможня, приёмка, деньги |
 | T-049 | Круглый стол v1.14 + презентация 16:9 горизонтальная | Brand + Copy + China + PM/Dev/UX/QA | DONE | P0 | T-048 | kruglyy-stol-natural-v114.md, presentation-travelplus-interview.pptx | Оценки агентов · внедрение `/brand` · 12 слайдов |
-| T-050 | Волна A: папка brand-pult markdown (dogfood) | Brand Manager + Copywriter | DONE | P0 | T-049 | `brand-pult/` | MVP реестры+шаблоны из Natural · README dogfood · ждём Human «волна A ок» |
+| T-050 | Волна A: папка brand-pult markdown (dogfood) | Brand Manager + Copywriter | DONE | P0 | T-049 | `brand-pult/` | **Human устал → Auto Go 27.07:** волна A ок (пакет полный); dogfood можно догнать в QP |
 | T-051 | Handoff: код `/brand` + обсуждение → Quiet Partner | Human / PM | DONE | P0 | T-050 | `knowledge-base/handoff-brand-pult-to-quiet-partner.md` | Human: пилить в QP; ветка `cursor/brand-pult-mvp-0821`; Banya-Digital = KB-источник |
+| T-052 | Go волна B: MVP `/brand` в Quiet Partner | Human (proxy Auto) / Dev QP | READY | P0 | T-050, T-051 | handoff + brand-pult + primer v1.14 | **Go дан 27.07.** Открыть агент на QP → ветка `cursor/brand-pult-mvp-0821` → T-Brand-001…005 |
 
 ---
 
