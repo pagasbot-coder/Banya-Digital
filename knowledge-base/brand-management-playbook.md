@@ -1,7 +1,7 @@
 # Бренд-менеджмент: playbook (база)
 
-**Владелец роли:** Brand Manager (`@role-brand-manager`)  
-**Обновлено:** 2026-07-26  
+**Владелец роли:** Brand Manager (`@role-brand-manager`) · сдача текста — Copywriter (`@role-copywriter`)  
+**Обновлено:** 2026-07-27  
 **Фокус:** физ.товары, HoReCa / FMCG, Travel+  
 **Язык:** простой русский
 
@@ -120,12 +120,18 @@
 
 | Документ | Назначение |
 |----------|------------|
-| [`brand-pult-etapy-0-6.md`](./brand-pult-etapy-0-6.md) | Этапы 0–6, реестры, шаблоны (v1.1) |
+| [`brand-pult-etapy-0-6.md`](./brand-pult-etapy-0-6.md) | Этапы 0–6, реестры, шаблоны |
 | [`brand-pult-primer-travelplus-natural.md`](./brand-pult-primer-travelplus-natural.md) | Заполненный пример Travel+ Natural |
 | [`kruglyy-stol-brand-pult-qp.md`](./kruglyy-stol-brand-pult-qp.md) | Круглый стол: улучшения и внедрение в QP |
 
 Радар Quiet Partner в этом треке не трогаем.
 
+### Правило сдачи Human (обязательно)
+
+**Контент (бренд / критик) → Копирайтер → Human.**  
+Не отдавать Human документ пульта / one-pager / скрипты / гостевые фразы без прохода **Role: Copywriter** (`@role-copywriter`).  
+Копирайтер **обязан** читать KB: playbook, пульт этапов, актуальный пример, платформу линейки, при необходимости конкурентный анализ.
+
 ---
 
-*База стартовая. Role: Brand Manager дополняет по запросам и по тексту книги, если Human пришлёт.*
+*База. Brand Manager + Copywriter. Книгу «ДНК бренда» углубляем, если Human пришлёт PDF.*

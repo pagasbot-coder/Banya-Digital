@@ -18,12 +18,13 @@ This project uses the **Muster** multi-agent pattern. **Markdown is the source o
 
 ## Role activation
 
-When the Human says **Role: PM | Developer | UI/UX | QA | China Logistics | Brand Manager** (or opens a dedicated Agents Window chat):
+When the Human says **Role: PM | Developer | UI/UX | QA | China Logistics | Brand Manager | Copywriter** (or opens a dedicated Agents Window chat):
 
-- Follow the matching rule: `@role-pm`, `@role-developer`, `@role-ui-ux`, `@role-qa`, `@role-china-logistics`, or `@role-brand-manager`.
+- Follow the matching rule: `@role-pm`, `@role-developer`, `@role-ui-ux`, `@role-qa`, `@role-china-logistics`, `@role-brand-manager`, or `@role-copywriter`.
 - Do **not** perform another role's duties unless explicitly asked.
 - **China Logistics** (`@role-china-logistics`) — логистика Китай→РФ, Incoterms, карго; KB `@knowledge-base/china-russia-logistics.md`.
 - **Brand Manager** (`@role-brand-manager`) — бренд-стратегия, «ДНК бренда», FMCG/HoReCa; KB `@knowledge-base/brand-management-playbook.md`.
+- **Copywriter** (`@role-copywriter`) — правка текста перед сдачей Human; обязан читать KB бренда / пульта. Gate: контент → копирайтер → Human.
 
 ## Parallel agents (Work 3)
 
