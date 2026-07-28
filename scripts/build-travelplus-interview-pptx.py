@@ -317,22 +317,23 @@ def build():
         *L,
         [
             card_header("Рынок"),
-            dense("Конкуренты на полке: ЕТС Natural, MEZO, Natura Siberica."),
-            muted("(Natura Siberica — чужой премиум в каталоге Travel+)", after=10),
-            dense("Travel+ силён в массовом и среднем сегменте."),
-            strong("Слабое место: своей линейки Natural с документами нет.", size=15),
+            *labeled(
+                "Конкуренты",
+                "ЕТС Natural · MEZO · Natura Siberica (чужой премиум в каталоге)",
+            ),
+            *labeled("Сила Travel+", "Массовый и средний сегмент"),
+            *labeled("Дыра", "Своей Natural с документами нет", gap=0),
         ],
     )
     write_block(
         s,
         *R,
         [
-            card_header("Ориентир цен (не оферта)"),
-            dense("Hotel Line — ориентир 12–15 ₽ / 30 мл"),
-            dense("ЕТС Natural — ориентир 18 ₽ / 25 мл"),
-            dense("Natura Siberica — ориентир 30–40 ₽ и выше", after=12),
-            strong("Ставка Natural: между Hotel Line и Natura Siberica", size=15),
-            dense("Натуральность, пакет документов, один поставщик на номер."),
+            card_header("Ценовая лестка (не оферта)"),
+            *labeled("Hotel Line", "12–15 ₽ / 30 мл"),
+            *labeled("ЕТС Natural", "18 ₽ / 25 мл"),
+            *labeled("Natura Siberica", "30–40 ₽ и выше"),
+            *labeled("Место Natural", "Между Hotel Line и Natura Siberica", gap=0),
         ],
     )
 
