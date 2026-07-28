@@ -24,7 +24,7 @@ LINE = RGBColor(0xD4, 0xCE, 0xC4)
 # Font stack #4: Manrope (display) + Golos Text (body)
 FONT_DISPLAY = "Manrope"
 FONT_BODY = "Golos Text"
-FOOTER_TEXT = "Travel+ Natural  ·  образец презентации"
+FOOTER_TEXT = "Natural · пример презентации"
 
 MARGIN_X = Inches(0.5)
 CONTENT_TOP = Inches(1.05)
@@ -291,7 +291,6 @@ def build():
             body("• Косметика"),
             body("• Тапочки"),
             body("• Наборы", after=14),
-            strong("Не IT-roadmap."),
             body("Товар от идеи до полки и маржи."),
         ],
     )
