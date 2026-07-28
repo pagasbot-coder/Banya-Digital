@@ -1,15 +1,14 @@
 #!/usr/bin/env python3
-"""Travel+ Natural interview deck v1.14.1 — design polish (UI/UX + Copy)."""
+"""Travel+ Natural interview deck v1.14.2 — Manrope + Golos, card text rhythm."""
 from pptx import Presentation
 from pptx.util import Inches, Pt
 from pptx.dml.color import RGBColor
 from pptx.enum.shapes import MSO_SHAPE
-from pptx.enum.text import PP_ALIGN
+from pptx.enum.text import PP_ALIGN, MSO_ANCHOR
 from pptx.oxml.ns import qn
 from lxml import etree
 import os
 import shutil
-from datetime import datetime, timezone
 
 W = Inches(13.333)
 H = Inches(7.5)
@@ -22,15 +21,33 @@ WHITE = RGBColor(0xFF, 0xFF, 0xFF)
 CARD = RGBColor(0xFF, 0xFF, 0xFF)
 LINE = RGBColor(0xD4, 0xCE, 0xC4)
 
+# Font stack #4: Manrope (display) + Golos Text (body)
+FONT_DISPLAY = "Manrope"
+FONT_BODY = "Golos Text"
+FOOTER_TEXT = "Travel+ Natural  ·  образец презентации"
+
 MARGIN_X = Inches(0.5)
 CONTENT_TOP = Inches(1.05)
 CARD_H = Inches(5.55)
 GAP = Inches(0.28)
 CARD_W = (W - 2 * MARGIN_X - GAP) / 2
-PAD = Inches(0.32)
+STRIP_H = Inches(0.09)
+CARD_PAD_X = Inches(0.38)
+CARD_PAD_TOP = Inches(0.42)
+CARD_PAD_BOTTOM = Inches(0.3)
+TF_MARGIN_X = Pt(4)
+TF_MARGIN_TOP = Pt(2)
+TF_MARGIN_BOTTOM = Pt(2)
 
 
-def set_run(run, size=16, bold=False, color=INK, name="Calibri"):
+def pick_font(size=16, bold=False):
+    if bold or size >= 19:
+        return FONT_DISPLAY
+    return FONT_BODY
+
+
+def set_run(run, size=16, bold=False, color=INK, name=None):
+    name = name or pick_font(size, bold)
     run.font.size = Pt(size)
     run.font.bold = bold
     run.font.color.rgb = color
@@ -39,9 +56,18 @@ def set_run(run, size=16, bold=False, color=INK, name="Calibri"):
     rFonts = rPr.find(qn("a:rFonts"))
     if rFonts is None:
         rFonts = etree.SubElement(rPr, qn("a:rFonts"))
-    rFonts.set("ascii", name)
-    rFonts.set("hAnsi", name)
-    rFonts.set("cs", name)
+    for attr in ("ascii", "hAnsi", "cs", "eastAsia"):
+        rFonts.set(attr, name)
+
+
+def configure_text_frame(tf, anchor=MSO_ANCHOR.TOP):
+    tf.word_wrap = True
+    tf.auto_size = None
+    tf.vertical_anchor = anchor
+    tf.margin_left = TF_MARGIN_X
+    tf.margin_right = TF_MARGIN_X
+    tf.margin_top = TF_MARGIN_TOP
+    tf.margin_bottom = TF_MARGIN_BOTTOM
 
 
 def add_bg(slide):
@@ -67,15 +93,15 @@ def add_footer(slide, page, total=12):
     tf.clear()
     p = tf.paragraphs[0]
     r = p.add_run()
-    r.text = "Travel+ Natural  ·  пульт v1.14  ·  собеседование  ·  не оферта"
-    set_run(r, 11, False, MUTED)
+    r.text = FOOTER_TEXT
+    set_run(r, 11, False, MUTED, FONT_BODY)
     box2 = slide.shapes.add_textbox(Inches(11.5), Inches(6.95), Inches(1.4), Inches(0.35))
     tf2 = box2.text_frame
     p2 = tf2.paragraphs[0]
     p2.alignment = PP_ALIGN.RIGHT
     r2 = p2.add_run()
     r2.text = f"{page} / {total}"
-    set_run(r2, 11, False, MUTED)
+    set_run(r2, 11, False, MUTED, FONT_BODY)
 
 
 def add_title(slide, text):
@@ -104,31 +130,42 @@ def add_card(slide, left, top, width, height):
         shp.adjustments[0] = 0.06
     except Exception:
         pass
-    strip = slide.shapes.add_shape(MSO_SHAPE.RECTANGLE, left, top, width, Inches(0.08))
+    strip = slide.shapes.add_shape(MSO_SHAPE.RECTANGLE, left, top, width, STRIP_H)
     strip.fill.solid()
     strip.fill.fore_color.rgb = ACCENT
     strip.line.fill.background()
     return shp
 
 
-def write_block(slide, left, top, width, height, lines):
+def write_block(slide, left, top, width, height, lines, align=PP_ALIGN.LEFT):
     box = slide.shapes.add_textbox(left, top, width, height)
     tf = box.text_frame
-    tf.word_wrap = True
+    configure_text_frame(tf)
     tf.clear()
     for i, item in enumerate(lines):
         p = tf.paragraphs[0] if i == 0 else tf.add_paragraph()
+        p.alignment = item.get("align", align)
         p.space_before = Pt(item.get("before", 0))
         p.space_after = Pt(item.get("after", 8))
-        p.line_spacing = 1.15
+        p.line_spacing = item.get("line_spacing", 1.18)
         r = p.add_run()
         r.text = item["text"]
-        set_run(r, item.get("size", 16), item.get("bold", False), item.get("color", INK))
+        size = item.get("size", 16)
+        bold = item.get("bold", False)
+        set_run(r, size, bold, item.get("color", INK), item.get("font", pick_font(size, bold)))
     return box
 
 
 def card_header(text):
-    return {"text": text, "size": 15, "bold": True, "color": ACCENT, "after": 14}
+    return {
+        "text": text,
+        "size": 15,
+        "bold": True,
+        "color": ACCENT,
+        "after": 12,
+        "before": 0,
+        "font": FONT_DISPLAY,
+    }
 
 
 def body(text, **kw):
@@ -149,16 +186,23 @@ def strong(text, **kw):
     return d
 
 
+def card_text_area(left, top, width, height):
+    """Text box inset: below accent strip, with horizontal and bottom padding."""
+    tx = left + CARD_PAD_X
+    ty = top + STRIP_H + CARD_PAD_TOP
+    tw = width - 2 * CARD_PAD_X
+    th = height - STRIP_H - CARD_PAD_TOP - CARD_PAD_BOTTOM
+    return tx, ty, tw, th
+
+
 def two_cards(slide):
     left = MARGIN_X
     right = MARGIN_X + CARD_W + GAP
     add_card(slide, left, CONTENT_TOP, CARD_W, CARD_H)
     add_card(slide, right, CONTENT_TOP, CARD_W, CARD_H)
-    tx = left + PAD
-    ty = CONTENT_TOP + Inches(0.28)
-    tw = CARD_W - 2 * PAD
-    th = CARD_H - Inches(0.45)
-    return (tx, ty, tw, th), (right + PAD, ty, tw, th)
+    return card_text_area(left, CONTENT_TOP, CARD_W, CARD_H), card_text_area(
+        right, CONTENT_TOP, CARD_W, CARD_H
+    )
 
 
 def build():
@@ -207,7 +251,7 @@ def build():
                 "color": MUTED,
                 "after": 6,
             },
-            {"text": "Пульт бренда v1.14 · не оферта", "size": 14, "color": MUTED, "after": 0},
+            {"text": "Образец презентации · не оферта", "size": 14, "color": MUTED, "after": 0},
         ],
     )
 
@@ -374,13 +418,16 @@ def build():
     add_bg(s)
     add_title(s, "Питч закупщику (30 секунд)")
     add_footer(s, 7)
-    add_card(s, MARGIN_X, CONTENT_TOP, W - 2 * MARGIN_X, Inches(4.6))
+    pitch_w = W - 2 * MARGIN_X
+    pitch_h = Inches(4.6)
+    add_card(s, MARGIN_X, CONTENT_TOP, pitch_w, pitch_h)
+    px, py, pw, ph = card_text_area(MARGIN_X, CONTENT_TOP, pitch_w, pitch_h)
     write_block(
         s,
-        MARGIN_X + PAD,
-        CONTENT_TOP + Inches(0.35),
-        W - 2 * MARGIN_X - 2 * PAD,
-        Inches(4.0),
+        px,
+        py,
+        pw,
+        ph,
         [
             body(
                 "«Вам нужно выглядеть зеленее — и спокойно пройти и гостя, и документы.",
@@ -397,13 +444,14 @@ def build():
             strong("Три шага: eco / wellness → образец → пилот.»", size=17),
         ],
     )
+    note_y = CONTENT_TOP + pitch_h + Inches(0.22)
     write_block(
         s,
-        MARGIN_X,
-        Inches(5.9),
-        W - 2 * MARGIN_X,
-        Inches(0.6),
-        [muted("Отрицания (COSMOS, origin, цена Hotel Line) — только в возражениях.")],
+        MARGIN_X + CARD_PAD_X,
+        note_y,
+        W - 2 * MARGIN_X - 2 * CARD_PAD_X,
+        Inches(0.55),
+        [muted("Отрицания (COSMOS, origin, цена Hotel Line) — только в возражениях.", after=0)],
     )
 
     # 8 Objections
