@@ -347,25 +347,26 @@ def build():
         s,
         *L,
         [
-            card_header("Карта портфеля"),
-            dense("Hotel Line — цена и базовый сегмент"),
-            dense("Fleur / Aquatique / La Nuit — дизайн и аромат"),
-            strong("Natural — натуральность и документы", size=15),
-            dense("Natura Siberica — чужой премиум в каталоге"),
-            dense("СТМ с логотипом отеля — отдельный проект"),
+            card_header("Портфель"),
+            *labeled("Hotel Line", "Цена и базовый сегмент"),
+            *labeled("Fleur / Aquatique / La Nuit", "Дизайн и аромат"),
+            *labeled("Natural", "Натуральность и документы"),
+            *labeled("Natura Siberica", "Чужой премиум в каталоге"),
+            *labeled("СТМ", "Отдельный проект под логотип отеля", gap=0),
         ],
     )
     write_block(
         s,
         *R,
         [
-            card_header("Мостик для продаж"),
-            dense("Fleur закрывает дизайн и аромат в номере."),
-            dense("Natural — запрос на натуральность и полный пакет документов."),
-            strong("Fleur и Natural не конкурируют — разные задачи.", size=15, after=10),
-            dense(
-                "На одном объекте: стандартные номера — Hotel Line или Fleur; "
-                "wellness-корпус или этаж с eco-запросом — Natural."
+            card_header("Как не мешать линейки"),
+            *labeled("Fleur", "Закрывает дизайн и аромат в номере"),
+            *labeled("Natural", "Закрывает запрос eco и пакет документов"),
+            *labeled("Между собой", "Не конкурируют — разные задачи"),
+            *labeled(
+                "На объекте",
+                "Стандартные номера — Hotel Line или Fleur; wellness-этаж — Natural",
+                gap=0,
             ),
         ],
     )
