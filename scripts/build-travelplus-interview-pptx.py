@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Travel+ Natural interview deck v1.14.2 — Manrope + Golos, card text rhythm."""
+"""Travel+ Natural interview deck v1.14.3 — copy expand, structured blocks."""
 from pptx import Presentation
 from pptx.util import Inches, Pt
 from pptx.dml.color import RGBColor
@@ -186,6 +186,27 @@ def strong(text, **kw):
     return d
 
 
+def dense(text, **kw):
+    d = {"text": text, "size": 15, "bold": False, "color": INK, "after": 6}
+    d.update(kw)
+    return d
+
+
+def footnote(text, **kw):
+    d = {"text": text, "size": 12, "bold": False, "color": MUTED, "before": 18, "after": 0}
+    d.update(kw)
+    return d
+
+
+def labeled(title, text, **kw):
+    gap = kw.pop("gap", 10)
+    return [
+        strong(title, size=15, after=2),
+        dense(text, after=gap, **{k: v for k, v in kw.items() if k != "gap"}),
+    ]
+
+
+
 def card_text_area(left, top, width, height):
     """Text box inset: below accent strip, with horizontal and bottom padding."""
     tx = left + CARD_PAD_X
@@ -297,10 +318,10 @@ def build():
         *L,
         [
             card_header("Рынок"),
-            body("Конкуренты: ЕТС Natural · MEZO · NS"),
-            muted("(NS — чужой premium в каталоге)", after=12),
-            body("Travel+ силён в масс и среднем."),
-            strong("Слабое место: своя Natural с документами."),
+            dense("Конкуренты на полке: ЕТС Natural, MEZO, Natura Siberica."),
+            muted("(Natura Siberica — чужой премиум в каталоге Travel+)", after=10),
+            dense("Travel+ силён в массовом и среднем сегменте."),
+            strong("Слабое место: своей линейки Natural с документами нет.", size=15),
         ],
     )
     write_block(
@@ -308,11 +329,11 @@ def build():
         *R,
         [
             card_header("Ориентир цен (не оферта)"),
-            body("Hotel Line ≈ 12–15 ₽ / 30 мл"),
-            body("ЕТС Natural ≈ 18 ₽ / 25 мл"),
-            body("Natura Siberica — выше", after=14),
-            strong("Ставка: между HL и NS"),
-            body("Натуральность · документы · один поставщик"),
+            dense("Hotel Line — ориентир 12–15 ₽ / 30 мл"),
+            dense("ЕТС Natural — ориентир 18 ₽ / 25 мл"),
+            dense("Natura Siberica — ориентир 30–40 ₽ и выше", after=12),
+            strong("Ставка Natural: между Hotel Line и Natura Siberica", size=15),
+            dense("Натуральность, пакет документов, один поставщик на номер."),
         ],
     )
 
@@ -326,12 +347,12 @@ def build():
         s,
         *L,
         [
-            card_header("Карта"),
-            body("Hotel Line → цена"),
-            body("Fleur / Aquatique / La Nuit → дизайн и аромат"),
-            strong("Natural → натуральность + документы"),
-            body("Natura Siberica → чужой premium"),
-            body("СТМ (лого отеля) → отдельный проект"),
+            card_header("Карта портфеля"),
+            dense("Hotel Line — цена и базовый сегмент"),
+            dense("Fleur / Aquatique / La Nuit — дизайн и аромат"),
+            strong("Natural — натуральность и документы", size=15),
+            dense("Natura Siberica — чужой премиум в каталоге"),
+            dense("СТМ с логотипом отеля — отдельный проект"),
         ],
     )
     write_block(
@@ -339,10 +360,13 @@ def build():
         *R,
         [
             card_header("Мостик для продаж"),
-            body("Дизайн и аромат — Fleur."),
-            body("Натуральность и документы — Natural."),
-            strong("Не конкурируют."),
-            body("Могут жить на разных этажах одного объекта."),
+            dense("Fleur закрывает дизайн и аромат в номере."),
+            dense("Natural — запрос на натуральность и полный пакет документов."),
+            strong("Fleur и Natural не конкурируют — разные задачи.", size=15, after=10),
+            dense(
+                "На одном объекте: стандартные номера — Hotel Line или Fleur; "
+                "wellness-корпус или этаж с eco-запросом — Natural."
+            ),
         ],
     )
 
@@ -357,14 +381,17 @@ def build():
         *L,
         [
             card_header("Обещание"),
-            strong("Мягкий уход с понятной натуральностью"),
-            body("для отеля, которому важны и гость, и документы.", after=12),
-            muted("Доказательства:", after=6),
-            body("• Состав в границах"),
-            body("• Пакет документов Travel+"),
-            body("• Ощущение в номере"),
-            body("• Один поставщик на номер"),
-            body("• Блок «простыми словами» на этикетке"),
+            strong("Мягкий уход с понятной натуральностью", size=15),
+            dense(
+                "Для отеля, которому важен комфорт гостя и спокойная проверка документов.",
+                after=10,
+            ),
+            muted("Доказательства:", after=4),
+            dense("• Состав в согласованных границах"),
+            dense("• Пакет документов Travel+"),
+            dense("• Ощущение в номере после использования"),
+            dense("• Один поставщик на весь номер"),
+            dense("• Блок «простыми словами» на этикетке"),
         ],
     )
     write_block(
@@ -372,44 +399,54 @@ def build():
         *R,
         [
             card_header("BrandScript"),
-            body("Герой: закупщик eco / wellness"),
-            body("Проводник: Travel+ Natural"),
-            body("План: сегмент → образец + документы → пилот", after=14),
-            muted("Гость после дороги:", after=6),
-            strong("Мягче, чем ждал."),
-            body("Понятная натуральность без громких обещаний."),
+            strong("Герой", size=15, after=2),
+            dense(
+                "Закупщик отеля с запросом eco / wellness: "
+                "выглядеть «зеленее» без дыры в бюджете и в бумагах.",
+                after=8,
+            ),
+            strong("Проводник", size=15, after=2),
+            dense("Travel+ Natural — своя линейка, документы и one-stop на номер.", after=8),
+            strong("План", size=15, after=2),
+            dense("1. Согласовать сегмент и объект"),
+            dense("2. Образец с этикеткой и пакетом документов"),
+            dense("3. Пилот на этаже или в корпусе", after=10),
+            muted("Гость после дороги:", after=4),
+            strong("Ощущение мягче, чем ожидал.", size=15, after=2),
+            dense("Понятная натуральность — без громких обещаний на этикетке."),
         ],
     )
 
     # 6 DoD
     s = prs.slides.add_slide(blank)
     add_bg(s)
-    add_title(s, "Границы до рынка — DoD этапа 2")
+    add_title(s, "Готовность продукта перед рынком")
     add_footer(s, 6)
     L, R = two_cards(s)
     write_block(
         s,
         *L,
         [
-            card_header("Пока красное — витрину не открываем"),
-            body("□ Метод и % натуральности"),
-            body("□ Пакет как у HL / Fleur + лист Natural"),
-            body("□ Origin зафиксирован"),
-            body("□ Слепой тест запаха с гостями"),
-            body("□ Этикетка «простыми словами»"),
-            body("□ Себестоимость и коридор цены"),
-            body("□ Срок поставки / мин. заказ / брак"),
+            card_header("Чеклист: без этого — не в продажи"),
+            dense("□ Метод расчёта и доля натуральных ингредиентов"),
+            dense("□ Пакет документов как у Hotel Line и Fleur + лист состава Natural"),
+            dense("□ Происхождение (origin) зафиксировано письменно"),
+            dense("□ Слепой тест запаха и ощущения с гостями"),
+            dense("□ Этикетка с блоком «простыми словами»"),
+            dense("□ Себестоимость и коридор цены на полке"),
+            dense("□ Срок поставки, минимальный заказ, правила брака"),
         ],
     )
     write_block(
         s,
         *R,
         [
-            card_header("Правила"),
-            body("На старте без COSMOS, если знака нет — честно."),
-            strong("Без DoD — не КП и не live GTM.", after=12),
-            body("Этапы 3–6 — учебный сценарий,"),
-            body("не факт завода."),
+            card_header("Как читать список"),
+            dense("Каждый пункт — обязательное условие."),
+            dense("Пока хотя бы один не закрыт — коммерческое предложение и выход на витрину стоп."),
+            dense("На старте без знака COSMOS, если его нет — говорим честно.", after=10),
+            strong("Этапы 3–6 в пульте — учебный сценарий,", size=15, after=2),
+            dense("а не отчёт завода и не основание для КП."),
         ],
     )
 
@@ -419,7 +456,7 @@ def build():
     add_title(s, "Питч закупщику (30 секунд)")
     add_footer(s, 7)
     pitch_w = W - 2 * MARGIN_X
-    pitch_h = Inches(4.6)
+    pitch_h = Inches(4.75)
     add_card(s, MARGIN_X, CONTENT_TOP, pitch_w, pitch_h)
     px, py, pw, ph = card_text_area(MARGIN_X, CONTENT_TOP, pitch_w, pitch_h)
     write_block(
@@ -429,29 +466,35 @@ def build():
         pw,
         ph,
         [
-            body(
-                "«Вам нужно выглядеть зеленее — и спокойно пройти и гостя, и документы.",
-                size=17,
+            strong("Задача закупщика", size=16, after=4),
+            dense(
+                "Отель хочет выглядеть экологичнее — без риска для гостя "
+                "и без пробелов в документах при проверке.",
                 after=10,
             ),
-            body("Travel+ Natural: пакет документов как у Hotel Line и Fleur", size=17, after=4),
-            muted("(декларация / СГР, INCI, протоколы по запросу),", after=8),
-            body(
-                "прозрачный состав с блоком «простыми словами», один договор на номер.",
-                size=17,
-                after=10,
-            ),
-            strong("Три шага: eco / wellness → образец → пилот.»", size=17),
+            strong("Что предлагаем", size=16, after=4),
+            dense("Travel+ Natural — пакет документов как у Hotel Line и Fleur:"),
+            dense("декларация или СГР, INCI, протоколы по запросу."),
+            dense("Состав с блоком «простыми словами». Один договор на весь номер.", after=10),
+            strong("Три шага", size=16, after=4),
+            dense("1. Сегмент eco / wellness и объект"),
+            dense("2. Образец с этикеткой и документами"),
+            dense("3. Пилот на этаже или в корпусе"),
         ],
     )
-    note_y = CONTENT_TOP + pitch_h + Inches(0.22)
+    note_y = CONTENT_TOP + pitch_h + Inches(0.18)
     write_block(
         s,
         MARGIN_X + CARD_PAD_X,
         note_y,
         W - 2 * MARGIN_X - 2 * CARD_PAD_X,
         Inches(0.55),
-        [muted("Отрицания (COSMOS, origin, цена Hotel Line) — только в возражениях.", after=0)],
+        [
+            muted(
+                "Отрицания (COSMOS, происхождение, цена Hotel Line) — только в блоке возражений.",
+                after=0,
+            )
+        ],
     )
 
     # 8 Objections
@@ -464,11 +507,26 @@ def build():
         s,
         *L,
         [
-            card_header("Возражения"),
-            body("COSMOS обязателен → Natural в это КП не ставим"),
-            body("«Natural по цене Hotel Line» → нет"),
-            body("СТМ / лого отеля → отдельный проект"),
-            body("«Где произведено?» → только зафиксированный origin"),
+            card_header("Возражения и ответы"),
+            *labeled(
+                "COSMOS в тендере обязателен",
+                "Знака нет — Natural в это коммерческое предложение не ставим. "
+                "Предлагаем Hotel Line или отказ.",
+            ),
+            *labeled(
+                "«Natural по цене Hotel Line»",
+                "Нет. Другая себестоимость и другая позиция на полке.",
+            ),
+            *labeled(
+                "СТМ / логотип отеля",
+                "Отдельный проект. Не маскируем под Natural.",
+                gap=8,
+            ),
+            *labeled(
+                "«Где произведено?»",
+                "Только зафиксированное происхождение. Без догадок и «скорее всего».",
+                gap=6,
+            ),
         ],
     )
     write_block(
@@ -476,10 +534,10 @@ def build():
         *R,
         [
             card_header("Полевая дисциплина"),
-            body("Реестр рисков — один лист"),
-            muted("(14 пунктов в пульте)", after=12),
-            body("Сегмент не размываем."),
-            strong("Не продаём Natural в эконом Hotel Line."),
+            dense("Реестр рисков — один лист в пульте (14 пунктов)."),
+            dense("Сегмент не размываем: Natural не уходит в эконом-запрос.", after=10),
+            strong("Не продаём Natural вместо Hotel Line по цене базовой линейки.", size=15),
+            footnote("Цифры сценария — учебный пример, не отчёт завода."),
         ],
     )
 
@@ -494,12 +552,11 @@ def build():
         *L,
         [
             card_header("Успех (учебный порог)"),
-            body("• 3 пилотных клиента"),
-            body("• Повторный заказ у ≥ 2 из 3"),
-            body("• Мягкость и ощущение натуральности ≥ 70%", after=10),
-            strong("• Natural не ушёл в эконом Hotel Line", after=14),
-            muted("Цифры сценария — учебный пример,"),
-            muted("не отчёт завода."),
+            dense("• Три пилотных клиента"),
+            dense("• Повторный заказ минимум у двух из трёх"),
+            dense("• Мягкость и ощущение натуральности — не ниже 70% в опросе"),
+            strong("• Natural не ушёл в эконом Hotel Line", size=15),
+            footnote("Цифры сценария — учебный пример, не отчёт завода."),
         ],
     )
     write_block(
@@ -507,11 +564,12 @@ def build():
         *R,
         [
             card_header("Провал и выход"),
-            body("Повтор < 2 из 3 или метрики < 60%"),
-            strong("→ Останавливаем масштаб", after=12),
-            body("Диагноз бренд-менеджера за 2 недели"),
-            body("Второй круг снова провален"),
-            strong("→ Закрываем линейку"),
+            dense("Повторный заказ меньше чем у двух из трёх — или метрики ниже 60%."),
+            strong("→ Останавливаем масштабирование", size=15, after=8),
+            dense("Диагноз бренд-менеджера — в течение двух недель."),
+            dense("Второй пилотный круг снова провален."),
+            strong("→ Закрываем линейку", size=15),
+            footnote("Пороги — для учебного сценария в пульте, не KPI завода."),
         ],
     )
 
@@ -525,23 +583,27 @@ def build():
         s,
         *L,
         [
-            card_header("Экономика"),
-            body("Прайс — после себестоимости на складе."),
-            body("Ориентир: выше Hotel Line · рядом с ЕТС · ниже NS.", after=12),
-            strong("Не воюем копейкой."),
-            body("Выигрываем пакетом и ощущением."),
+            card_header("Экономика и цена"),
+            dense("Прайс утверждаем только после себестоимости на складе в Киришах."),
+            dense("Ориентир по полке:", after=4),
+            dense("• выше Hotel Line"),
+            dense("• рядом с ЕТС Natural"),
+            dense("• ниже Natura Siberica", after=10),
+            strong("Не воюем копейкой с ЕТС.", size=15, after=4),
+            dense("Выигрываем пакетом документов и ощущением в номере."),
         ],
     )
     write_block(
         s,
         *R,
         [
-            card_header("Если Китай или гибрид"),
-            body("Сравниваем заводы в FOB"),
-            body("Логистику до Кириши считаем отдельно"),
-            body("Полная цена = FOB + фрахт + таможня + довоз", after=10),
-            strong("Срок пилота — «на складе»"),
-            body("Origin не ясен → не говорим «российское»"),
+            card_header("Если поставка из Китая"),
+            dense("1. Сравниваем заводы в цене FOB"),
+            dense("2. Логистику до Кириши считаем отдельной строкой"),
+            dense("3. Полная цена = FOB + фрахт + таможня + довоз + запас", after=10),
+            strong("Срок пилота — дата «на складе»,", size=15, after=2),
+            dense("а не формулировка «завод отгрузил»."),
+            dense("Происхождение не зафиксировано — не называем «российское»."),
         ],
     )
 
@@ -555,22 +617,25 @@ def build():
         s,
         *L,
         [
-            card_header("Содержание"),
-            body("Этапы 0–2 — разведка и правила"),
-            body("Этапы 3–6 — сценарий «как вести дело»"),
-            body("StoryBrand · DoD · риски · возврат"),
-            body("Мостик портфеля Travel+"),
+            card_header("Содержание пульта v1.14"),
+            dense("Этапы 0–2: разведка, правила, границы продукта"),
+            dense("Этапы 3–6: учебный сценарий «как вести дело»"),
+            dense("StoryBrand, чеклист готовности, реестр рисков"),
+            dense("Правила пилота: успех, провал, выход"),
+            dense("Мостик портфеля Travel+ (Hotel Line, Fleur, Natural, СТМ)"),
+            footnote("Статус: образец для поля и собеседования. Не коммерческое предложение."),
         ],
     )
     write_block(
         s,
         *R,
         [
-            card_header("Справочники"),
-            body("Глоссарий бренда + глоссарий ВЭД"),
-            body("Раздел L: путь · Incoterms · RFQ", after=14),
-            body("Статус: рамка для поля и собеседования."),
-            strong("v2.0 — когда технолог даст цифры."),
+            card_header("Справочники и логистика"),
+            dense("Глоссарий бренда и глоссарий ВЭД"),
+            dense("Раздел L: путь товара, Incoterms, RFQ, приёмка на складе"),
+            dense("Волна A: markdown-реестры в папке brand-pult/"),
+            dense("Презентация и скрипт — синхрон с пультом", after=10),
+            strong("Версия 2.0 — когда технолог закроет цифры завода.", size=15),
         ],
     )
 
