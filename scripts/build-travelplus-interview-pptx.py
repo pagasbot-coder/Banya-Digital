@@ -461,40 +461,45 @@ def build():
     pitch_h = Inches(4.75)
     add_card(s, MARGIN_X, CONTENT_TOP, pitch_w, pitch_h)
     px, py, pw, ph = card_text_area(MARGIN_X, CONTENT_TOP, pitch_w, pitch_h)
+    footnote_h = Inches(0.48)
+    main_h = ph - footnote_h
     write_block(
         s,
         px,
         py,
         pw,
-        ph,
+        main_h,
         [
-            strong("Задача закупщика", size=16, after=4),
-            dense(
+            *labeled(
+                "Задача",
                 "Отель хочет выглядеть экологичнее — без риска для гостя "
-                "и без пробелов в документах при проверке.",
-                after=10,
+                "и без пробелов в документах",
             ),
-            strong("Что предлагаем", size=16, after=4),
-            dense("Travel+ Natural — пакет документов как у Hotel Line и Fleur:"),
-            dense("декларация или СГР, INCI, протоколы по запросу."),
-            dense("Состав с блоком «простыми словами». Один договор на весь номер.", after=10),
-            strong("Три шага", size=16, after=4),
-            dense("1. Сегмент eco / wellness и объект"),
-            dense("2. Образец с этикеткой и документами"),
-            dense("3. Пилот на этаже или в корпусе"),
+            *labeled(
+                "Предложение",
+                "Travel+ Natural: пакет как у Hotel Line и Fleur "
+                "(декларация, INCI, протоколы по запросу)",
+            ),
+            *labeled(
+                "На номер",
+                "Состав с блоком «простыми словами», один договор на весь номер",
+                gap=8,
+            ),
+            *labeled("Шаг 1", "Сегмент eco / wellness и объект", gap=8),
+            *labeled("Шаг 2", "Образец с этикеткой и документами", gap=8),
+            *labeled("Шаг 3", "Пилот на этаже или в корпусе", gap=0),
         ],
     )
-    note_y = CONTENT_TOP + pitch_h + Inches(0.18)
     write_block(
         s,
-        MARGIN_X + CARD_PAD_X,
-        note_y,
-        W - 2 * MARGIN_X - 2 * CARD_PAD_X,
-        Inches(0.55),
+        px,
+        py + main_h,
+        pw,
+        footnote_h,
         [
-            muted(
+            footnote(
                 "Отрицания (COSMOS, происхождение, цена Hotel Line) — только в блоке возражений.",
-                after=0,
+                before=0,
             )
         ],
     )
