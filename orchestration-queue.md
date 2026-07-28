@@ -41,6 +41,9 @@
 | QA | `muster-qa` | «Role: QA» | `@role-qa` |
 | Growth / CMO | `muster-growth-marketer` | «Role: CMO» / «Role: Growth» / «Роль: Директор по маркетингу» | `@role-growth-marketer` |
 | SME | `muster-sme` | «Role: SME» / «Role: Business Consultant» / «Роль: Прожжённый отраслевой бизнес-консультант» / «Role: Industry Expert» | `@role-sme` |
+| China Logistics / ВЭД | — (rule chat) | «Role: China Logistics» / «Role: ВЭД» / «Роль: Логистика Китай» | `@role-china-logistics` |
+| Brand Manager | — (rule chat) | «Role: Brand Manager» / «Роль: Бренд-менеджер» | `@role-brand-manager` |
+| Copywriter | — (rule chat) | «Role: Copywriter» / «Роль: Копирайтер» | `@role-copywriter` |
 
 Контекст из `knowledge-base/` подключайте через **@** (например `@knowledge-base/product-brief.md`).
 
@@ -97,6 +100,23 @@
 | T-033 | Hotfix: error boundary /finance после submit выручки | Developer | DONE | P0 | T-032 | `get-finance-data.ts`, `finance/page.tsx`, `create-finance-lines.ts` | revalidate /finance убран → router.refresh; withDbTimeout+allSettled; normalizeFinanceResult; businessDate eq; commit 8fd9a38; vercel --prod; db:seed OK |
 | T-034 | Hotfix: finance submit 500 (use server export) | Developer | DONE | P0 | T-033 | `finance-action-state.ts`, `create-finance-lines.ts`, `revenue-cost-forms.tsx` | root: `initialFinanceActionState` в "use server" → Next.js 16 invalid-use-server-value; вынесено в отдельный модуль; prod+local submit PASS (hall+amount, hall+service+amount) |
 | T-035 | Hotfix: CRM + FIFO submit 500 (use server export) | Developer | DONE | P0 | T-034 | `crm-action-state.ts`, `fifo-action-state.ts`, forms, `test-crm-fifo-actions.mjs` | commit 9557629; push+vercel --prod; build+lint OK; action smoke createGuest+performFifoOut PASS; prod retest `/crm`, `/operations/inventory` |
+| T-036 | Роли China Logistics + Brand Manager + стартовые KB | Human / PM | DONE | P1 | — | `@role-china-logistics`, `@role-brand-manager`, `@knowledge-base/china-russia-logistics.md`, `@knowledge-base/brand-management-playbook.md` | Две роли Muster; базы логистики Китай→РФ и бренд-playbook («ДНК бренда» Зарьков/Завражнов) |
+| T-037 | Углубить KB «ДНК бренда» после загрузки книги Human | Brand Manager | BACKLOG | P2 | T-036 | `@knowledge-base/brand-management-playbook.md` | Ждём PDF/фото глав от Human |
+| T-038 | Расширить коридоры логистики (не только Китай) по запросу | China Logistics | BACKLOG | P2 | T-036 | `@knowledge-base/china-russia-logistics.md` | Turkey/EU/UAE — по мере надобности |
+| T-039 | Доскональная тройная критика Natural v1.6 (Brand·Expert·PM) | Brand Manager + Copywriter | DONE | P0 | — | `@knowledge-base/brand-pult-critique-deep-v16.md`, primer v1.6, platform | Deep review + RF origin; Copywriter pass; вход в v1.7 по Go Human |
+| T-040 | Natural v1.7: закрыть P0 deep-критики в пульте + платформе | Brand Manager + Copywriter | DONE | P0 | T-039 | `@knowledge-base/brand-pult-primer-travelplus-natural.md`, `@knowledge-base/brand-platform-travelplus-natural.md` | Origin · метод % · DoD · сценарий 3–6 · поставка · docs завода; Copywriter pass |
+| T-041 | Epic: блокеры DoD этапа 2 Natural (технолог/ops) | Brand Manager | BACKLOG | P0 | T-040 | primer DoD-таблица | Ждёт Human + технолог: % · origin · пакет · тест · этикетка · COGS · MOQ |
+| T-042 | StoryBrand SB7 в playbook, пульт, Natural v1.8 | Brand Manager + Copywriter | DONE | P1 | T-040 | playbook §3, platform BrandScript, primer v1.8 | Герой=клиент; питч переписан; роли Brand/Copy обновлены |
+| T-043 | Natural v1.9: полевая защита бренда (5 правок) | Brand Manager + Copywriter | DONE | P1 | T-042 | primer v1.9 | Питч без оправданий · реестр рисков · возврат · СТМ · слайд портфеля |
+| T-044 | Natural v1.10 + презентация собеса под пульт | Brand Manager + Copywriter | DONE | P0 | T-043 | primer v1.10, presentation-travelplus-interview.pptx | ToV без «химии» · kill 2-го круга · PPTX заменён |
+| T-045 | Natural v1.11: читаемость таблиц | Brand Manager + Copywriter | DONE | P1 | T-044 | primer v1.11 | Короткие ячейки · словарь · смысл сохранён |
+| T-046 | Natural v1.12: глоссарий+ · логистика Китай · без длинных тире | Brand + China Logistics + Copywriter | DONE | P0 | T-045 | primer раздел L, china-russia-logistics.md | Раздел L · Incoterms · себестоимость прихода · история версий убрана |
+| T-047 | Natural v1.13: расширить глоссарий логистики | China Logistics + Copywriter | DONE | P1 | T-046 | primer словарь ВЭД | Demurrage, ETA/ETD, пошлина, посредник, цена на складе и др. |
+| T-048 | Natural v1.14: ещё расширить глоссарий логистики | China Logistics + Copywriter | DONE | P1 | T-047 | primer + china-russia-logistics.md | Блоки: завод, Incoterms, перевозка, документы, таможня, приёмка, деньги |
+| T-049 | Круглый стол v1.14 + презентация 16:9 горизонтальная | Brand + Copy + China + PM/Dev/UX/QA | DONE | P0 | T-048 | kruglyy-stol-natural-v114.md, presentation-travelplus-interview.pptx | Оценки агентов · внедрение `/brand` · 12 слайдов |
+| T-050 | Волна A: папка brand-pult markdown (dogfood) | Brand Manager + Copywriter | DONE | P0 | T-049 | `brand-pult/` | **Human устал → Auto Go 27.07:** волна A ок (пакет полный); dogfood можно догнать в QP |
+| T-051 | Handoff: код `/brand` + обсуждение → Quiet Partner | Human / PM | DONE | P0 | T-050 | `knowledge-base/handoff-brand-pult-to-quiet-partner.md` | Human: пилить в QP; ветка `cursor/brand-pult-mvp-0821`; Banya-Digital = KB-источник |
+| T-052 | Go волна B: MVP `/brand` в Quiet Partner | Human (proxy Auto) / Dev QP | READY | P0 | T-050, T-051 | handoff + brand-pult + primer v1.14 | **Go дан 27.07.** Открыть агент на QP → ветка `cursor/brand-pult-mvp-0821` → T-Brand-001…005 |
 
 ---
 

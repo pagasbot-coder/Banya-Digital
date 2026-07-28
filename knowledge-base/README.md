@@ -11,3 +11,5 @@
 | `architecture.md` | Модули, ADR, данные |
 | `design-tokens.md` | UI/UX токены (T-003) |
 | `qa-checklist.md` | QA перед PR |
+| `china-russia-logistics.md` | Логистика Китай→РФ, Incoterms, карго (`Role: China Logistics`) |
+| `brand-management-playbook.md` | Бренд-менеджмент + «ДНК бренда» (`Role: Brand Manager`) |
